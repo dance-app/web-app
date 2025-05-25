@@ -1,0 +1,28 @@
+node_modules/
+.env
+.env.local
+.env.*.local
+
+# Build output
+.next/
+out/
+dist/
+
+# Logs
+pnpm-debug.log*
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+*.lock
+*.tgz
+
+# Coverage/test output
+coverage/
+*.lcov
+
+# Optional: skip local database or cache folders
+.cache/
