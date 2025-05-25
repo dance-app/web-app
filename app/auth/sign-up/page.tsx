@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AuthGuard } from "@/components/auth-guard"
 import { authAtom } from "@/lib/atoms"
-import { authApi } from "@/lib/api"
+import { api } from "@/lib/api"
 
 interface SignUpForm {
   name: string
@@ -38,11 +38,8 @@ export default function SignUpPage() {
     setError("")
 
     try {
-      const result = await authApi.signUp(data.name, data.email, data.password)
-      setAuth({
-        user: result.user,
-        isAuthenticated: true,
-      })
+      // const result = await api.auth.signUp(data.name, data.email, data.password)
+      // setAuth(result.user)
     } catch (err) {
       setError("Failed to create account. Please try again.")
     } finally {
@@ -51,7 +48,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <AuthGuard requireAuth={false}>
+    <AuthGuard mode="noAuthOnly">
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">

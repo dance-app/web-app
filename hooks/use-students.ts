@@ -1,43 +1,44 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { studentsApi } from "@/lib/api"
-import type { Student } from "@/types"
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '@/lib/api';
+import type { Student } from '@/types';
 
 export function useStudents() {
   return useQuery({
-    queryKey: ["students"],
-    queryFn: studentsApi.getStudents,
-  })
+    queryKey: ['students'],
+    queryFn: api.students.getAll,
+  });
 }
 
 export function useCreateStudent() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: studentsApi.createStudent,
+    mutationFn: api.students.create,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["students"] })
+      queryClient.invalidateQueries({ queryKey: ['students'] });
     },
-  })
+  });
 }
 
 export function useUpdateStudent() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, ...data }: { id: string } & Partial<Student>) => studentsApi.updateStudent(id, data),
+    mutationFn: ({ id, ...data }: { id: string } & Partial<Student>) =>
+      api.students.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["students"] })
+      queryClient.invalidateQueries({ queryKey: ['students'] });
     },
-  })
+  });
 }
 
 export function useDeleteStudent() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: studentsApi.deleteStudent,
+    mutationFn: api.students.delete,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["students"] })
+      queryClient.invalidateQueries({ queryKey: ['students'] });
     },
-  })
+  });
 }

@@ -1,7 +1,7 @@
-import { atom } from "jotai"
-import type { AuthState } from "@/types"
+import { atomWithStorage } from 'jotai/utils';
+import type { AuthState } from '@/types';
 
-export const authAtom = atom<AuthState>({
+export const authAtom = atomWithStorage<AuthState>('auth', {
+  status: 'loading',
   user: null,
-  isAuthenticated: false,
-})
+});

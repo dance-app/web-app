@@ -2,11 +2,9 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useAtom } from "jotai"
 import { Users, Home, LogOut } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { authAtom } from "@/lib/atoms"
 import { cn } from "@/lib/utils"
+import { AuthAvatar } from "@/components/auth-avatar"
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
@@ -15,16 +13,12 @@ const navigation = [
 
 export function Sidebar() {
   const pathname = usePathname()
-  const [auth, setAuth] = useAtom(authAtom)
-
-  const handleSignOut = () => {
-    setAuth({ user: null, isAuthenticated: false })
-  }
 
   return (
     <div className="flex h-full w-64 flex-col bg-gray-50 border-r">
-      <div className="flex h-16 items-center px-6 border-b">
-        <h1 className="text-xl font-semibold">Student Manager</h1>
+      <div className="flex h-16 w-full items-center justify-between px-6 border-b">
+        <h1 className="text-sm font-semibold">Dance App</h1>
+        <AuthAvatar />
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
@@ -45,19 +39,6 @@ export function Sidebar() {
           )
         })}
       </nav>
-
-      <div className="border-t p-4">
-        <div className="flex items-center mb-3">
-          <div className="ml-3">
-            <p className="text-sm font-medium text-gray-900">{auth.user?.name}</p>
-            <p className="text-xs text-gray-500">{auth.user?.email}</p>
-          </div>
-        </div>
-        <Button variant="ghost" size="sm" onClick={handleSignOut} className="w-full justify-start">
-          <LogOut className="mr-2 h-4 w-4" />
-          Sign out
-        </Button>
-      </div>
     </div>
   )
 }

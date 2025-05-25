@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useAtom } from "jotai"
 import Link from "next/link"
@@ -10,7 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AuthGuard } from "@/components/auth-guard"
 import { authAtom } from "@/lib/atoms"
-import { authApi } from "@/lib/api"
+import { isProd } from "@/lib/utils"
+import { useSignIn } from "@/hooks/use-sign-in"
 
 interface SignInForm {
   email: string
@@ -19,34 +19,32 @@ interface SignInForm {
 
 export default function SignInPage() {
   const [, setAuth] = useAtom(authAtom)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const { signIn, isPending, error } = useSignIn({
+    onSuccess: (user) => {
+      setAuth({ status: "authenticated", user })
+    },
+  })
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignInForm>()
+  } = useForm<SignInForm>({
+    defaultValues: {
+      email: isProd() ? "" : "teacher@example.com",
+      password: isProd() ? "" : "password",
+    },
+    mode: "onBlur",
+  })
 
-  const onSubmit = async (data: SignInForm) => {
-    setIsLoading(true)
-    setError("")
+  const onSubmit = async (data: SignInForm) => signIn({
+    email: data.email,
+    password: data.password,
+  })
 
-    try {
-      const result = await authApi.signIn(data.email, data.password)
-      setAuth({
-        user: result.user,
-        isAuthenticated: true,
-      })
-    } catch (err) {
-      setError("Invalid email or password")
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   return (
-    <AuthGuard requireAuth={false}>
+    <AuthGuard mode="noAuthOnly">
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
@@ -57,8 +55,8 @@ export default function SignInPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">{error}</div>
+              {!!error && (
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">{"error"}</div>
               )}
 
               <div className="space-y-2">
@@ -89,8 +87,8 @@ export default function SignInPage() {
                 {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign in"}
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? "Signing in..." : "Sign in"}
               </Button>
             </form>
 

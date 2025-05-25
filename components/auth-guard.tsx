@@ -1,36 +1,32 @@
 "use client"
 
 import type React from "react"
-
-import { useAtom } from "jotai"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { authAtom } from "@/lib/atoms"
+import { useAuth } from "@/hooks/use-auth"
 
 interface AuthGuardProps {
   children: React.ReactNode
-  requireAuth?: boolean
+  mode: "requiredAuth" | "optionalAuth" | "noAuthOnly"
 }
 
-export function AuthGuard({ children, requireAuth = true }: AuthGuardProps) {
-  const [auth] = useAtom(authAtom)
+export function AuthGuard({ children, mode = "requiredAuth" }: AuthGuardProps) {
+  const { isAuthenticated, isLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (requireAuth && !auth.isAuthenticated) {
+    if (isLoading) return
+
+    if (mode === "requiredAuth" && !isAuthenticated) {
       router.push("/auth/sign-in")
-    } else if (!requireAuth && auth.isAuthenticated) {
+    } else if (mode === "noAuthOnly" && isAuthenticated) {
       router.push("/")
     }
-  }, [auth.isAuthenticated, requireAuth, router])
+  }, [isAuthenticated, isLoading, mode, router])
 
-  if (requireAuth && !auth.isAuthenticated) {
-    return null
-  }
-
-  if (!requireAuth && auth.isAuthenticated) {
-    return null
-  }
+  if (isLoading) return null
+  if (mode === "requiredAuth" && !isAuthenticated) return null
+  if (mode === "noAuthOnly" && isAuthenticated) return null
 
   return <>{children}</>
 }
