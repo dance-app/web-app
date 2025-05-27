@@ -1,8 +1,8 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { useAtom } from "jotai"
-import Link from "next/link"
+// import { useAtom } from "jotai"
+// import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -18,12 +18,7 @@ interface SignInForm {
 }
 
 export default function SignInPage() {
-  const [, setAuth] = useAtom(authAtom)
-  const { signIn, isPending, error } = useSignIn({
-    onSuccess: (user) => {
-      setAuth({ status: "authenticated", user })
-    },
-  })
+  const { signIn, isPending, error } = useSignIn()
 
   const {
     register,
@@ -31,8 +26,8 @@ export default function SignInPage() {
     formState: { errors },
   } = useForm<SignInForm>({
     defaultValues: {
-      email: isProd() ? "" : "teacher@example.com",
-      password: isProd() ? "" : "password",
+      email: isProd() ? "" : "john.doe@email.com",
+      password: isProd() ? "" : "adminadmin",
     },
     mode: "onBlur",
   })
@@ -41,7 +36,6 @@ export default function SignInPage() {
     email: data.email,
     password: data.password,
   })
-
 
   return (
     <AuthGuard mode="noAuthOnly">
@@ -56,7 +50,9 @@ export default function SignInPage() {
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {!!error && (
-                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">{"error"}</div>
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+                  {error?.message || "Wrong email or password"}
+                </div>
               )}
 
               <div className="space-y-2">
@@ -92,14 +88,14 @@ export default function SignInPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center text-sm">
+            {/* <div className="mt-6 text-center text-sm">
               <span className="text-gray-600">{"Don't have an account? "}</span>
               <Link href="/auth/sign-up" className="text-blue-600 hover:text-blue-500">
                 Sign up
               </Link>
-            </div>
+            </div> */}
 
-            <div className="mt-4 p-3 bg-blue-50 rounded-md">
+            {/* <div className="mt-4 p-3 bg-blue-50 rounded-md">
               <p className="text-sm text-blue-800">
                 <strong>Demo credentials:</strong>
                 <br />
@@ -107,7 +103,7 @@ export default function SignInPage() {
                 <br />
                 Password: password
               </p>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>

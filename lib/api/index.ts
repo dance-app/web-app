@@ -1,48 +1,7 @@
-import type { Student, User } from '@/types';
+import type { Student } from '@/types';
+import { delay } from './shared.api';
 
-const MOCK_AUTH_USER = {
-  id: '1',
-  email: 'teacher@example.com',
-  name: 'John Teacher',
-};
-
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
-const auth = {
-  async getCurrentUser(): Promise<User | null> {
-    await delay(500);
-    return MOCK_AUTH_USER;
-  },
-
-  async signIn({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }): Promise<User> {
-    await delay(1000);
-    if (email === 'teacher@example.com' && password === 'password') {
-      return MOCK_AUTH_USER;
-    }
-    throw new Error('Invalid credentials');
-  },
-
-  // async signUp(
-  //   name: string,
-  //   email: string,
-  //   password: string
-  // ): Promise<{ user: User }> {
-  //   await delay(1000);
-  //   return {
-  //     user: {
-  //       id: Math.random().toString(36).substring(2, 9),
-  //       email,
-  //       name,
-  //     },
-  //   };
-  // },
-};
+import { auth } from './auth.api';
 
 const students = {
   async getAll(): Promise<Student[]> {

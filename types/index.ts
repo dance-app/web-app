@@ -11,11 +11,32 @@ export interface Student {
 
 export interface User {
   id: string;
-  email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  createdAt: string;
+  isSuperAdmin: boolean;
+  accounts: {
+    id: string;
+    provider: 'LOCAL' | 'GOOGLE' | 'GITHUB';
+    email: string;
+    isEmailVerified: boolean;
+    createdAt: string;
+  }[];
 }
 
 export type AuthState =
-  | { status: 'loading'; user: null }
-  | { status: 'authenticated'; user: User }
-  | { status: 'unauthenticated'; user: null };
+  | {
+      status: 'loading';
+      token: null;
+      refreshToken: null;
+    }
+  | {
+      status: 'authenticated';
+      token: string;
+      refreshToken: string;
+    }
+  | {
+      status: 'unauthenticated';
+      token: null;
+      refreshToken: null;
+    };

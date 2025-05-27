@@ -19,22 +19,24 @@ import { authAtom } from '@/lib/atoms'
 export function AuthAvatar() {
   const { isAuthenticated, user, signOut } = useAuth()
 
-
-  if (!isAuthenticated || !user) return null
+  if (!isAuthenticated || !user) {
+    console.info(`Not user in AuthAvatar`)
+    return null
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={'/placeholder-user.jpg'} alt={user.name} />
-            <AvatarFallback>{user.name?.[0]}</AvatarFallback>
+            <AvatarImage src={'/placeholder-user.jpg'} alt={user.firstName} />
+            <AvatarFallback>{user.firstName[0]}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" className="w-56">
-        <DropdownMenuLabel className="text-sm font-medium">{user.name}</DropdownMenuLabel>
-        <div className="text-xs text-muted-foreground px-2 pb-2 truncate">{user.email}</div>
+        <DropdownMenuLabel className="text-sm font-medium">{user.firstName}</DropdownMenuLabel>
+        <div className="text-xs text-muted-foreground px-2 pb-2 truncate">{user.accounts?.[0].email}</div>
         <DropdownMenuSeparator />
 
         <TooltipProvider delayDuration={200}>

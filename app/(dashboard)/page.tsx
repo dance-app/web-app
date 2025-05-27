@@ -1,19 +1,18 @@
 "use client"
 
-import { useAtom } from "jotai"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { authAtom } from "@/lib/atoms"
 import { AuthGuard } from "@/components/auth-guard"
+import { useAuth } from "@/hooks/use-auth"
 
 export default function DashboardPage() {
-  const [auth] = useAtom(authAtom)
+  const { user } = useAuth()
 
   return (
     <AuthGuard mode="requiredAuth">
       <div className="p-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {auth?.name}!</p>
+          <p className="text-gray-600">Welcome back, {user?.firstName}!</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
