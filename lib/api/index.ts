@@ -1,9 +1,7 @@
 import type { Student } from '@/types';
 import { delay } from './shared.api';
 
-import { auth } from './auth.api';
-
-const students = {
+export const students = {
   async getAll(): Promise<Student[]> {
     await delay(500);
 
@@ -92,7 +90,8 @@ const students = {
   },
 };
 
-export const api = {
-  auth,
-  students,
-};
+// export const api = {
+//   auth,
+//   workspace,
+//   students,
+// };

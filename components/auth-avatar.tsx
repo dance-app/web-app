@@ -15,11 +15,13 @@ import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSetAtom } from 'jotai'
 import { authAtom } from '@/lib/atoms'
+import { useSignOut } from '@/hooks/use-sign-out'
 
 export function AuthAvatar() {
-  const { isAuthenticated, user, signOut } = useAuth()
+  const { user } = useAuth()
+  const { signOut } = useSignOut()
 
-  if (!isAuthenticated || !user) {
+  if (!user) {
     console.info(`Not user in AuthAvatar`)
     return null
   }
@@ -51,7 +53,7 @@ export function AuthAvatar() {
           </Tooltip>
         </TooltipProvider>
 
-        <DropdownMenuItem onClick={signOut}>
+        <DropdownMenuItem onClick={() => signOut()}>
           <LogOut className="mr-2 h-4 w-4" />
           Logout
         </DropdownMenuItem>

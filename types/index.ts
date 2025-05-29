@@ -40,3 +40,30 @@ export type AuthState =
       token: null;
       refreshToken: null;
     };
+
+enum WeekStart {
+  SUNDAY = 'SUNDAY',
+  MONDAY = 'MONDAY',
+  SATURDAY = 'SATURDAY',
+}
+
+export type WorkspaceConfig = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  weekStart: WeekStart;
+};
+
+export type Workspace = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  createdById: string;
+  createdBy?: User;
+  name: string;
+  slug: string;
+  configuration?: WorkspaceConfig;
+  // members: Member[]
+  // events: Event[]
+  // invitations Invitation[]
+};

@@ -11,22 +11,21 @@ interface AuthGuardProps {
 }
 
 export function AuthGuard({ children, mode = "requiredAuth" }: AuthGuardProps) {
-  const { isAuthenticated, isLoading } = useAuth()
+  const { user, isLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
     if (isLoading) return
-
-    if (mode === "requiredAuth" && !isAuthenticated) {
+    if (mode === "requiredAuth" && !user) {
       router.push("/auth/sign-in")
-    } else if (mode === "noAuthOnly" && isAuthenticated) {
+    } else if (mode === "noAuthOnly" && user) {
       router.push("/")
     }
-  }, [isAuthenticated, isLoading, mode, router])
+  }, [isLoading, mode, router, user])
 
   if (isLoading) return null
-  if (mode === "requiredAuth" && !isAuthenticated) return null
-  if (mode === "noAuthOnly" && isAuthenticated) return null
+  if (mode === "requiredAuth" && !user) return null
+  if (mode === "noAuthOnly" && user) return null
 
   return <>{children}</>
 }

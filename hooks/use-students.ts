@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import * as api from '@/lib/api';
 import type { Student } from '@/types';
 
 export function useStudents() {

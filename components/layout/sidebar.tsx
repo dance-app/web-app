@@ -2,17 +2,21 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Users, Home, LogOut } from "lucide-react"
+import { Users, Home } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AuthAvatar } from "@/components/auth-avatar"
+import { useCurrentWorkspaceSlug } from "@/hooks/use-current-workspace-slug"
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: Home },
-  { name: "Students", href: "/students", icon: Users },
+  { name: "Dashboard", path: "dashboard", icon: Home },
+  { name: "Students", path: "students", icon: Users },
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
+  const slug = useCurrentWorkspaceSlug()
+
+  if (!slug) return null // You might want a fallback UI here
 
   return (
     <div className="flex h-full w-64 flex-col bg-gray-50 border-r">
@@ -23,14 +27,18 @@ export function Sidebar() {
 
       <nav className="flex-1 space-y-1 px-3 py-4">
         {navigation.map((item) => {
-          const isActive = pathname === item.href
+          const fullHref = `/w/${slug}/${item.path}`
+          const isActive = pathname.startsWith(fullHref)
+
           return (
             <Link
               key={item.name}
-              href={item.href}
+              href={fullHref}
               className={cn(
                 "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                isActive ? "bg-gray-200 text-gray-900" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                isActive
+                  ? "bg-gray-200 text-gray-900"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               )}
             >
               <item.icon className="mr-3 h-5 w-5" />

@@ -1,17 +1,21 @@
-import { useAtom } from 'jotai';
-import { authAtom, authUserAtom } from '@/lib/atoms';
+import { useQuery } from '@tanstack/react-query';
+import { User } from '@/types';
+
+let initialLoading = true;
 
 export function useAuth() {
-  const [auth, setAuth] = useAtom(authAtom);
-  const [authUser, setAuthUser] = useAtom(authUserAtom);
+  const { data } = useQuery<{ user: User | null }>({
+    queryKey: ['authUser'],
+    queryFn: () =>
+      fetch('/api/auth/me', { credentials: 'include' })
+        .then((r) => r.json())
+        .finally(() => {
+          initialLoading = false;
+        }),
+  });
 
   return {
-    isLoading: auth.status === 'loading',
-    isAuthenticated: auth.status === 'authenticated',
-    user: authUser.user,
-    signOut: () => {
-      setAuth({ status: 'unauthenticated', token: null, refreshToken: null });
-      setAuthUser({ user: null });
-    },
+    isLoading: initialLoading,
+    user: data?.user || null,
   };
 }
