@@ -77,7 +77,7 @@ export async function GET() {
       );
     }
 
-    const response = NextResponse.next();
+    const response = NextResponse.json({ user }, { status: 200 });
     response.cookies.set('accessToken', refreshed.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
