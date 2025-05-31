@@ -1,3 +1,4 @@
+import { Workspace } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
 export function useWorkspaces() {
@@ -10,7 +11,7 @@ export function useWorkspaces() {
   });
 
   return {
-    workspaces: data?.workspaces?.data || [],
+    workspaces: (data?.workspaces?.data as Workspace[]) || ([] as Workspace[]),
     meta: data?.workspaces?.meta || {},
     ...query,
   };

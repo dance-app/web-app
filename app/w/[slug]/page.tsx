@@ -2,60 +2,153 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AuthGuard } from "@/components/auth-guard"
-import { useAuth } from "@/hooks/use-auth"
+import { Users, Calendar, CreditCard, TrendingUp, DollarSign, UserCheck } from "lucide-react"
+import { useDashboard } from "@/hooks/use-dashboard"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 
 export default function DashboardPage() {
-  const { user } = useAuth()
+  const { stats, loading } = useDashboard()
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    )
+  }
+
+  const statCards = [
+    {
+      title: "Total Students",
+      value: stats?.totalStudents || 0,
+      description: "Active students in your school",
+      icon: Users,
+      color: "text-blue-600",
+    },
+    {
+      title: "Total Classes",
+      value: stats?.totalEvents || 0,
+      description: "Classes scheduled this month",
+      icon: Calendar,
+      color: "text-green-600",
+    },
+    {
+      title: "Active Subscriptions",
+      value: stats?.activeSubscriptions || 0,
+      description: "Students with active subscriptions",
+      icon: CreditCard,
+      color: "text-purple-600",
+    },
+    {
+      title: "Monthly Revenue",
+      value: `$${stats?.revenueThisMonth || 0}`,
+      description: "Revenue generated this month",
+      icon: DollarSign,
+      color: "text-green-600",
+    },
+    {
+      title: "Attendance Rate",
+      value: `${stats?.attendanceRate || 0}%`,
+      description: "Average attendance rate",
+      icon: UserCheck,
+      color: "text-orange-600",
+    },
+    {
+      title: "Total Participations",
+      value: stats?.totalParticipations || 0,
+      description: "Total class participations",
+      icon: TrendingUp,
+      color: "text-indigo-600",
+    },
+  ]
 
   return (
     <AuthGuard mode="requiredAuth">
-      <div className="p-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {user?.firstName}!</p>
-        </div>
+      <div className="flex flex-col">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbPage>Dashboard</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </header>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle>Welcome</CardTitle>
-              <CardDescription>Student Management System</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Manage your students efficiently with our comprehensive tools. Add, edit, and organize student information
-                with ease.
-              </p>
-            </CardContent>
-          </Card>
+        <div className="flex-1 space-y-4 p-4 md:p-8">
+          <div className="flex items-center justify-between space-y-2">
+            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Common tasks</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm text-gray-600 space-y-2">
-                <li>• Add new students</li>
-                <li>• Update student information</li>
-                <li>• Manage roles and levels</li>
-                <li>• Export student data</li>
-              </ul>
-            </CardContent>
-          </Card>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {statCards.map((card) => (
+              <Card key={card.title}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
+                  <card.icon className={`h-4 w-4 ${card.color}`} />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{card.value}</div>
+                  <p className="text-xs text-muted-foreground">{card.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Getting Started</CardTitle>
-              <CardDescription>Next steps</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Navigate to the Students section to begin managing your student roster. You can add new students, edit
-                existing ones, and organize them by role and level.
-              </p>
-            </CardContent>
-          </Card>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            <Card className="col-span-4">
+              <CardHeader>
+                <CardTitle>Recent Activity</CardTitle>
+                <CardDescription>Latest activities in your salsa school</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">New student registered</p>
+                      <p className="text-xs text-muted-foreground">2 hours ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Class completed successfully</p>
+                      <p className="text-xs text-muted-foreground">4 hours ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Subscription renewed</p>
+                      <p className="text-xs text-muted-foreground">1 day ago</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="col-span-3">
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+                <CardDescription>Common tasks for your school</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <button className="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors">
+                  <div className="font-medium">Add New Student</div>
+                  <div className="text-sm text-muted-foreground">Register a new student</div>
+                </button>
+                <button className="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors">
+                  <div className="font-medium">Schedule Class</div>
+                  <div className="text-sm text-muted-foreground">Create a new class</div>
+                </button>
+                <button className="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors">
+                  <div className="font-medium">View Reports</div>
+                  <div className="text-sm text-muted-foreground">Check analytics</div>
+                </button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </AuthGuard>
