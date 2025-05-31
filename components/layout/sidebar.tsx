@@ -11,6 +11,7 @@ const navigation = [
   { name: "Home", path: "", icon: Home },
   { name: "Students", path: "students", icon: Users },
   { name: "Classes", path: "classes", icon: Calendar },
+  { name: "Subscriptions", path: "subscriptions", icon: Calendar },
 ]
 
 export function Sidebar() {
