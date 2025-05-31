@@ -67,3 +67,48 @@ export type Workspace = {
   // events: Event[]
   // invitations Invitation[]
 };
+
+export interface DanceType {
+  id: string;
+  name: string;
+  description?: string;
+  workspaceId: string;
+}
+
+export interface Event {
+  id: string;
+  title: string;
+  description?: string;
+  danceTypeId: string;
+  danceType: DanceType;
+  startTime: string;
+  endTime: string;
+  maxParticipants?: number;
+  workspaceId: Workspace['id'];
+  participations: Participation[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Participation {
+  id: string;
+  studentId: string;
+  student?: Student;
+  eventId: string;
+  event?: Event;
+  status: 'registered' | 'present' | 'absent';
+  registeredAt: string;
+  attendedAt?: string;
+}
+
+export interface Subscription {
+  id: string;
+  studentId: string;
+  student: Student;
+  classesRemaining: number;
+  totalClasses: number;
+  expiresAt?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}

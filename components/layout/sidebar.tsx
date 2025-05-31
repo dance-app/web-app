@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Users, Home } from "lucide-react"
+import { Users, Home, Calendar } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AuthAvatar } from "@/components/auth-avatar"
 import { useCurrentWorkspaceSlug } from "@/hooks/use-current-workspace-slug"
@@ -10,6 +10,7 @@ import { useCurrentWorkspaceSlug } from "@/hooks/use-current-workspace-slug"
 const navigation = [
   { name: "Home", path: "", icon: Home },
   { name: "Students", path: "students", icon: Users },
+  { name: "Classes", path: "classes", icon: Calendar },
 ]
 
 export function Sidebar() {
