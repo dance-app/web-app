@@ -8,9 +8,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AuthGuard } from "@/components/auth-guard"
+import { useSignUp } from "@/hooks/use-sign-up"
 
 interface SignUpForm {
-  name: string
+  firstName: string
+  lastName: string
   email: string
   password: string
   confirmPassword: string
@@ -19,6 +21,7 @@ interface SignUpForm {
 export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const { signUp } = useSignUp()
 
   const {
     register,
@@ -34,7 +37,12 @@ export default function SignUpPage() {
     setError("")
 
     try {
-      // const result = await api.auth.signUp(data.name, data.email, data.password)
+      const result = await signUp({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+      })
     } catch (err) {
       setError("Failed to create account. Please try again.")
     } finally {
@@ -57,13 +65,23 @@ export default function SignUpPage() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  {...register("firstName", { required: "Name is required" })}
+                  placeholder="Enter your first name"
+                />
+                {errors.firstName && <p className="text-sm text-red-500">{errors.firstName.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
                 <Input
                   id="name"
-                  {...register("name", { required: "Name is required" })}
-                  placeholder="Enter your full name"
+                  {...register("lastName", { required: "Name is required" })}
+                  placeholder="Enter your last name"
                 />
-                {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+                {errors.lastName && <p className="text-sm text-red-500">{errors.lastName.message}</p>}
               </div>
 
               <div className="space-y-2">
