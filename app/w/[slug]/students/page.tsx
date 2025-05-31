@@ -10,9 +10,20 @@ import { StudentForm } from "@/components/students/student-form"
 import { useStudents, useCreateStudent, useUpdateStudent, useDeleteStudent } from "@/hooks/use-students"
 import type { Student } from "@/types"
 import { Breadcrumbs } from "@/components/breadcrumbs"
+import { StudentDetailDrawer } from "@/components/students/student-details-drawer"
+import { toast } from "sonner"
+
+export const mockDanceTypes = [
+  { id: "1", name: "Salsa", description: "Cuban-style salsa", workspaceId: "1" },
+  { id: "2", name: "Bachata", description: "Dominican bachata", workspaceId: "1" },
+  { id: "3", name: "Merengue", description: "Traditional merengue", workspaceId: "1" },
+  { id: "4", name: "Kizomba", description: "Angolan kizomba", workspaceId: "1" },
+  { id: "5", name: "Cha Cha", description: "Cuban cha cha cha", workspaceId: "1" },
+]
 
 export default function StudentsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [showDrawer, setShowDrawer] = useState(false)
   const [editingStudent, setEditingStudent] = useState<Student | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState<string>("all")
@@ -68,11 +79,37 @@ export default function StudentsPage() {
 
   const handleEdit = (student: Student) => {
     setEditingStudent(student)
+    setShowDrawer(true)
   }
 
   const handleCloseForm = () => {
     setIsFormOpen(false)
     setEditingStudent(null)
+  }
+
+  const handleFormSubmit = async (data: Partial<Student>) => {
+    const result = {
+      success: true,
+      error: undefined,
+    }
+    if (editingStudent) {
+      // const result = await updateStudent(selectedStudent.id, data)
+      if (result.success) {
+        toast.success("Student updated successfully")
+      } else {
+        toast.error(result.error || "Failed to update student")
+      }
+      return result
+    } else {
+      // const result = await createStudent(data)
+
+      if (result.success) {
+        toast.success("Student created successfully")
+      } else {
+        toast.error(result.error || "Failed to create student")
+      }
+      return result
+    }
   }
 
   return (
@@ -135,12 +172,19 @@ export default function StudentsPage() {
           isLoading={isLoading}
         />
 
-        <StudentForm
+        {/* <StudentForm
           open={isFormOpen || !!editingStudent}
           onOpenChange={handleCloseForm}
           onSubmit={editingStudent ? handleUpdateStudent : handleCreateStudent}
           initialData={editingStudent || undefined}
           isLoading={createStudent.isPending || updateStudent.isPending}
+        /> */}
+        <StudentDetailDrawer
+          student={editingStudent}
+          open={showDrawer}
+          onOpenChange={setShowDrawer}
+          danceTypes={mockDanceTypes}
+          onSubmit={handleFormSubmit}
         />
       </div>
 

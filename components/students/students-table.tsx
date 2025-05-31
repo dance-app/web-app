@@ -69,7 +69,7 @@ export function StudentsTable({ students, onEdit, onDelete, isLoading }: Student
           <TableHeader>
             <TableRow>
               <TableHead>Student</TableHead>
-              <TableHead>Email</TableHead>
+              {/* <TableHead>Email</TableHead> */}
               <TableHead>Role</TableHead>
               <TableHead>Level</TableHead>
               <TableHead className="w-[50px]"></TableHead>
@@ -84,9 +84,9 @@ export function StudentsTable({ students, onEdit, onDelete, isLoading }: Student
                     <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
                   </div>
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <div className="h-4 w-48 bg-gray-200 rounded animate-pulse" />
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
                 </TableCell>
@@ -111,7 +111,7 @@ export function StudentsTable({ students, onEdit, onDelete, isLoading }: Student
           <TableHeader>
             <TableRow>
               <TableHead>Student</TableHead>
-              <TableHead>Email</TableHead>
+              {/* <TableHead>Email</TableHead> */}
               <TableHead>Role</TableHead>
               <TableHead>Level</TableHead>
               <TableHead className="w-[50px]"></TableHead>
@@ -129,7 +129,7 @@ export function StudentsTable({ students, onEdit, onDelete, isLoading }: Student
                 <TableRow key={student.id}>
                   <TableCell>
                     <div className="flex items-center space-x-3">
-                      <Avatar className="h-10 w-10">
+                      <Avatar className="h-8 w-8">
                         <AvatarImage src={student.avatar || "/placeholder.svg"} alt={student.name} />
                         <AvatarFallback>
                           {student.name
@@ -139,12 +139,12 @@ export function StudentsTable({ students, onEdit, onDelete, isLoading }: Student
                             .toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
-                        <div className="font-medium">{student.name}</div>
+                      <div className="flex flex-col">
+                        <div className="text-gray-600 font-medium">{student.name}</div>
+                        <div className="text-gray-500">{student.email}</div>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>{student.email}</TableCell>
                   <TableCell>
                     <Badge variant={getRoleBadgeVariant(student.role)}>{student.role}</Badge>
                   </TableCell>
