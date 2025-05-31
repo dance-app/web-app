@@ -28,7 +28,8 @@ export function Sidebar() {
       <nav className="flex-1 space-y-1 px-3 py-4">
         {navigation.map((item) => {
           const fullHref = `/w/${slug}/${item.path}`
-          const isActive = pathname.startsWith(fullHref)
+          const isActive = pathname === fullHref
+          // const isActive = pathname.startsWith(fullHref)
 
           return (
             <Link
