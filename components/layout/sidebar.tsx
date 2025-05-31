@@ -8,7 +8,7 @@ import { AuthAvatar } from "@/components/auth-avatar"
 import { useCurrentWorkspaceSlug } from "@/hooks/use-current-workspace-slug"
 
 const navigation = [
-  { name: "Dashboard", path: "dashboard", icon: Home },
+  { name: "Home", path: "", icon: Home },
   { name: "Students", path: "students", icon: Users },
 ]
 

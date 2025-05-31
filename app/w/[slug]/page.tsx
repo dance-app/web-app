@@ -4,18 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AuthGuard } from "@/components/auth-guard"
 import { Users, Calendar, CreditCard, TrendingUp, DollarSign, UserCheck } from "lucide-react"
 import { useDashboard } from "@/hooks/use-dashboard"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
+import { Breadcrumbs } from "@/components/breadcrumbs"
+import { Spinner } from "@/components/ui/spinner"
 
 export default function DashboardPage() {
   const { stats, loading } = useDashboard()
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-      </div>
-    )
-  }
+  if (loading) return <Spinner />
 
   const statCards = [
     {
@@ -66,13 +61,7 @@ export default function DashboardPage() {
     <AuthGuard mode="requiredAuth">
       <div className="flex flex-col">
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbPage>Dashboard</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <Breadcrumbs title="Home" />
         </header>
 
         <div className="flex-1 space-y-4 p-4 md:p-8">
