@@ -1,14 +1,12 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-// import { useAtom } from "jotai"
-// import Link from "next/link"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AuthGuard } from "@/components/auth-guard"
-import { authAtom } from "@/lib/atoms"
 import { isProd } from "@/lib/utils"
 import { useSignIn } from "@/hooks/use-sign-in"
 
@@ -88,12 +86,19 @@ export default function SignInPage() {
               </Button>
             </form>
 
-            {/* <div className="mt-6 text-center text-sm">
+            <div className="mt-6 text-center text-sm">
+              <Link
+                href="/auth/forgot-password"
+                className="text-blue-600 hover:text-blue-500"
+              >
+                Forgot password?
+              </Link>
+              <br />
               <span className="text-gray-600">{"Don't have an account? "}</span>
               <Link href="/auth/sign-up" className="text-blue-600 hover:text-blue-500">
                 Sign up
               </Link>
-            </div> */}
+            </div>
 
             {/* <div className="mt-4 p-3 bg-blue-50 rounded-md">
               <p className="text-sm text-blue-800">
