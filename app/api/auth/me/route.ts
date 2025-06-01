@@ -1,49 +1,35 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { BASE_URL } from '@/lib/api/shared.api';
+import { ApiResponse, BASE_URL } from '@/lib/api/shared.api';
+import { setAuthCookies } from '@/lib/auth/set-tokens';
+import { User } from '@/types';
 
 async function fetchCurrentUser(accessToken: string) {
-  try {
-    const res = await fetch(`${BASE_URL}/auth/me`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const res = await fetch(`${BASE_URL}/auth/me`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
-    if (!res.ok) {
-      return { message: 'Unauthorized' };
-    }
+  if (!res.ok) return null;
+  const data: ApiResponse<{
+    user: User;
+  }> = await res.json();
 
-    return await res.json();
-  } catch (error) {
-    console.error('Error fetching current user:', error);
-    return { message: 'Unauthorized' };
-  }
+  return data;
 }
 
-async function refreshAccessToken(
-  refreshToken: string
-): Promise<{ accessToken?: string; refreshToken?: string; error?: string }> {
-  try {
-    const res = await fetch(`${BASE_URL}/auth/refresh-token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ refreshToken }),
-    });
+async function refreshTokens(refreshToken: string) {
+  const res = await fetch(`${BASE_URL}/auth/refresh-token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refreshToken }),
+  });
 
-    if (!res.ok) {
-      return { error: 'Refresh token invalid' };
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error('Error refreshing access token:', error);
-    return { error: 'Refresh token error' };
-  }
+  if (!res.ok) return null;
+  return res.json();
 }
 
 export async function GET() {
@@ -51,65 +37,31 @@ export async function GET() {
   const accessToken = cookieStore.get('accessToken')?.value;
   const refreshToken = cookieStore.get('refreshToken')?.value;
 
-  if (!accessToken) {
-    return NextResponse.json(
-      { user: null, message: 'No access token' },
-      { status: 401 }
-    );
+  if (accessToken) {
+    const user = await fetchCurrentUser(accessToken);
+    if (user) return NextResponse.json({ user });
   }
 
-  let user = await fetchCurrentUser(accessToken);
+  if (refreshToken) {
+    const newTokens = await refreshTokens(refreshToken);
 
-  if ('message' in user && user.message === 'Unauthorized') {
-    if (!refreshToken) {
-      return NextResponse.json(
-        { user: null, message: 'No refresh token' },
-        { status: 401 }
-      );
+    if (newTokens?.accessToken) {
+      // Try fetching user again with new token
+      const user = await fetchCurrentUser(newTokens.accessToken);
+      if (user) {
+        const response = NextResponse.json({ user });
+        setAuthCookies(response, {
+          accessToken: newTokens.accessToken,
+          refreshToken: newTokens.refreshToken,
+        });
+
+        return response;
+      }
     }
-
-    const refreshed = await refreshAccessToken(refreshToken);
-
-    if ('error' in refreshed || !refreshed.accessToken) {
-      return NextResponse.json(
-        { user: null, message: 'Refresh failed' },
-        { status: 401 }
-      );
-    }
-
-    const response = NextResponse.json({ user }, { status: 200 });
-    response.cookies.set('accessToken', refreshed.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/',
-      maxAge: 60 * 60,
-    });
-
-    if (refreshed.refreshToken) {
-      response.cookies.set('refreshToken', refreshed.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7,
-      });
-    }
-
-    user = await fetchCurrentUser(refreshed.accessToken);
-
-    if ('message' in user && user.message === 'Unauthorized') {
-      return NextResponse.json(
-        { user: null, message: 'Still unauthorized after refresh' },
-        { status: 401 }
-      );
-    }
-
-    return NextResponse.json(
-      { user },
-      { status: 200, headers: response.headers }
-    );
   }
 
-  return NextResponse.json({ user }, { status: 200 });
+  return NextResponse.json(
+    { user: null, message: 'Unauthorized' },
+    { status: 401 }
+  );
 }

@@ -1,34 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { BASE_URL, ApiResponse } from '@/lib/api/shared.api';
 import { User } from '@/types';
+import { setAuthCookies } from '@/lib/auth/set-tokens';
+
+function validateSignupPayload(payload: any): payload is {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+} {
+  return (
+    typeof payload?.email === 'string' &&
+    typeof payload?.password === 'string' &&
+    typeof payload?.firstName === 'string' &&
+    typeof payload?.lastName === 'string'
+  );
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const payload = (await request.json()) as
-      | {
-          email: string;
-          password: string;
-          firstName?: string;
-          lastName?: string;
-        }
-      | {};
+    const body = await request.json();
 
-    if (!('email' in payload)) throw new Error('Email is required');
-    if (!('password' in payload)) throw new Error('Password is required');
-    if (!('firstName' in payload)) throw new Error('First name is required');
-    if (!('lastName' in payload)) throw new Error('Last name is required');
+    if (!validateSignupPayload(body)) {
+      return NextResponse.json(
+        {
+          error:
+            'All fields (email, password, first name, last name) are required',
+        },
+        { status: 400 }
+      );
+    }
 
     const res = await fetch(`${BASE_URL}/auth/sign-up`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
     });
 
+    // Step 3: Handle failed signup
     if (!res.ok) {
       const error = await res.json();
-      throw new Error(error.message || 'Error during sign-up');
+      return NextResponse.json(
+        { error: error.message || 'Sign-up failed' },
+        { status: 400 }
+      );
     }
 
     const data: ApiResponse<{
@@ -37,26 +52,22 @@ export async function POST(request: NextRequest) {
       refreshToken: string;
     }> = await res.json();
 
-    if (!('user' in data)) throw new Error('Invalid response from sign-in');
+    if (
+      !('user' in data) ||
+      !('accessToken' in data) ||
+      !('refreshToken' in data)
+    ) {
+      return NextResponse.json(
+        { error: 'Invalid sign-up response' },
+        { status: 500 }
+      );
+    }
 
-    const response = NextResponse.json({ user: data.user }, { status: 200 });
-
-    //   // Set Access Token Cookie
-    response.cookies.set('accessToken', data.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/',
-      maxAge: 60 * 60, // 1 hour
-    });
-
-    //   // Set Refresh Token Cookie
-    response.cookies.set('refreshToken', data.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365, // 365 days
+    // Step 5: Set cookies and return user
+    const response = NextResponse.json({ user: data.user });
+    setAuthCookies(response, {
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
     });
 
     return response;

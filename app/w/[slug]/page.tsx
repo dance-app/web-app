@@ -6,10 +6,14 @@ import { Users, Calendar, CreditCard, TrendingUp, DollarSign, UserCheck } from "
 import { useDashboard } from "@/hooks/use-dashboard"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { Spinner } from "@/components/ui/spinner"
+import { useAuth } from "@/hooks/use-auth"
+import { getTimeGreeting } from "@/lib/utils"
 
 export default function DashboardPage() {
   const { stats, loading } = useDashboard()
+  const { user } = useAuth()
 
+  if (!user) return null
   if (loading) return <Spinner />
 
   const statCards = [
@@ -66,7 +70,7 @@ export default function DashboardPage() {
 
         <div className="flex-1 space-y-4 p-4 md:p-8">
           <div className="flex items-center justify-between space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+            <h2 className="text-3xl font-bold tracking-tight">{getTimeGreeting()}, {user.firstName} 👋</h2>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
