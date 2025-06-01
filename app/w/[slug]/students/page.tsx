@@ -4,9 +4,7 @@ import { useState, useMemo } from "react"
 import { Plus, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { StudentsTable } from "@/components/students/students-table"
-import { StudentForm } from "@/components/students/student-form"
 import { useStudents, useCreateStudent, useUpdateStudent, useDeleteStudent } from "@/hooks/use-students"
 import type { Student } from "@/types"
 import { Breadcrumbs } from "@/components/breadcrumbs"
@@ -114,17 +112,9 @@ export default function StudentsPage() {
 
   return (
     <div className="flex flex-col">
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+      <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
         <Breadcrumbs title="Students" />
-      </header>
-
-      <div className="flex-1 space-y-4 p-4 md:p-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Students</h1>
-          <p className="text-gray-600">Manage your student roster</p>
-        </div>
-
-        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+        <div className="flex gap-2" >
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
@@ -134,37 +124,13 @@ export default function StudentsPage() {
               className="pl-10"
             />
           </div>
-
-          <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Filter by role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Roles</SelectItem>
-              <SelectItem value="leader">Leader</SelectItem>
-              <SelectItem value="follower">Follower</SelectItem>
-              <SelectItem value="both">Both</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={levelFilter} onValueChange={setLevelFilter}>
-            <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Filter by level" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Levels</SelectItem>
-              <SelectItem value="beginner">Beginner</SelectItem>
-              <SelectItem value="intermediate">Intermediate</SelectItem>
-              <SelectItem value="advanced">Advanced</SelectItem>
-            </SelectContent>
-          </Select>
-
           <Button onClick={() => setIsFormOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Student
           </Button>
         </div>
-
+      </header>
+      <div className="flex-1 space-y-4 p-4 md:p-8">
         <StudentsTable
           students={filteredStudents}
           onEdit={handleEdit}
@@ -172,13 +138,6 @@ export default function StudentsPage() {
           isLoading={isLoading}
         />
 
-        {/* <StudentForm
-          open={isFormOpen || !!editingStudent}
-          onOpenChange={handleCloseForm}
-          onSubmit={editingStudent ? handleUpdateStudent : handleCreateStudent}
-          initialData={editingStudent || undefined}
-          isLoading={createStudent.isPending || updateStudent.isPending}
-        /> */}
         <StudentDetailDrawer
           student={editingStudent}
           open={showDrawer}
@@ -187,7 +146,6 @@ export default function StudentsPage() {
           onSubmit={handleFormSubmit}
         />
       </div>
-
     </div>
   )
 }
