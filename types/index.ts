@@ -55,7 +55,7 @@ export type AuthState =
       refreshToken: null;
     };
 
-enum WeekStart {
+export enum WeekStart {
   SUNDAY = 'SUNDAY',
   MONDAY = 'MONDAY',
   SATURDAY = 'SATURDAY',

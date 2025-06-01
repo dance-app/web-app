@@ -13,8 +13,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LogOut, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useSetAtom } from 'jotai'
-import { authAtom } from '@/lib/atoms'
 import { useSignOut } from '@/hooks/use-sign-out'
 
 export function AuthAvatar() {
@@ -32,7 +30,7 @@ export function AuthAvatar() {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src={'/placeholder-user.jpg'} alt={user.firstName} />
-            <AvatarFallback>{user.firstName[0]}</AvatarFallback>
+            <AvatarFallback>{`${user.firstName[0]}${user.lastName[0]}`.toLocaleUpperCase()}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation"
 import { Users, Home, Calendar } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AuthAvatar } from "@/components/auth-avatar"
-import { useCurrentWorkspaceSlug } from "@/hooks/use-current-workspace-slug"
+import { Workspace } from "@/types"
+import { useCurrentWorkspace } from "@/hooks/use-current-workspace"
 
 const navigation = [
   { name: "Home", path: "", icon: Home },
@@ -14,22 +15,24 @@ const navigation = [
   { name: "Subscriptions", path: "subscriptions", icon: Calendar },
 ]
 
-export function Sidebar() {
+export function Sidebar({ fakeWorkspace }: { fakeWorkspace?: Workspace }) {
   const pathname = usePathname()
-  const slug = useCurrentWorkspaceSlug()
+  const { workspace } = useCurrentWorkspace()
 
-  if (!slug) return null // You might want a fallback UI here
+  if (!workspace && !fakeWorkspace) return null
 
   return (
     <div className="flex h-full w-64 flex-col bg-gray-50 border-r">
-      <div className="flex h-16 w-full items-center justify-between px-6 border-b">
-        <h1 className="text-sm font-semibold">Dance App</h1>
+      <div className="flex h-16 w-full items-center justify-between px-6 border-b gap-2">
+        <h1 className="text-sm font-semibold truncate max-w-[200px] overflow-hidden whitespace-nowrap">
+          {workspace?.name || fakeWorkspace?.name}
+        </h1>
         <AuthAvatar />
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
         {navigation.map((item) => {
-          const fullHref = `/w/${slug}/${item.path}`
+          const fullHref = `/w/${workspace?.slug}/${item.path}`
           const isActive = pathname === fullHref
           // const isActive = pathname.startsWith(fullHref)
 

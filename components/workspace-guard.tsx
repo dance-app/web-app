@@ -37,17 +37,7 @@ export function WorkspaceGuard({ children }: { children: React.ReactNode }) {
     )
   }
 
-  if (workspaces && workspaces.length === 0) {
-    // return (
-    //   <div className="flex flex-col items-center justify-center h-screen text-center px-6">
-    //     <h2 className="text-xl font-semibold mb-2">No workspaces found</h2>
-    //     <p className="text-muted-foreground text-sm mb-4">
-    //       You don’t have any workspaces yet. Please contact your administrator or create one.
-    //     </p>
-    //   </div>
-    // )
-    return <NoWorkspaceState />
-  }
+  if (workspaces && workspaces.length === 0) return <NoWorkspaceState />
 
   if (currentSlug && !isValidSlug(workspaces, currentSlug)) {
     return (

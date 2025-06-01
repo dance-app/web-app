@@ -21,3 +21,15 @@ export function getTimeGreeting(): string {
     return 'Good evening';
   }
 }
+
+export function slugify(name: string) {
+  return name
+    .toLowerCase()
+    .trim()
+    .normalize('NFD') // Normalize accented characters
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/[^a-z0-9\s-]/g, '') // Remove invalid characters
+    .replace(/\s+/g, '-') // Replace whitespace with hyphens
+    .replace(/-+/g, '-') // Collapse multiple hyphens
+    .replace(/^-+|-+$/g, ''); // Trim leading/trailing hyphens
+}
