@@ -1,12 +1,15 @@
+'use client';
+
 import { User } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 export function useSignUp() {
   const queryClient = useQueryClient();
-  // const router = useRouter();
+  const router = useRouter();
 
   const mutation = useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       firstName,
       lastName,
       email,
@@ -16,19 +19,21 @@ export function useSignUp() {
       lastName: string;
       email: string;
       password: string;
-    }) =>
-      fetch('/api/auth/sign-up', {
+    }) => {
+      const response = await fetch('/api/auth/sign-up', {
         method: 'POST',
         body: JSON.stringify({ firstName, lastName, email, password }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) throw new Error(data.error);
-          return data;
-        }),
-    onSuccess: (data: { user: User }) => {
-      queryClient.setQueryData(['authUser'], data.user);
-      window.location.reload();
+      });
+      const responseJSON = await response.json();
+      if (responseJSON.error) throw new Error(responseJSON.error);
+      return responseJSON;
+    },
+    onSuccess: async (data: { user: User }) => {
+      await queryClient.invalidateQueries({ queryKey: ['authUser'] });
+      router.push('/');
+    },
+    onError: (error: Error) => {
+      console.error('Sign-up error:', error);
     },
   });
 

@@ -37,7 +37,6 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(body),
     });
 
-    // Step 3: Handle failed signup
     if (!res.ok) {
       const error = await res.json();
       return NextResponse.json(
@@ -63,7 +62,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 5: Set cookies and return user
     const response = NextResponse.json({ user: data.user });
     setAuthCookies(response, {
       accessToken: data.accessToken,

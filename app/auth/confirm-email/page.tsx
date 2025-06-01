@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { VerifyEmailResponse } from "@/app/api/auth/verify-email/route"
 
 export default function ConfirmEmailPage() {
   const searchParams = useSearchParams()
@@ -15,7 +16,6 @@ export default function ConfirmEmailPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   useEffect(() => {
-    // If no token provided, show an error immediately
     if (!token) {
       setErrorMsg("Invalid or missing confirmation token.")
       return
@@ -27,14 +27,14 @@ export default function ConfirmEmailPage() {
       setSuccessMsg(null)
 
       try {
-        const res = await fetch(`/api/auth/verify-email?token=${encodeURIComponent(token)}`, {
-          method: "GET",
+        const res = await fetch('/api/auth/verify-email', {
+          method: "POST",
+          body: JSON.stringify({ token }),
           credentials: "include",
         })
-
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}))
-          throw new Error(body?.message || "Failed to confirm email.")
+        const body = await res.json() as VerifyEmailResponse
+        if ("error" in body) {
+          throw new Error(body.error.message)
         }
 
         setSuccessMsg("Your email has been successfully confirmed! You can now sign in.")

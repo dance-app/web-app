@@ -1,3 +1,17 @@
+export type LocalApiResponse<SuccessType, ErrorMessageType> =
+  | {
+      success: true;
+      data: SuccessType;
+    }
+  | {
+      success: false;
+      error: {
+        message: ErrorMessageType;
+        details?: Record<string, any>;
+      };
+      statusCode: number;
+    };
+
 export interface Student {
   id: string;
   name: string;

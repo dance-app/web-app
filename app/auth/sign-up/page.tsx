@@ -21,7 +21,7 @@ interface SignUpForm {
 export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
-  const { signUp } = useSignUp()
+  const { signUp, error: error2 } = useSignUp()
 
   const {
     register,
@@ -60,8 +60,8 @@ export default function SignUpPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">{error}</div>
+              {(error || error2) && (
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">{error || error2?.message}</div>
               )}
 
               <div className="space-y-2">

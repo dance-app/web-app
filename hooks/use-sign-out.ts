@@ -20,7 +20,8 @@ export function useSignOut() {
 
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['authUser'] });
       queryClient.clear();
       router.push('/auth/sign-in');
     },
