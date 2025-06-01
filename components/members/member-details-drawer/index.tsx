@@ -4,7 +4,7 @@ import type React from 'react';
 
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import type { Student } from '@/types';
+import type { Member } from '@/types';
 import {
   Sheet,
   SheetContent,
@@ -46,30 +46,23 @@ import {
   Trash2,
 } from 'lucide-react';
 
-export interface DanceType {
-  id: string;
-  name: string;
-  description?: string;
-  workspaceId: string;
-}
-
-interface StudentDetailDrawerProps {
-  student: Student | null;
+interface MemberDetailDrawerProps {
+  member: Member | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  danceTypes: DanceType[];
+  // danceTypes: DanceType[];
   onSubmit: (
-    data: Partial<Student>
+    data: Partial<Member>
   ) => Promise<{ success: boolean; error?: string }>;
 }
 
-export function StudentDetailDrawer({
-  student,
+export function MemberDetailDrawer({
+  member,
   open,
   onOpenChange,
-  danceTypes,
+  // danceTypes,
   onSubmit,
-}: StudentDetailDrawerProps) {
+}: MemberDetailDrawerProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -82,10 +75,10 @@ export function StudentDetailDrawer({
 
   // Reset form data when student changes
   useEffect(() => {
-    if (student) {
+    if (member) {
       setFormData({
-        name: student.name,
-        email: student.email,
+        name: member.name,
+        email: member.email,
         phone: '',
         danceRole: '',
       });
@@ -98,7 +91,7 @@ export function StudentDetailDrawer({
       });
     }
     setError('');
-  }, [student, open]);
+  }, [member, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,7 +123,7 @@ export function StudentDetailDrawer({
     }));
   };
 
-  if (!student) return null;
+  if (!member) return null;
 
   const getHighestLevel = () => {
     const levels = ['beginner', 'intermediate', 'advanced', 'professional'];
@@ -165,18 +158,18 @@ export function StudentDetailDrawer({
           <div className='flex items-center gap-4'>
             <Avatar className='h-16 w-16'>
               <AvatarImage
-                src={student.avatar || '/placeholder.svg'}
-                alt={student.name}
+                src={'/placeholder.svg'}
+                alt={member.name}
               />
               <AvatarFallback>
-                {student.name.charAt(0).toUpperCase()}
+                {member.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div>
-              <SheetTitle className='text-2xl'>{student.name}</SheetTitle>
+              <SheetTitle className='text-2xl'>{member.name}</SheetTitle>
               <SheetDescription className='flex items-center gap-2'>
                 <Mail className='h-4 w-4' />
-                {student.email}
+                {member.email}
               </SheetDescription>
             </div>
           </div>
@@ -268,7 +261,7 @@ export function StudentDetailDrawer({
                       </p>
                       <p className='flex items-center gap-2'>
                         <Calendar className='h-4 w-4' />
-                        {format(new Date(student.createdAt), 'PPP')}
+                        {format(new Date(member.createdAt), 'PPP')}
                       </p>
                     </div>
 

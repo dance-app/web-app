@@ -10,7 +10,7 @@ import { useCurrentWorkspace } from "@/hooks/use-current-workspace"
 
 const navigation = [
   { name: "Home", path: "", icon: Home },
-  { name: "Students", path: "students", icon: Users },
+  { name: "Members", path: "members", icon: Users },
   { name: "Classes", path: "classes", icon: Calendar },
   { name: "Subscriptions", path: "subscriptions", icon: Calendar },
 ]

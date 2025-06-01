@@ -9,7 +9,7 @@ export function setAuthCookies(
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     path: '/',
-    maxAge: 60 * 60, // 1 hour
+    maxAge: 60 * 60 * 24 * 365, // 1 year
   });
 
   if (!tokens.refreshToken) return;

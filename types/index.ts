@@ -12,15 +12,21 @@ export type LocalApiResponse<SuccessType, ErrorMessageType> =
       statusCode: number;
     };
 
-export interface Student {
+export interface Member {
   id: string;
   name: string;
   email: string;
-  avatar?: string;
-  role: 'leader' | 'follower' | 'both';
-  level: 'beginner' | 'intermediate' | 'advanced';
   createdAt: Date;
   updatedAt: Date;
+  createdById: string;
+  createdBy?: User;
+  user: User | null;
+  userId?: string;
+  workspace?: Workspace;
+  workspaceId?: string;
+  roles: WorkspaceRole[];
+  level?: number;
+  preferedDanceRole?: DanceRole;
 }
 
 export interface User {
@@ -59,6 +65,16 @@ export enum WeekStart {
   SUNDAY = 'SUNDAY',
   MONDAY = 'MONDAY',
   SATURDAY = 'SATURDAY',
+}
+
+export enum WorkspaceRole {
+  OWNER = 'OWNER',
+  TEACHER = 'TEACHER',
+  STUDENT = 'STUDENT',
+}
+export enum DanceRole {
+  LEADER = 'LEADER',
+  FOLLOWER = 'FOLLOWER',
 }
 
 export type WorkspaceConfig = {
@@ -107,7 +123,7 @@ export interface Event {
 export interface Participation {
   id: string;
   studentId: string;
-  student?: Student;
+  student?: Member;
   eventId: string;
   event?: Event;
   status: 'registered' | 'present' | 'absent';
@@ -118,7 +134,7 @@ export interface Participation {
 export interface Subscription {
   id: string;
   studentId: string;
-  student: Student;
+  student: Member;
   classesRemaining: number;
   totalClasses: number;
   expiresAt?: string;

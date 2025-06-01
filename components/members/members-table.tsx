@@ -17,38 +17,36 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
-import type { Student } from "@/types"
+import { DanceRole, type Member } from "@/types"
 
-interface StudentsTableProps {
-  students: Student[]
-  onEdit: (student: Student) => void
+interface MembersTableProps {
+  members: Member[]
+  onEdit: (member: Member) => void
   onDelete: (id: string) => void
   isLoading?: boolean
 }
 
-export function StudentsTable({ students, onEdit, onDelete, isLoading }: StudentsTableProps) {
+export function MembersTable({ members, onEdit, onDelete, isLoading }: MembersTableProps) {
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
-  const getRoleBadgeVariant = (role: Student["role"]) => {
+  const getRoleBadgeVariant = (role: Member["preferedDanceRole"]) => {
     switch (role) {
-      case "leader":
+      case DanceRole.LEADER:
         return "default"
-      case "follower":
+      case DanceRole.FOLLOWER:
         return "secondary"
-      case "both":
-        return "outline"
       default:
         return "secondary"
     }
   }
 
-  const getLevelBadgeVariant = (level: Student["level"]) => {
+  const getLevelBadgeVariant = (level: Member["level"]) => {
     switch (level) {
-      case "beginner":
+      case 1:
         return "secondary"
-      case "intermediate":
+      case 2:
         return "outline"
-      case "advanced":
+      case 3:
         return "default"
       default:
         return "secondary"
@@ -62,19 +60,22 @@ export function StudentsTable({ students, onEdit, onDelete, isLoading }: Student
     }
   }
 
+  const headerRow = (
+    <TableHeader>
+      <TableRow>
+        <TableHead>Member</TableHead>
+        <TableHead>Role</TableHead>
+        <TableHead>Level</TableHead>
+        <TableHead className="w-[50px]"></TableHead>
+      </TableRow>
+    </TableHeader>
+  )
+
   if (isLoading) {
     return (
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Student</TableHead>
-              {/* <TableHead>Email</TableHead> */}
-              <TableHead>Role</TableHead>
-              <TableHead>Level</TableHead>
-              <TableHead className="w-[50px]"></TableHead>
-            </TableRow>
-          </TableHeader>
+          {headerRow}
           <TableBody>
             {Array.from({ length: 5 }).map((_, i) => (
               <TableRow key={i}>
@@ -84,9 +85,6 @@ export function StudentsTable({ students, onEdit, onDelete, isLoading }: Student
                     <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
                   </div>
                 </TableCell>
-                {/* <TableCell>
-                  <div className="h-4 w-48 bg-gray-200 rounded animate-pulse" />
-                </TableCell> */}
                 <TableCell>
                   <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
                 </TableCell>
@@ -108,31 +106,23 @@ export function StudentsTable({ students, onEdit, onDelete, isLoading }: Student
     <>
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Student</TableHead>
-              {/* <TableHead>Email</TableHead> */}
-              <TableHead>Role</TableHead>
-              <TableHead>Level</TableHead>
-              <TableHead className="w-[50px]"></TableHead>
-            </TableRow>
-          </TableHeader>
+          {headerRow}
           <TableBody>
-            {students.length === 0 ? (
+            {members.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                  No students found
+                  No members found
                 </TableCell>
               </TableRow>
             ) : (
-              students.map((student) => (
-                <TableRow key={student.id}>
+              members.map((member) => (
+                <TableRow key={member.id}>
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={student.avatar || "/placeholder.svg"} alt={student.name} />
+                        <AvatarImage src={"/placeholder.svg"} alt={member.name} />
                         <AvatarFallback>
-                          {student.name
+                          {member.name
                             .split(" ")
                             .map((n) => n[0])
                             .join("")
@@ -140,16 +130,16 @@ export function StudentsTable({ students, onEdit, onDelete, isLoading }: Student
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col">
-                        <div className="text-gray-600 font-medium">{student.name}</div>
-                        <div className="text-gray-500">{student.email}</div>
+                        <div className="text-gray-600 font-medium">{member.name}</div>
+                        <div className="text-gray-500">{member.email}</div>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getRoleBadgeVariant(student.role)}>{student.role}</Badge>
+                    <Badge variant={getRoleBadgeVariant(member.preferedDanceRole)}>{member.preferedDanceRole}</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getLevelBadgeVariant(student.level)}>{student.level}</Badge>
+                    <Badge variant={getLevelBadgeVariant(member.level)}>{member.level}</Badge>
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -159,11 +149,11 @@ export function StudentsTable({ students, onEdit, onDelete, isLoading }: Student
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => onEdit(student)}>
+                        <DropdownMenuItem onClick={() => onEdit(member)}>
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setDeleteId(student.id)} className="text-red-600">
+                        <DropdownMenuItem onClick={() => setDeleteId(member.id)} className="text-red-600">
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete
                         </DropdownMenuItem>
