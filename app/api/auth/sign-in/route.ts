@@ -13,9 +13,9 @@ function validatePayload(
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const payload = await request.json();
 
-    if (!validatePayload(body))
+    if (!validatePayload(payload))
       return NextResponse.json(
         { error: 'Email and password are required' },
         { status: 400 }
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     const res = await fetch(`${BASE_URL}/auth/sign-in`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {

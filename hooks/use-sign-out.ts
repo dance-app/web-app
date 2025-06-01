@@ -21,14 +21,8 @@ export function useSignOut() {
       return res.json();
     },
     onSuccess: () => {
-      // ✅ Clear all cached queries
       queryClient.clear();
-
-      // ✅ Optionally clear client state like atoms if still used
-      // setAuth(null); setAuthUser(null); etc.
-
-      // ✅ Redirect to login
-      router.replace('/auth/sign-in');
+      router.push('/auth/sign-in');
     },
     onError: (err) => {
       console.error('Sign-out error:', err);
