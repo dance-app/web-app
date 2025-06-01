@@ -1,12 +1,21 @@
 'use client'
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { VerifyEmailResponse } from "@/app/api/auth/verify-email/route"
+import { Spinner } from "@/components/ui/spinner"
 
 export default function ConfirmEmailPage() {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <ConfirmEmailPageContent />
+    </Suspense>
+  )
+}
+
+function ConfirmEmailPageContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const token = searchParams.get("token") || ""
