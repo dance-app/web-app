@@ -8,6 +8,7 @@ import { useWorkspaces } from "@/hooks/use-workspaces"
 import { useCurrentWorkspace } from "@/hooks/use-current-workspace"
 import { Workspace } from "@/types"
 import NoWorkspaceState from "./workspaces/no-workspace-state"
+import { Spinner } from "./ui/spinner"
 
 interface AppShellProps {
   children: React.ReactNode
@@ -15,13 +16,13 @@ interface AppShellProps {
   requireWorkspace?: boolean
 }
 
-const isValidSlug = (workspaces: Workspace[], slug?: string) => 
+const isValidSlug = (workspaces: Workspace[], slug?: string) =>
   !!workspaces.some((ws) => ws.slug === slug)
 
-export function AppShell({ 
-  children, 
-  mode = "requiredAuth", 
-  requireWorkspace = false 
+export function AppShell({
+  children,
+  mode = "requiredAuth",
+  requireWorkspace = false
 }: AppShellProps) {
   const { user, isLoading: isAuthLoading } = useAuth()
   const { workspaces, isLoading: isWorkspaceLoading } = useWorkspaces()
@@ -33,7 +34,7 @@ export function AppShell({
   // Handle authentication redirects
   useEffect(() => {
     if (isAuthLoading) return
-    
+
     if (mode === "requiredAuth" && !user) {
       router.push("/auth/sign-in")
     } else if (mode === "noAuthOnly" && user) {
@@ -52,7 +53,7 @@ export function AppShell({
     // At root path with no slug → redirect to preferred workspace
     if (!currentSlug && workspaces.length > 0) {
       const preferredWorkspace = getPreferredWorkspace()
-      
+
       if (preferredWorkspace) {
         router.push(`/w/${preferredWorkspace.slug}`)
       }
@@ -63,8 +64,7 @@ export function AppShell({
   if (isAuthLoading || (requireWorkspace && user && isWorkspaceLoading)) {
     return (
       <div className="flex items-center justify-center h-screen text-muted-foreground">
-        <Loader2 className="w-5 h-5 animate-spin mr-2" />
-        {isAuthLoading ? "Loading..." : "Loading workspace access..."}
+        <Spinner />
       </div>
     )
   }
@@ -83,7 +83,6 @@ export function AppShell({
     // Invalid workspace slug
     if (currentSlug && !isValidSlug(workspaces, currentSlug)) {
       const preferredWorkspace = getPreferredWorkspace()
-      
       return (
         <div className="flex flex-col items-center justify-center h-screen text-center px-6">
           <h2 className="text-xl font-semibold mb-2">Invalid workspace</h2>
