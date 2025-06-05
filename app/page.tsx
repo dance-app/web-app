@@ -1,15 +1,12 @@
 "use client"
 
-import { AuthGuard } from "@/components/auth-guard"
+import { AppShell } from "@/components/app-shell"
 import { Spinner } from "@/components/ui/spinner"
-import { WorkspaceGuard } from "@/components/workspace-guard"
 
 export default function DashboardPage() {
   return (
-    <AuthGuard mode="requiredAuth">
-      <WorkspaceGuard>
-        <Spinner />
-      </WorkspaceGuard>
-    </AuthGuard>
+    <AppShell mode="requiredAuth" requireWorkspace={true}>
+      <Spinner />
+    </AppShell>
   )
 }

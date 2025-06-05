@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AuthGuard } from "@/components/auth-guard"
+import { AppShell } from "@/components/app-shell"
 import { isProd } from "@/lib/utils"
 import { useSignIn } from "@/hooks/use-sign-in"
 
@@ -36,7 +36,7 @@ export default function SignInPage() {
   })
 
   return (
-    <AuthGuard mode="noAuthOnly">
+    <AppShell mode="noAuthOnly">
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
@@ -112,6 +112,6 @@ export default function SignInPage() {
           </CardContent>
         </Card>
       </div>
-    </AuthGuard>
+    </AppShell>
   )
 }
