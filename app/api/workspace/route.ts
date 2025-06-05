@@ -1,15 +1,14 @@
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { ApiResponse, BASE_URL } from '@/lib/api/shared.api';
 import { slugify } from '@/lib/utils';
 import { LocalApiResponse, Workspace } from '@/types';
+import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get('accessToken')?.value;
-    console.log('Access Token:', accessToken);
-    if (!accessToken) {
+    const authResult = await validateOrRefreshToken();
+    
+    if (!authResult.accessToken) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
@@ -17,7 +16,7 @@ export async function GET() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${authResult.accessToken}`,
       },
     });
 
@@ -30,8 +29,16 @@ export async function GET() {
     }
 
     const data = await response.json();
+    const result = NextResponse.json({ workspaces: data }, { status: 200 });
 
-    return NextResponse.json({ workspaces: data }, { status: 200 });
+    // If we refreshed tokens, update cookies
+    if (authResult.response) {
+      authResult.response.headers.forEach((value, key) => {
+        result.headers.set(key, value);
+      });
+    }
+
+    return result;
   } catch (error: any) {
     console.error('Error fetching workspaces:', error);
     return NextResponse.json(
@@ -50,11 +57,12 @@ export type CreateWorkspaceResponse = LocalApiResponse<
 
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get('accessToken')?.value;
-    console.log('Access Token:', accessToken);
-    if (!accessToken)
+    const authResult = await validateOrRefreshToken();
+    
+    if (!authResult.accessToken) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
     const payload = await request.json();
     if (!payload.name) throw new Error('NAME_REQUIRED');
     if (payload.name.length < 3 || payload.name.length > 50)
@@ -65,7 +73,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${authResult.accessToken}`,
       },
       body: JSON.stringify({
         name: payload.name.trim(),
@@ -78,11 +86,20 @@ export async function POST(request: NextRequest) {
     if ('message' in data)
       throw new Error(data.message || 'Failed to create workspace');
 
-    const response: CreateWorkspaceResponse = {
+    const responseData: CreateWorkspaceResponse = {
       success: true,
       data: { workspace: data },
     };
-    return NextResponse.json(response, { status: 201 });
+    const response = NextResponse.json(responseData, { status: 201 });
+
+    // If we refreshed tokens, update cookies
+    if (authResult.response) {
+      authResult.response.headers.forEach((value, key) => {
+        response.headers.set(key, value);
+      });
+    }
+
+    return response;
   } catch (error: any) {
     console.error('Error accessing cookies:', error);
     return NextResponse.json(
