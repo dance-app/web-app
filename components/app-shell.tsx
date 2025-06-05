@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation"
 import { Loader2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useWorkspaces } from "@/hooks/use-workspaces"
+import { useCurrentWorkspace } from "@/hooks/use-current-workspace"
 import { Workspace } from "@/types"
 import NoWorkspaceState from "./workspaces/no-workspace-state"
 
@@ -24,6 +25,7 @@ export function AppShell({
 }: AppShellProps) {
   const { user, isLoading: isAuthLoading } = useAuth()
   const { workspaces, isLoading: isWorkspaceLoading } = useWorkspaces()
+  const { workspace: currentWorkspace, getPreferredWorkspace } = useCurrentWorkspace()
   const router = useRouter()
   const params = useParams<{ slug?: string }>()
   const currentSlug = params?.slug
@@ -47,11 +49,15 @@ export function AppShell({
     if (workspaces && "error" in workspaces) return
     if (!workspaces || workspaces.length === 0) return
 
-    // At root path with no slug → redirect to first workspace
+    // At root path with no slug → redirect to preferred workspace
     if (!currentSlug && workspaces.length > 0) {
-      router.push(`/w/${workspaces[0].slug}`)
+      const preferredWorkspace = getPreferredWorkspace()
+      
+      if (preferredWorkspace) {
+        router.push(`/w/${preferredWorkspace.slug}`)
+      }
     }
-  }, [isAuthLoading, isWorkspaceLoading, workspaces, currentSlug, router, user, requireWorkspace])
+  }, [isAuthLoading, isWorkspaceLoading, workspaces, currentSlug, router, user, requireWorkspace, getPreferredWorkspace])
 
   // Show unified loading state
   if (isAuthLoading || (requireWorkspace && user && isWorkspaceLoading)) {
@@ -76,18 +82,20 @@ export function AppShell({
 
     // Invalid workspace slug
     if (currentSlug && !isValidSlug(workspaces, currentSlug)) {
+      const preferredWorkspace = getPreferredWorkspace()
+      
       return (
         <div className="flex flex-col items-center justify-center h-screen text-center px-6">
           <h2 className="text-xl font-semibold mb-2">Invalid workspace</h2>
           <p className="text-muted-foreground text-sm mb-4">
             The workspace you're trying to access doesn't exist or you don't have access to it.
           </p>
-          {workspaces && workspaces.length > 0 && (
+          {preferredWorkspace && (
             <button
-              onClick={() => router.push(`/w/${workspaces[0].slug}`)}
+              onClick={() => router.push(`/w/${preferredWorkspace.slug}`)}
               className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
             >
-              Go to {workspaces[0].name}
+              Go to {preferredWorkspace.name}
             </button>
           )}
         </div>

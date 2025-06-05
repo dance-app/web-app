@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { Users, Home, Calendar } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AuthAvatar } from "@/components/auth-avatar"
+import { WorkspaceSwitcher } from "@/components/workspace-switcher"
 import { Workspace } from "@/types"
 import { useCurrentWorkspace } from "@/hooks/use-current-workspace"
 
@@ -23,10 +24,16 @@ export function Sidebar({ fakeWorkspace }: { fakeWorkspace?: Workspace }) {
 
   return (
     <div className="flex h-full w-64 flex-col bg-gray-50 border-r">
-      <div className="flex h-16 w-full items-center justify-between px-6 border-b gap-2">
-        <h1 className="text-sm font-semibold truncate max-w-[200px] overflow-hidden whitespace-nowrap">
-          {workspace?.name || fakeWorkspace?.name}
-        </h1>
+      <div className="flex h-16 w-full items-center justify-between px-3 border-b gap-2">
+        <div className="flex-1 min-w-0">
+          {workspace ? (
+            <WorkspaceSwitcher />
+          ) : (
+            <h1 className="text-sm font-semibold truncate px-3 py-2">
+              {fakeWorkspace?.name}
+            </h1>
+          )}
+        </div>
         <AuthAvatar />
       </div>
 
