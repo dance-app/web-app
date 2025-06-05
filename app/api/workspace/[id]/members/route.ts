@@ -1,7 +1,7 @@
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { ApiResponse, BASE_URL } from '@/lib/api/shared.api';
 import { LocalApiResponse, Member, Workspace, WorkspaceRole } from '@/types';
+import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
 
 export type GetWorkspaceMembersResponse = LocalApiResponse<
   {
@@ -69,15 +69,24 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get('accessToken')?.value;
-    // console.log('Access Token:', accessToken);
-    if (!accessToken)
+    const authResult = await validateOrRefreshToken();
+    
+    if (!authResult.accessToken) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    const { id: workspaceId } = await params;
-    // console.log('Workspace ID:', workspaceId);
+    }
 
-    return NextResponse.json({ members: fakeMembers }, { status: 200 });
+    const { id: workspaceId } = await params;
+
+    const result = NextResponse.json({ members: fakeMembers }, { status: 200 });
+
+    // If we refreshed tokens, update cookies
+    if (authResult.response) {
+      authResult.response.headers.forEach((value, key) => {
+        result.headers.set(key, value);
+      });
+    }
+
+    return result;
     // const response = await fetch(
     //   `${BASE_URL}/workspace/${workspaceId}/members`,
     //   {
