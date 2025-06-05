@@ -1,11 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { MoreHorizontal, Edit, Trash2 } from "lucide-react"
+import { Pencil } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,42 +14,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Badge } from "@/components/ui/badge"
-import { DanceRole, type Member } from "@/types"
+import { type Member } from "@/types"
 
 interface MembersTableProps {
   members: Member[]
   onEdit: (member: Member) => void
   onDelete: (id: string) => void
+  onMemberClick: (member: Member) => void
   isLoading?: boolean
 }
 
-export function MembersTable({ members, onEdit, onDelete, isLoading }: MembersTableProps) {
+export function MembersTable({ members, onEdit, onDelete, onMemberClick, isLoading }: MembersTableProps) {
   const [deleteId, setDeleteId] = useState<string | null>(null)
-
-  const getRoleBadgeVariant = (role: Member["preferedDanceRole"]) => {
-    switch (role) {
-      case DanceRole.LEADER:
-        return "default"
-      case DanceRole.FOLLOWER:
-        return "secondary"
-      default:
-        return "secondary"
-    }
-  }
-
-  const getLevelBadgeVariant = (level: Member["level"]) => {
-    switch (level) {
-      case 1:
-        return "secondary"
-      case 2:
-        return "outline"
-      case 3:
-        return "default"
-      default:
-        return "secondary"
-    }
-  }
 
   const handleDelete = () => {
     if (deleteId) {
@@ -60,111 +34,82 @@ export function MembersTable({ members, onEdit, onDelete, isLoading }: MembersTa
     }
   }
 
-  const headerRow = (
-    <TableHeader>
-      <TableRow>
-        <TableHead>Member</TableHead>
-        <TableHead>Role</TableHead>
-        <TableHead>Level</TableHead>
-        <TableHead className="w-[50px]"></TableHead>
-      </TableRow>
-    </TableHeader>
-  )
+  const handleEdit = (e: React.MouseEvent, member: Member) => {
+    e.stopPropagation()
+    onEdit(member)
+  }
 
   if (isLoading) {
     return (
-      <div className="rounded-md border">
-        <Table>
-          {headerRow}
-          <TableBody>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <TableRow key={i}>
-                <TableCell>
-                  <div className="flex items-center space-x-3">
-                    <div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse" />
-                    <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
-                </TableCell>
-                <TableCell>
-                  <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
-                </TableCell>
-                <TableCell>
-                  <div className="h-8 w-8 bg-gray-200 rounded animate-pulse" />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <div className="space-y-1">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
+            <div className="flex items-center space-x-4">
+              <div className="h-12 w-12 rounded-full bg-gray-200 animate-pulse" />
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-3 w-24 bg-gray-200 rounded animate-pulse" />
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
+              <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
+              <div className="h-8 w-16 bg-gray-200 rounded animate-pulse" />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (members.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="text-gray-500 text-lg mb-2">No members found</div>
+        <div className="text-gray-400 text-sm">Try adjusting your search or add new members</div>
       </div>
     )
   }
 
   return (
     <>
-      <div className="rounded-md border">
-        <Table>
-          {headerRow}
-          <TableBody>
-            {members.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                  No members found
-                </TableCell>
-              </TableRow>
-            ) : (
-              members.map((member) => (
-                <TableRow key={member.id}>
-                  <TableCell>
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={"/placeholder.svg"} alt={member.name} />
-                        <AvatarFallback>
-                          {member.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col">
-                        <div className="text-gray-600 font-medium">{member.name}</div>
-                        <div className="text-gray-500">{member.email}</div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getRoleBadgeVariant(member.preferedDanceRole)}>{member.preferedDanceRole}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getLevelBadgeVariant(member.level)}>{member.level}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => onEdit(member)}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setDeleteId(member.id)} className="text-red-600">
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+      <div className="space-y-1">
+        {members.map((member) => (
+          <div
+            key={member.id}
+            onClick={() => onMemberClick(member)}
+            className="flex items-center justify-between p-2 hover:bg-gray-100 transition-all duration-200 cursor-pointer group"
+          >
+            {/* Member Info - First Column */}
+            <div className="flex items-center space-x-4 flex-1">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={undefined} alt={member.name} />
+                <AvatarFallback className="bg-gray-100 text-gray-500 text-xs">
+                  {member.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="font-small text-sm text-gray-600 group-hover:text-gray-700 transition-colors">
+                {member.name}
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => handleEdit(e, member)}
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-500 hover:text-gray-700 hover:bg-gray-200"
+              >
+                <Pencil className="h-2 w-2" />
+                <span className="ml-1 text-xs">Edit</span>
+              </Button>
+            </div>
+          </div>
+        ))}
       </div>
 
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>

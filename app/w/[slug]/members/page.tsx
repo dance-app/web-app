@@ -119,11 +119,12 @@ export default function MembersPage() {
           </Button>
         </div>
       </header>
-      <div className="flex-1 space-y-4 p-4 md:p-8">
+      <div className="flex-1 space-y-4 p-4 md:p-8 bg-gray-50">
         <MembersTable
           members={members}
           onEdit={setSelectedMember}
           onDelete={() => { }}
+          onMemberClick={setSelectedMember}
           isLoading={isLoading}
         />
 
