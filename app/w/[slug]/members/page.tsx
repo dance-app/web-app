@@ -1,15 +1,15 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { Plus, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MembersTable } from "@/components/members/members-table"
 import { useMembers } from "@/hooks/use-members"
+import { useSelectedMember } from "@/hooks/use-selected-member"
 import type { Member } from "@/types"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { MemberDetailDrawer } from "@/components/members/member-details-drawer"
-import { toast } from "sonner"
 
 export const mockDanceTypes = [
   { id: "1", name: "Salsa", description: "Cuban-style salsa", workspaceId: "1" },
@@ -21,14 +21,11 @@ export const mockDanceTypes = [
 
 export default function MembersPage() {
   const [createFormOpen, setCreateFormOpen] = useState(false)
-  // const [showDrawer, setShowDrawer] = useState(false)
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
-  const [roleFilter, setRoleFilter] = useState<string>("all")
-  const [levelFilter, setLevelFilter] = useState<string>("all")
 
   const { members, isLoading } = useMembers()
-  console.log("Members data:", members)
+  const { selectedMember, setSelectedMember } = useSelectedMember(members)
+
   const createStudent = () => { }//useCreateStudent()
   const updateStudent = () => { }//useUpdateStudent()
   const deleteStudent = () => { }//useDeleteStudent()
@@ -131,7 +128,11 @@ export default function MembersPage() {
         <MemberDetailDrawer
           member={selectedMember}
           open={!!selectedMember}
-          onOpenChange={() => setSelectedMember(null)}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedMember(null)
+            }
+          }}
           // danceTypes={mockDanceTypes}
           onSubmit={() => new Promise((resolve) => resolve({ success: true, error: undefined }))}
         />
