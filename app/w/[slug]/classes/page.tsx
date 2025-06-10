@@ -5,40 +5,46 @@ import { useEvents } from "@/hooks/use-events"
 import { CalendarView } from "@/components/classes/calendar-view"
 import { ListView } from "@/components/classes/list-view"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Plus, List, Calendar } from "lucide-react"
+import { Input } from "@/components/ui/input"
+// import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { EventCreateModal } from "@/components/events/event-create-modal"
+// import { DateRangePicker } from "@/components/ui/date-range-picker"
+import { Plus, List, Calendar, Search } from "lucide-react"
 import type { Event } from "@/types"
+// import { DateRange } from "react-day-picker"
 import { Breadcrumbs } from "@/components/breadcrumbs"
+import { Spinner } from "@/components/ui/spinner"
 
 type ViewMode = "list" | "calendar"
 
 export default function ClassesPage() {
-  const { events, danceTypes, loading } = useEvents()
+  const { events, danceTypes, isLoading } = useEvents()
   const [viewMode, setViewMode] = useState<ViewMode>("list")
+  const [searchTerm, setSearchTerm] = useState("")
+  // const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
   const handleEventClick = (event: Event) => {
     console.log("Event clicked:", event.title)
     // TODO: Open event details modal or navigate to event page
   }
 
-  const handleCreateClass = () => {
-    console.log("Create class clicked")
-    // TODO: Open create class modal or navigate to create page
-  }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col">
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
           <Breadcrumbs title="Classes" />
+          <div className="flex gap-2">
+            <Button disabled>
+              <Plus className="mr-2 h-4 w-4" />
+              Schedule Class
+            </Button>
+          </div>
         </header>
 
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading classes...</p>
-          </div>
+          <Spinner />
         </div>
       </div>
     )
@@ -46,39 +52,46 @@ export default function ClassesPage() {
 
   return (
     <div className="flex flex-col">
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-        <Separator orientation="vertical" className="mr-2 h-4" />
+      <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
         <Breadcrumbs title="Classes" />
-      </header>
-
-      <div className="flex-1 space-y-4 p-4 md:p-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">Classes</h2>
-            <p className="text-muted-foreground">Manage your salsa classes and events ({events.length} total)</p>
+        <div className="flex gap-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Search classes..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-full"
+            />
           </div>
-
-          <div className="flex items-center gap-2">
-            {/* View Mode Switcher */}
-            <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as ViewMode)}>
-              <TabsList>
-                <TabsTrigger value="list" className="flex items-center gap-2">
-                  <List className="h-4 w-4" />
-                  List
-                </TabsTrigger>
-                <TabsTrigger value="calendar" className="flex items-center gap-2">
+          {/* <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as ViewMode)}>
+            <TabsList>
+              <TabsTrigger value="list" className="flex items-center gap-2">
+                <List className="h-4 w-4" />
+                List
+              </TabsTrigger>
+              <div className="inline-flex">
+                <TabsTrigger
+                  value="calendar"
+                  className="flex items-center gap-2"
+                  disabled
+                >
                   <Calendar className="h-4 w-4" />
                   Calendar
                 </TabsTrigger>
-              </TabsList>
-            </Tabs>
-
-            <Button onClick={handleCreateClass}>
+              </div>
+            </TabsList>
+          </Tabs> */}
+          <EventCreateModal>
+            <Button>
               <Plus className="mr-2 h-4 w-4" />
               Schedule Class
             </Button>
-          </div>
+          </EventCreateModal>
         </div>
+      </header>
+
+      <div className="flex-1 space-y-4 p-4 md:p-8 bg-gray-50">
 
         {/* View Content */}
         {viewMode === "list" ? (
@@ -92,10 +105,12 @@ export default function ClassesPage() {
             <Calendar className="mx-auto h-12 w-12 text-muted-foreground" />
             <h3 className="mt-4 text-lg font-semibold">No classes scheduled</h3>
             <p className="text-muted-foreground">Get started by scheduling your first salsa class.</p>
-            <Button className="mt-4" onClick={handleCreateClass}>
-              <Plus className="mr-2 h-4 w-4" />
-              Schedule Your First Class
-            </Button>
+            <EventCreateModal>
+              <Button className="mt-4">
+                <Plus className="mr-2 h-4 w-4" />
+                Schedule Your First Class
+              </Button>
+            </EventCreateModal>
           </div>
         )}
       </div>

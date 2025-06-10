@@ -82,6 +82,7 @@ export type WorkspaceConfig = {
   createdAt: string;
   updatedAt: string;
   weekStart: WeekStart;
+  danceTypes: DanceType[];
 };
 
 export type Workspace = {
@@ -122,19 +123,19 @@ export interface Event {
 
 export interface Participation {
   id: string;
-  studentId: string;
-  student?: Member;
+  memberId: string;
+  member?: Member;
   eventId: string;
   event?: Event;
-  status: 'registered' | 'present' | 'absent';
+  status: 'registered' | 'present' | 'absent' | 'invited';
   registeredAt: string;
   attendedAt?: string;
 }
 
 export interface Subscription {
   id: string;
-  studentId: string;
-  student: Member;
+  memberId: string;
+  member: Member;
   classesRemaining: number;
   totalClasses: number;
   expiresAt?: string;

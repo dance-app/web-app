@@ -26,3 +26,4 @@ coverage/
 
 # Optional: skip local database or cache folders
 .cache/
+tsconfig.tsbuildinfo
