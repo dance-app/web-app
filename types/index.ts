@@ -143,3 +143,33 @@ export interface Subscription {
   createdAt: string;
   updatedAt: string;
 }
+
+export enum FigureVisibility {
+  PRIVATE = 'PRIVATE',
+  WORKSPACE_SHARED = 'WORKSPACE_SHARED',
+  PUBLIC = 'PUBLIC',
+}
+
+export interface FigureMetadata {
+  videoUrls?: string[];
+  photoUrls?: string[];
+  difficulty?: number;
+  tags?: string[];
+  estimatedLearningTime?: number;
+}
+
+export interface Figure {
+  id: string;
+  name: string;
+  description: string;
+  metadata?: FigureMetadata;
+  visibility: FigureVisibility;
+  createdById: string;
+  createdBy?: User;
+  workspaceId: string;
+  workspace?: Workspace;
+  sharedWithWorkspaces?: string[];
+  sharedWithUsers?: string[];
+  createdAt: string;
+  updatedAt: string;
+}

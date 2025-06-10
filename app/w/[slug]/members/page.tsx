@@ -10,6 +10,7 @@ import { useSelectedMember } from "@/hooks/use-selected-member"
 import type { Member } from "@/types"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { MemberDetailDrawer } from "@/components/members/member-details-drawer"
+import { PageLayout } from "@/components/page-layout"
 
 export const mockDanceTypes = [
   { id: "1", name: "Salsa", description: "Cuban-style salsa", workspaceId: "1" },
@@ -97,8 +98,8 @@ export default function MembersPage() {
   }
 
   return (
-    <div className="flex flex-col">
-      <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
+    <PageLayout header={(
+      <>
         <Breadcrumbs title="Members" />
         <div className="flex gap-2" >
           <div className="relative flex-1">
@@ -115,28 +116,27 @@ export default function MembersPage() {
             Add Member
           </Button>
         </div>
-      </header>
-      <div className="flex-1 space-y-4 p-4 md:p-8 bg-gray-50">
-        <MembersTable
-          members={members}
-          onEdit={setSelectedMember}
-          onDelete={() => { }}
-          onMemberClick={setSelectedMember}
-          isLoading={isLoading}
-        />
+      </>
+    )}>
+      <MembersTable
+        members={members}
+        onEdit={setSelectedMember}
+        onDelete={() => { }}
+        onMemberClick={setSelectedMember}
+        isLoading={isLoading}
+      />
 
-        <MemberDetailDrawer
-          member={selectedMember}
-          open={!!selectedMember}
-          onOpenChange={(open) => {
-            if (!open) {
-              setSelectedMember(null)
-            }
-          }}
-          // danceTypes={mockDanceTypes}
-          onSubmit={() => new Promise((resolve) => resolve({ success: true, error: undefined }))}
-        />
-      </div>
-    </div>
+      <MemberDetailDrawer
+        member={selectedMember}
+        open={!!selectedMember}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedMember(null)
+          }
+        }}
+        // danceTypes={mockDanceTypes}
+        onSubmit={() => new Promise((resolve) => resolve({ success: true, error: undefined }))}
+      />
+    </PageLayout>
   )
 }

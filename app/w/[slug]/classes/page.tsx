@@ -15,6 +15,7 @@ import type { Event } from "@/types"
 // import { DateRange } from "react-day-picker"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { Spinner } from "@/components/ui/spinner"
+import { PageLayout } from "@/components/page-layout"
 
 type ViewMode = "list" | "calendar"
 
@@ -28,7 +29,6 @@ export default function ClassesPage() {
     console.log("Event clicked:", event.title)
     // TODO: Open event details modal or navigate to event page
   }
-
 
   if (isLoading) {
     return (
@@ -51,8 +51,8 @@ export default function ClassesPage() {
   }
 
   return (
-    <div className="flex flex-col">
-      <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
+    <PageLayout header={
+      <>
         <Breadcrumbs title="Classes" />
         <div className="flex gap-2">
           <div className="relative">
@@ -88,32 +88,27 @@ export default function ClassesPage() {
               Schedule Class
             </Button>
           </EventCreateModal>
+        </div></>
+    }>
+      {viewMode === "list" ? (
+        <ListView events={events} danceTypes={danceTypes} onEventClick={handleEventClick} />
+      ) : (
+        <CalendarView events={events} onEventClick={handleEventClick} />
+      )}
+
+      {events.length === 0 && (
+        <div className="text-center py-12">
+          <Calendar className="mx-auto h-12 w-12 text-muted-foreground" />
+          <h3 className="mt-4 text-lg font-semibold">No classes scheduled</h3>
+          <p className="text-muted-foreground">Get started by scheduling your first salsa class.</p>
+          <EventCreateModal>
+            <Button className="mt-4">
+              <Plus className="mr-2 h-4 w-4" />
+              Schedule Your First Class
+            </Button>
+          </EventCreateModal>
         </div>
-      </header>
-
-      <div className="flex-1 space-y-4 p-4 md:p-8 bg-gray-50">
-
-        {/* View Content */}
-        {viewMode === "list" ? (
-          <ListView events={events} danceTypes={danceTypes} onEventClick={handleEventClick} />
-        ) : (
-          <CalendarView events={events} onEventClick={handleEventClick} />
-        )}
-
-        {events.length === 0 && (
-          <div className="text-center py-12">
-            <Calendar className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-4 text-lg font-semibold">No classes scheduled</h3>
-            <p className="text-muted-foreground">Get started by scheduling your first salsa class.</p>
-            <EventCreateModal>
-              <Button className="mt-4">
-                <Plus className="mr-2 h-4 w-4" />
-                Schedule Your First Class
-              </Button>
-            </EventCreateModal>
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+    </PageLayout>
   )
 }

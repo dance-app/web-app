@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Users, Home, Calendar } from "lucide-react"
+import { Users, Home, Calendar, BookOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AuthAvatar } from "@/components/auth-avatar"
 import { WorkspaceSwitcher } from "@/components/workspace-switcher"
@@ -13,6 +13,7 @@ const navigation = [
   { name: "Home", path: "", icon: Home },
   { name: "Members", path: "members", icon: Users },
   { name: "Classes", path: "classes", icon: Calendar },
+  { name: "Figures", path: "figures", icon: BookOpen },
   { name: "Subscriptions", path: "subscriptions", icon: Calendar },
 ]
 
