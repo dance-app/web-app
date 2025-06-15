@@ -8,7 +8,9 @@ interface RefreshTokenResponse {
   refreshToken: string;
 }
 
-async function refreshTokens(refreshToken: string): Promise<RefreshTokenResponse | null> {
+async function refreshTokens(
+  refreshToken: string
+): Promise<RefreshTokenResponse | null> {
   try {
     const res = await fetch(`${BASE_URL}/auth/refresh-token`, {
       method: 'POST',
@@ -70,9 +72,9 @@ export async function validateOrRefreshToken(): Promise<{
         refreshToken: newTokens.refreshToken,
       });
 
-      return { 
-        accessToken: newTokens.accessToken, 
-        response 
+      return {
+        accessToken: newTokens.accessToken,
+        response,
       };
     }
   }

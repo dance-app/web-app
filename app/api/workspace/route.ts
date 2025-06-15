@@ -7,7 +7,7 @@ import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
 export async function GET() {
   try {
     const authResult = await validateOrRefreshToken();
-    
+
     if (!authResult.accessToken) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
@@ -58,7 +58,7 @@ export type CreateWorkspaceResponse = LocalApiResponse<
 export async function POST(request: NextRequest) {
   try {
     const authResult = await validateOrRefreshToken();
-    
+
     if (!authResult.accessToken) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }

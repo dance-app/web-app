@@ -11,12 +11,11 @@ export function useCurrentWorkspaceSlug() {
 
   useEffect(() => {
     const segments = pathname.split('/');
-    
+
     // Expects path like: /w/{slug}/...
-    const slugFromPath = segments.length >= 3 && segments[1] === 'w' 
-      ? segments[2] 
-      : null;
-    
+    const slugFromPath =
+      segments.length >= 3 && segments[1] === 'w' ? segments[2] : null;
+
     // Update atom with current slug from path
     setCurrentSlug(slugFromPath);
   }, [pathname, setCurrentSlug]);

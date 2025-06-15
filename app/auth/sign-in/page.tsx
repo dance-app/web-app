@@ -1,22 +1,28 @@
-"use client"
+'use client';
 
-import { useForm } from "react-hook-form"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AppShell } from "@/components/app-shell"
-import { isProd } from "@/lib/utils"
-import { useSignIn } from "@/hooks/use-sign-in"
+import { useForm } from 'react-hook-form';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { AppShell } from '@/components/app-shell';
+import { isProd } from '@/lib/utils';
+import { useSignIn } from '@/hooks/use-sign-in';
 
 interface SignInForm {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 export default function SignInPage() {
-  const { signIn, isPending, error } = useSignIn()
+  const { signIn, isPending, error } = useSignIn();
 
   const {
     register,
@@ -24,16 +30,17 @@ export default function SignInPage() {
     formState: { errors },
   } = useForm<SignInForm>({
     defaultValues: {
-      email: isProd() ? "" : "john.doe@email.com",
-      password: isProd() ? "" : "adminadmin",
+      email: isProd() ? '' : 'john.doe@email.com',
+      password: isProd() ? '' : 'adminadmin',
     },
-    mode: "onBlur",
-  })
+    mode: 'onBlur',
+  });
 
-  const onSubmit = async (data: SignInForm) => signIn({
-    email: data.email,
-    password: data.password,
-  })
+  const onSubmit = async (data: SignInForm) =>
+    signIn({
+      email: data.email,
+      password: data.password,
+    });
 
   return (
     <AppShell mode="noAuthOnly">
@@ -49,7 +56,7 @@ export default function SignInPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {!!error && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
-                  {error?.message || "Wrong email or password"}
+                  {error?.message || 'Wrong email or password'}
                 </div>
               )}
 
@@ -58,16 +65,18 @@ export default function SignInPage() {
                 <Input
                   id="email"
                   type="email"
-                  {...register("email", {
-                    required: "Email is required",
+                  {...register('email', {
+                    required: 'Email is required',
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
+                      message: 'Invalid email address',
                     },
                   })}
                   placeholder="teacher@example.com"
                 />
-                {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email.message}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -75,14 +84,20 @@ export default function SignInPage() {
                 <Input
                   id="password"
                   type="password"
-                  {...register("password", { required: "Password is required" })}
+                  {...register('password', {
+                    required: 'Password is required',
+                  })}
                   placeholder="Enter your password"
                 />
-                {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+                {errors.password && (
+                  <p className="text-sm text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
 
               <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "Signing in..." : "Sign in"}
+                {isPending ? 'Signing in...' : 'Sign in'}
               </Button>
             </form>
 
@@ -95,7 +110,10 @@ export default function SignInPage() {
               </Link>
               <br />
               <span className="text-gray-600">{"Don't have an account? "}</span>
-              <Link href="/auth/sign-up" className="text-blue-600 hover:text-blue-500">
+              <Link
+                href="/auth/sign-up"
+                className="text-blue-600 hover:text-blue-500"
+              >
                 Sign up
               </Link>
             </div>
@@ -113,5 +131,5 @@ export default function SignInPage() {
         </Card>
       </div>
     </AppShell>
-  )
+  );
 }

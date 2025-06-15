@@ -6,7 +6,7 @@ import { Workspace } from '@/types';
 
 export function useWorkspaces() {
   const [workspacesState, setWorkspacesState] = useAtom(workspacesAtom);
-  
+
   const { data, isLoading, isError, error, ...query } = useQuery({
     queryKey: ['workspaces'],
     queryFn: () =>
@@ -17,7 +17,8 @@ export function useWorkspaces() {
 
   // Sync query data with atom
   useEffect(() => {
-    const workspaces = (data?.workspaces?.data as Workspace[]) || ([] as Workspace[]);
+    const workspaces =
+      (data?.workspaces?.data as Workspace[]) || ([] as Workspace[]);
     setWorkspacesState({
       workspaces,
       isLoading,

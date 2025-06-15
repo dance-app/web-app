@@ -125,7 +125,7 @@ export async function GET(
 ) {
   try {
     const { accessToken, response } = await validateOrRefreshToken();
-    
+
     if (response) {
       return response;
     }
@@ -137,18 +137,23 @@ export async function GET(
     const workspaceId = params.id;
 
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     // Filter events by workspace ID
-    const workspaceEvents = mockEvents.filter(event => event.workspaceId === workspaceId);
+    const workspaceEvents = mockEvents.filter(
+      (event) => event.workspaceId === workspaceId
+    );
 
     return NextResponse.json({
       events: workspaceEvents,
-      danceTypes: mockDanceTypes.filter(dt => dt.workspaceId === workspaceId)
+      danceTypes: mockDanceTypes.filter((dt) => dt.workspaceId === workspaceId),
     });
   } catch (error) {
     console.error('GET /api/workspace/[id]/events error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -158,7 +163,7 @@ export async function POST(
 ) {
   try {
     const { accessToken, response } = await validateOrRefreshToken();
-    
+
     if (response) {
       return response;
     }
@@ -171,12 +176,15 @@ export async function POST(
     const body = await request.json();
 
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const danceType = mockDanceTypes.find(dt => dt.id === body.danceTypeId);
+    const danceType = mockDanceTypes.find((dt) => dt.id === body.danceTypeId);
 
     if (!danceType) {
-      return NextResponse.json({ error: 'Invalid dance type' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid dance type' },
+        { status: 400 }
+      );
     }
 
     const newEvent = {
@@ -200,6 +208,9 @@ export async function POST(
     return NextResponse.json({ event: newEvent });
   } catch (error) {
     console.error('POST /api/workspace/[id]/events error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

@@ -1,25 +1,33 @@
-"use client"
+'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { CreditCard, Plus, DollarSign } from "lucide-react"
-import { Breadcrumbs } from "@/components/breadcrumbs"
-import { PageLayout } from "@/components/page-layout"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { CreditCard, Plus, DollarSign } from 'lucide-react';
+import { Breadcrumbs } from '@/components/breadcrumbs';
+import { PageLayout } from '@/components/page-layout';
 
 export default function SubscriptionsPage() {
   return (
-    <PageLayout header={
-      <>
-        <Breadcrumbs title="Subscriptions" />
-        <div className="flex gap-2" >
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Package
-          </Button>
-        </div>
-      </>
-    }>
+    <PageLayout
+      header={
+        <>
+          <Breadcrumbs title="Subscriptions" />
+          <div className="flex gap-2">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Create Package
+            </Button>
+          </div>
+        </>
+      }
+    >
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
@@ -91,10 +99,12 @@ export default function SubscriptionsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">$2,840</div>
-            <p className="text-xs text-muted-foreground">+12% from last month</p>
+            <p className="text-xs text-muted-foreground">
+              +12% from last month
+            </p>
           </CardContent>
         </Card>
       </div>
     </PageLayout>
-  )
+  );
 }

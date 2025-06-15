@@ -1,28 +1,28 @@
-'use client'
+'use client';
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { AuthGuard } from "@/components/auth-guard"
+} from '@/components/ui/card';
+import { AuthGuard } from '@/components/auth-guard';
 
 interface ForgotPasswordForm {
-  email: string
+  email: string;
 }
 
 export default function ForgotPasswordPage() {
-  const [isPending, setIsPending] = useState(false)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [successMsg, setSuccessMsg] = useState<string | null>(null)
+  const [isPending, setIsPending] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const {
     register,
@@ -30,46 +30,49 @@ export default function ForgotPasswordPage() {
     formState: { errors },
   } = useForm<ForgotPasswordForm>({
     defaultValues: {
-      email: "",
+      email: '',
     },
-    mode: "onBlur",
-  })
+    mode: 'onBlur',
+  });
 
   const onSubmit = async (data: ForgotPasswordForm) => {
-    setErrorMsg(null)
-    setSuccessMsg(null)
-    setIsPending(true)
+    setErrorMsg(null);
+    setSuccessMsg(null);
+    setIsPending(true);
 
     try {
-      const res = await fetch("/api/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: data.email }),
-      })
+      });
 
       if (!res.ok) {
-        const body = await res.json()
-        throw new Error(body?.message || "Request failed")
+        const body = await res.json();
+        throw new Error(body?.message || 'Request failed');
       }
 
       setSuccessMsg(
-        "If that email is registered, you’ll receive a reset link shortly."
-      )
+        'If that email is registered, you’ll receive a reset link shortly.'
+      );
     } catch (err: any) {
-      setErrorMsg(err.message || "Something went wrong")
+      setErrorMsg(err.message || 'Something went wrong');
     } finally {
-      setIsPending(false)
+      setIsPending(false);
     }
-  }
+  };
 
   return (
     <AuthGuard mode="noAuthOnly">
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Forgot Password</CardTitle>
+            <CardTitle className="text-2xl text-center">
+              Forgot Password
+            </CardTitle>
             <CardDescription className="text-center">
-              Enter your email and we’ll send you instructions to reset your password.
+              Enter your email and we’ll send you instructions to reset your
+              password.
             </CardDescription>
           </CardHeader>
 
@@ -92,11 +95,11 @@ export default function ForgotPasswordPage() {
                 <Input
                   id="email"
                   type="email"
-                  {...register("email", {
-                    required: "Email is required",
+                  {...register('email', {
+                    required: 'Email is required',
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
+                      message: 'Invalid email address',
                     },
                   })}
                   placeholder="your.email@example.com"
@@ -107,13 +110,18 @@ export default function ForgotPasswordPage() {
               </div>
 
               <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "Sending…" : "Send reset link"}
+                {isPending ? 'Sending…' : 'Send reset link'}
               </Button>
             </form>
 
             <div className="mt-6 text-center text-sm">
-              <span className="text-gray-600">{"Remembered your password? "}</span>
-              <Link href="/auth/sign-in" className="text-blue-600 hover:text-blue-500">
+              <span className="text-gray-600">
+                {'Remembered your password? '}
+              </span>
+              <Link
+                href="/auth/sign-in"
+                className="text-blue-600 hover:text-blue-500"
+              >
                 Sign in
               </Link>
             </div>
@@ -121,5 +129,5 @@ export default function ForgotPasswordPage() {
         </Card>
       </div>
     </AuthGuard>
-  )
+  );
 }

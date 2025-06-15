@@ -70,7 +70,7 @@ export async function GET(
 ) {
   try {
     const authResult = await validateOrRefreshToken();
-    
+
     if (!authResult.accessToken) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }

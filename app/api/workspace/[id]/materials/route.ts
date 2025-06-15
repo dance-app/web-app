@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
-import { Figure, FigureVisibility } from '@/types';
+import { Material, MaterialVisibility } from '@/types';
 
-const mockFigures: Figure[] = [
+const mockMaterials: Material[] = [
   {
     id: '1',
     name: 'Basic Turn',
-    description: 'A fundamental turn in salsa dancing. The leader guides the follower through a complete 360-degree turn.',
+    description:
+      'A fundamental turn in salsa dancing. The leader guides the follower through a complete 360-degree turn.',
     metadata: {
       videoUrls: ['https://example.com/video1.mp4'],
       photoUrls: ['https://example.com/photo1.jpg'],
@@ -14,7 +15,7 @@ const mockFigures: Figure[] = [
       tags: ['basic', 'turn', 'fundamental'],
       estimatedLearningTime: 15,
     },
-    visibility: FigureVisibility.PUBLIC,
+    visibility: MaterialVisibility.PUBLIC,
     createdById: 'user1',
     workspaceId: '1',
     createdAt: '2024-01-01T00:00:00Z',
@@ -23,15 +24,19 @@ const mockFigures: Figure[] = [
   {
     id: '2',
     name: 'Cross Body Lead',
-    description: 'The cross body lead is one of the most important moves in salsa. It involves the follower crossing in front of the leader.',
+    description:
+      'The cross body lead is one of the most important moves in salsa. It involves the follower crossing in front of the leader.',
     metadata: {
       videoUrls: ['https://example.com/video2.mp4'],
-      photoUrls: ['https://example.com/photo2.jpg', 'https://example.com/photo2b.jpg'],
+      photoUrls: [
+        'https://example.com/photo2.jpg',
+        'https://example.com/photo2b.jpg',
+      ],
       difficulty: 3,
       tags: ['intermediate', 'cross-body', 'lead'],
       estimatedLearningTime: 30,
     },
-    visibility: FigureVisibility.WORKSPACE_SHARED,
+    visibility: MaterialVisibility.WORKSPACE_SHARED,
     createdById: 'user2',
     workspaceId: '1',
     createdAt: '2024-01-02T00:00:00Z',
@@ -40,14 +45,15 @@ const mockFigures: Figure[] = [
   {
     id: '3',
     name: 'Advanced Spin Combo',
-    description: 'A complex combination of spins and turns for advanced dancers. Requires precise timing and coordination.',
+    description:
+      'A complex combination of spins and turns for advanced dancers. Requires precise timing and coordination.',
     metadata: {
       videoUrls: ['https://example.com/video3.mp4'],
       difficulty: 5,
       tags: ['advanced', 'spin', 'combo'],
       estimatedLearningTime: 60,
     },
-    visibility: FigureVisibility.PRIVATE,
+    visibility: MaterialVisibility.PRIVATE,
     createdById: 'user1',
     workspaceId: '1',
     createdAt: '2024-01-03T00:00:00Z',
@@ -61,7 +67,7 @@ export async function GET(
 ) {
   try {
     const { accessToken, response } = await validateOrRefreshToken();
-    
+
     if (response) {
       return response;
     }
@@ -72,16 +78,21 @@ export async function GET(
 
     const workspaceId = params.id;
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    const workspaceFigures = mockFigures.filter(figure => figure.workspaceId === workspaceId);
+    const workspaceMaterials = mockMaterials.filter(
+      (material) => material.workspaceId === workspaceId
+    );
 
     return NextResponse.json({
-      figures: workspaceFigures
+      materials: workspaceMaterials,
     });
   } catch (error) {
-    console.error('GET /api/workspace/[id]/figures error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('GET /api/workspace/[id]/materials error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -91,7 +102,7 @@ export async function POST(
 ) {
   try {
     const { accessToken, response } = await validateOrRefreshToken();
-    
+
     if (response) {
       return response;
     }
@@ -103,14 +114,14 @@ export async function POST(
     const workspaceId = params.id;
     const body = await request.json();
 
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
-    const newFigure: Figure = {
-      id: `${mockFigures.length + 1}`,
-      name: body.name || 'New Figure',
+    const newMaterial: Material = {
+      id: `${mockMaterials.length + 1}`,
+      name: body.name || 'New Material',
       description: body.description || '',
       metadata: body.metadata || {},
-      visibility: body.visibility || FigureVisibility.PRIVATE,
+      visibility: body.visibility || MaterialVisibility.PRIVATE,
       createdById: 'current-user-id',
       workspaceId: workspaceId,
       sharedWithWorkspaces: body.sharedWithWorkspaces || [],
@@ -119,12 +130,15 @@ export async function POST(
       updatedAt: new Date().toISOString(),
     };
 
-    mockFigures.push(newFigure);
+    mockMaterials.push(newMaterial);
 
-    return NextResponse.json({ figure: newFigure });
+    return NextResponse.json({ material: newMaterial });
   } catch (error) {
-    console.error('POST /api/workspace/[id]/figures error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('POST /api/workspace/[id]/materials error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -134,7 +148,7 @@ export async function PUT(
 ) {
   try {
     const { accessToken, response } = await validateOrRefreshToken();
-    
+
     if (response) {
       return response;
     }
@@ -145,30 +159,37 @@ export async function PUT(
 
     const workspaceId = params.id;
     const body = await request.json();
-    const { figureId, ...updateData } = body;
+    const { materialId, ...updateData } = body;
 
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
 
-    const figureIndex = mockFigures.findIndex(
-      figure => figure.id === figureId && figure.workspaceId === workspaceId
+    const materialIndex = mockMaterials.findIndex(
+      (material) =>
+        material.id === materialId && material.workspaceId === workspaceId
     );
 
-    if (figureIndex === -1) {
-      return NextResponse.json({ error: 'Figure not found' }, { status: 404 });
+    if (materialIndex === -1) {
+      return NextResponse.json(
+        { error: 'Material not found' },
+        { status: 404 }
+      );
     }
 
-    const updatedFigure = {
-      ...mockFigures[figureIndex],
+    const updatedMaterial = {
+      ...mockMaterials[materialIndex],
       ...updateData,
       updatedAt: new Date().toISOString(),
     };
 
-    mockFigures[figureIndex] = updatedFigure;
+    mockMaterials[materialIndex] = updatedMaterial;
 
-    return NextResponse.json({ figure: updatedFigure });
+    return NextResponse.json({ material: updatedMaterial });
   } catch (error) {
-    console.error('PUT /api/workspace/[id]/figures error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('PUT /api/workspace/[id]/materials error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -178,7 +199,7 @@ export async function DELETE(
 ) {
   try {
     const { accessToken, response } = await validateOrRefreshToken();
-    
+
     if (response) {
       return response;
     }
@@ -189,27 +210,37 @@ export async function DELETE(
 
     const workspaceId = params.id;
     const url = new URL(request.url);
-    const figureId = url.searchParams.get('figureId');
+    const materialId = url.searchParams.get('materialId');
 
-    if (!figureId) {
-      return NextResponse.json({ error: 'Figure ID is required' }, { status: 400 });
+    if (!materialId) {
+      return NextResponse.json(
+        { error: 'Material ID is required' },
+        { status: 400 }
+      );
     }
 
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise((resolve) => setTimeout(resolve, 400));
 
-    const figureIndex = mockFigures.findIndex(
-      figure => figure.id === figureId && figure.workspaceId === workspaceId
+    const materialIndex = mockMaterials.findIndex(
+      (material) =>
+        material.id === materialId && material.workspaceId === workspaceId
     );
 
-    if (figureIndex === -1) {
-      return NextResponse.json({ error: 'Figure not found' }, { status: 404 });
+    if (materialIndex === -1) {
+      return NextResponse.json(
+        { error: 'Material not found' },
+        { status: 404 }
+      );
     }
 
-    mockFigures.splice(figureIndex, 1);
+    mockMaterials.splice(materialIndex, 1);
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('DELETE /api/workspace/[id]/figures error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('DELETE /api/workspace/[id]/materials error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

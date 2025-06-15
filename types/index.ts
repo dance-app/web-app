@@ -144,13 +144,13 @@ export interface Subscription {
   updatedAt: string;
 }
 
-export enum FigureVisibility {
+export enum MaterialVisibility {
   PRIVATE = 'PRIVATE',
   WORKSPACE_SHARED = 'WORKSPACE_SHARED',
   PUBLIC = 'PUBLIC',
 }
 
-export interface FigureMetadata {
+export interface MaterialMetadata {
   videoUrls?: string[];
   photoUrls?: string[];
   difficulty?: number;
@@ -158,12 +158,12 @@ export interface FigureMetadata {
   estimatedLearningTime?: number;
 }
 
-export interface Figure {
+export interface Material {
   id: string;
   name: string;
   description: string;
-  metadata?: FigureMetadata;
-  visibility: FigureVisibility;
+  metadata?: MaterialMetadata;
+  visibility: MaterialVisibility;
   createdById: string;
   createdBy?: User;
   workspaceId: string;

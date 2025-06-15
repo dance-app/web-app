@@ -1,26 +1,26 @@
-import Link from "next/link"
-import { 
-  Breadcrumb, 
-  BreadcrumbItem, 
+import Link from 'next/link';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbList, 
+  BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator
-} from "@/components/ui/breadcrumb"
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 
 export interface BreadcrumbItem {
-  label: string
-  href?: string
+  label: string;
+  href?: string;
 }
 
 interface BreadcrumbsProps {
-  title?: string
-  items?: BreadcrumbItem[]
+  title?: string;
+  items?: BreadcrumbItem[];
 }
 
 export const Breadcrumbs = ({
-  title = "Dashboard",
-  items = []
+  title = 'Dashboard',
+  items = [],
 }: BreadcrumbsProps) => {
   // If only title is provided (backward compatibility)
   if (items.length === 0) {
@@ -32,15 +32,15 @@ export const Breadcrumbs = ({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-    )
+    );
   }
 
   return (
     <Breadcrumb>
       <BreadcrumbList>
         {items.map((item, index) => {
-          const isLast = index === items.length - 1
-          
+          const isLast = index === items.length - 1;
+
           return (
             <div key={index} className="flex items-center">
               <BreadcrumbItem>
@@ -56,9 +56,9 @@ export const Breadcrumbs = ({
               </BreadcrumbItem>
               {!isLast && <BreadcrumbSeparator />}
             </div>
-          )
+          );
         })}
       </BreadcrumbList>
     </Breadcrumb>
-  )
-}
+  );
+};

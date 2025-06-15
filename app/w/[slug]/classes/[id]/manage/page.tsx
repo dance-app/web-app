@@ -1,19 +1,19 @@
-"use client"
+'use client';
 
-import { useState, useMemo } from "react"
-import { useParams } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { useState, useMemo } from 'react';
+import { useParams } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select';
 import {
   Search,
   Users,
@@ -22,14 +22,14 @@ import {
   ArrowLeft,
   Download,
   Filter,
-  Mail
-} from "lucide-react"
-import { Breadcrumbs, type BreadcrumbItem } from "@/components/breadcrumbs"
-import { useCurrentWorkspace } from "@/hooks/use-current-workspace"
-import { Spinner } from "@/components/ui/spinner"
-import { DanceRoleTag } from "@/components/ui/dance-role-tag"
-import { ParticipationTag } from "@/components/ui/participation-tag"
-import Link from "next/link"
+  Mail,
+} from 'lucide-react';
+import { Breadcrumbs, type BreadcrumbItem } from '@/components/breadcrumbs';
+import { useCurrentWorkspace } from '@/hooks/use-current-workspace';
+import { Spinner } from '@/components/ui/spinner';
+import { DanceRoleTag } from '@/components/ui/dance-role-tag';
+import { ParticipationTag } from '@/components/ui/participation-tag';
+import Link from 'next/link';
 
 // Mock event data - replace with actual API call
 const mockEvent = {
@@ -37,7 +37,12 @@ const mockEvent = {
   title: 'Beginner Salsa Class',
   description: 'Perfect for those just starting their salsa journey',
   danceTypeId: '1',
-  danceType: { id: '1', name: 'Salsa', description: 'Cuban-style salsa', workspaceId: '1' },
+  danceType: {
+    id: '1',
+    name: 'Salsa',
+    description: 'Cuban-style salsa',
+    workspaceId: '1',
+  },
   startTime: '2024-02-15T19:00:00Z',
   endTime: '2024-02-15T20:30:00Z',
   maxParticipants: 20,
@@ -58,8 +63,8 @@ const mockEvent = {
         createdAt: new Date(),
         updatedAt: new Date(),
         createdById: '1',
-        roles: []
-      }
+        roles: [],
+      },
     },
     {
       id: '2',
@@ -75,8 +80,8 @@ const mockEvent = {
         createdAt: new Date(),
         updatedAt: new Date(),
         createdById: '1',
-        roles: []
-      }
+        roles: [],
+      },
     },
     {
       id: '3',
@@ -92,35 +97,35 @@ const mockEvent = {
         createdAt: new Date(),
         updatedAt: new Date(),
         createdById: '1',
-        roles: []
-      }
-    }
+        roles: [],
+      },
+    },
   ],
   createdAt: '2024-02-01T00:00:00Z',
   updatedAt: '2024-02-01T00:00:00Z',
-}
+};
 
 export default function EventParticipationsPage() {
-  const params = useParams()
-  const eventId = params.id as string
-  const { workspace } = useCurrentWorkspace()
+  const params = useParams();
+  const eventId = params.id as string;
+  const { workspace } = useCurrentWorkspace();
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("all")
-  const [roleFilter, setRoleFilter] = useState<string>("all")
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [roleFilter, setRoleFilter] = useState<string>('all');
 
   // In real app, fetch event data based on eventId
-  const event = mockEvent
-  const isLoading = false
+  const event = mockEvent;
+  const isLoading = false;
 
   const breadcrumbItems = useMemo<BreadcrumbItem[]>(() => {
-    if (!workspace?.slug) return [{ label: "Manage Participants" }];
+    if (!workspace?.slug) return [{ label: 'Manage Participants' }];
     return [
-      { label: "Classes", href: `/w/${workspace.slug}/classes` },
+      { label: 'Classes', href: `/w/${workspace.slug}/classes` },
       { label: event.title, href: `/w/${workspace.slug}/classes/${eventId}` },
-      { label: "Manage Participants" }
+      { label: 'Manage Participants' },
     ];
-  }, [workspace?.slug, event.title, eventId])
+  }, [workspace?.slug, event.title, eventId]);
 
   if (isLoading) {
     return (
@@ -132,33 +137,45 @@ export default function EventParticipationsPage() {
           <Spinner />
         </div>
       </div>
-    )
+    );
   }
 
-  const participations = event.participations || []
-  const registeredCount = participations.filter(p => p.status === 'registered').length
-  const presentCount = participations.filter(p => p.status === 'present').length
-  const absentCount = participations.filter(p => p.status === 'absent').length
+  const participations = event.participations || [];
+  const registeredCount = participations.filter(
+    (p) => p.status === 'registered'
+  ).length;
+  const presentCount = participations.filter(
+    (p) => p.status === 'present'
+  ).length;
+  const absentCount = participations.filter(
+    (p) => p.status === 'absent'
+  ).length;
 
   // Filter participations based on search and filters
-  const filteredParticipations = participations.filter(participation => {
-    const matchesSearch = participation.student?.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === 'all' || participation.status === statusFilter
-    const matchesRole = roleFilter === 'all' || participation.student?.preferedDanceRole === roleFilter
-    return matchesSearch && matchesStatus && matchesRole
-  })
+  const filteredParticipations = participations.filter((participation) => {
+    const matchesSearch = participation.student?.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      statusFilter === 'all' || participation.status === statusFilter;
+    const matchesRole =
+      roleFilter === 'all' ||
+      participation.student?.preferedDanceRole === roleFilter;
+    return matchesSearch && matchesStatus && matchesRole;
+  });
 
-  const updateParticipationStatus = (participationId: string, status: 'registered' | 'present' | 'absent' | 'invited') => {
+  const updateParticipationStatus = (
+    participationId: string,
+    status: 'registered' | 'present' | 'absent' | 'invited'
+  ) => {
     // TODO: Implement with API call
-    console.log('Update participation:', participationId, status)
-  }
+    console.log('Update participation:', participationId, status);
+  };
 
   const bulkMarkPresent = () => {
     // TODO: Implement bulk mark as present
-    console.log('Bulk mark present')
-  }
-
-
+    console.log('Bulk mark present');
+  };
 
   return (
     <div className="flex flex-col">
@@ -180,25 +197,35 @@ export default function EventParticipationsPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold">{participations.length}</div>
-                <div className="text-xs text-muted-foreground">Total Registered</div>
+                <div className="text-2xl font-bold">
+                  {participations.length}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Total Registered
+                </div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-green-600">{presentCount}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {presentCount}
+                </div>
                 <div className="text-xs text-muted-foreground">Present</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-orange-600">{registeredCount}</div>
+                <div className="text-2xl font-bold text-orange-600">
+                  {registeredCount}
+                </div>
                 <div className="text-xs text-muted-foreground">Registered</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-red-600">{absentCount}</div>
+                <div className="text-2xl font-bold text-red-600">
+                  {absentCount}
+                </div>
                 <div className="text-xs text-muted-foreground">Absent</div>
               </CardContent>
             </Card>
@@ -265,28 +292,40 @@ export default function EventParticipationsPage() {
               <div className="space-y-3">
                 {filteredParticipations.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
-                    {searchTerm || statusFilter !== 'all' || roleFilter !== 'all'
+                    {searchTerm ||
+                    statusFilter !== 'all' ||
+                    roleFilter !== 'all'
                       ? 'No participants match the current filters'
-                      : 'No participants yet'
-                    }
+                      : 'No participants yet'}
                   </div>
                 ) : (
                   filteredParticipations.map((participation) => (
-                    <div key={participation.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <div
+                      key={participation.id}
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                    >
                       <div className="flex items-center gap-4">
                         <Avatar className="h-10 w-10">
                           <AvatarFallback>
-                            {participation.student?.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                            {participation.student?.name
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')
+                              .toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                          <div className="font-medium">{participation.student?.name}</div>
+                          <div className="font-medium">
+                            {participation.student?.name}
+                          </div>
                           <div className="text-sm text-muted-foreground">
                             {participation.student?.email}
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <DanceRoleTag role={participation.student?.preferedDanceRole} />
+                          <DanceRoleTag
+                            role={participation.student?.preferedDanceRole}
+                          />
                         </div>
                       </div>
 
@@ -298,7 +337,13 @@ export default function EventParticipationsPage() {
 
                         <Select
                           value={participation.status}
-                          onValueChange={(value: 'registered' | 'present' | 'absent' | 'invited') =>
+                          onValueChange={(
+                            value:
+                              | 'registered'
+                              | 'present'
+                              | 'absent'
+                              | 'invited'
+                          ) =>
                             updateParticipationStatus(participation.id, value)
                           }
                         >
@@ -348,12 +393,16 @@ export default function EventParticipationsPage() {
                 View Event Details
               </Button>
             </Link>
-            <Button onClick={() => {/* TODO: Save changes */ }}>
+            <Button
+              onClick={() => {
+                /* TODO: Save changes */
+              }}
+            >
               Save Changes
             </Button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -7,7 +7,10 @@ interface ApiConfig {
   headers?: Record<string, string>;
 }
 
-export async function apiCall<T>(endpoint: string, config: ApiConfig = {}): Promise<T> {
+export async function apiCall<T>(
+  endpoint: string,
+  config: ApiConfig = {}
+): Promise<T> {
   const { method = 'GET', body, headers = {} } = config;
 
   const requestConfig: RequestInit = {

@@ -33,10 +33,12 @@ export const workspacesAtom = atom<{
 export const currentWorkspaceAtom = atom<Workspace | null>((get) => {
   const slug = get(currentWorkspaceSlugAtom);
   const workspacesData = get(workspacesAtom);
-  
+
   if (!slug || !workspacesData?.workspaces) return null;
-  
-  return workspacesData.workspaces.find((w: Workspace) => w.slug === slug) || null;
+
+  return (
+    workspacesData.workspaces.find((w: Workspace) => w.slug === slug) || null
+  );
 });
 
 // Workspace preference atom with user-specific storage

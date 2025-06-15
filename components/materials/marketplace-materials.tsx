@@ -1,49 +1,65 @@
-"use client"
+'use client';
 
-import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useMarketplaceFigures, useFigureCopy } from '@/hooks/use-marketplace-figures'
-import { Figure } from '@/types'
-import { Search, Star, Clock, Eye, Copy, Download } from 'lucide-react'
-import { toast } from 'sonner'
-import { Skeleton } from '@/components/ui/skeleton'
+import { useState } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  useMarketplaceMaterials,
+  useMaterialCopy,
+} from '@/hooks/use-marketplace-materials';
+import { Material } from '@/types';
+import { Search, Star, Clock, Eye, Copy, Download } from 'lucide-react';
+import { toast } from 'sonner';
+import { Skeleton } from '@/components/ui/skeleton';
 
-interface MarketplaceFiguresProps {
-  onView?: (figure: Figure) => void
+interface MarketplaceMaterialsProps {
+  onView?: (material: Material) => void;
 }
 
-export function MarketplaceFigures({ onView }: MarketplaceFiguresProps) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [difficultyFilter, setDifficultyFilter] = useState<number | undefined>()
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
+export function MarketplaceMaterials({ onView }: MarketplaceMaterialsProps) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [difficultyFilter, setDifficultyFilter] = useState<
+    number | undefined
+  >();
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const { figures, isLoading, hasMore } = useMarketplaceFigures({
+  const { materials, isLoading, hasMore } = useMarketplaceMaterials({
     search: searchTerm || undefined,
     difficulty: difficultyFilter,
     tags: selectedTags.length > 0 ? selectedTags : undefined,
     limit: 20,
-  })
+  });
 
-  const { mutate: copyFigure, isPending: isCopying } = useFigureCopy()
+  const { mutate: copyMaterial, isPending: isCopying } = useMaterialCopy();
 
-  const handleCopyFigure = (figure: Figure) => {
-    copyFigure(figure.id, {
+  const handleCopyMaterial = (material: Material) => {
+    copyMaterial(material.id, {
       onSuccess: () => {
-        toast.success(`"${figure.name}" copied to your workspace`)
+        toast.success(`"${material.name}" copied to your workspace`);
       },
       onError: () => {
-        toast.error('Failed to copy figure')
+        toast.error('Failed to copy material');
       },
-    })
-  }
+    });
+  };
 
   const getDifficultyStars = (difficulty?: number) => {
-    if (!difficulty) return null
+    if (!difficulty) return null;
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
@@ -51,8 +67,8 @@ export function MarketplaceFigures({ onView }: MarketplaceFiguresProps) {
           i < difficulty ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
         }`}
       />
-    ))
-  }
+    ));
+  };
 
   if (isLoading) {
     return (
@@ -67,7 +83,7 @@ export function MarketplaceFigures({ onView }: MarketplaceFiguresProps) {
           ))}
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -76,16 +92,18 @@ export function MarketplaceFigures({ onView }: MarketplaceFiguresProps) {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
-            placeholder="Search marketplace figures..."
+            placeholder="Search marketplace materials..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
-        
-        <Select 
-          value={difficultyFilter?.toString() || 'all'} 
-          onValueChange={(value) => setDifficultyFilter(value === 'all' ? undefined : parseInt(value))}
+
+        <Select
+          value={difficultyFilter?.toString() || 'all'}
+          onValueChange={(value) =>
+            setDifficultyFilter(value === 'all' ? undefined : parseInt(value))
+          }
         >
           <SelectTrigger className="w-full sm:w-32">
             <SelectValue placeholder="Difficulty" />
@@ -102,37 +120,42 @@ export function MarketplaceFigures({ onView }: MarketplaceFiguresProps) {
       </div>
 
       <div className="text-sm text-gray-600 mb-4">
-        Found {figures.length} figures in marketplace
+        Found {materials.length} materials in marketplace
       </div>
 
-      {figures.length === 0 ? (
+      {materials.length === 0 ? (
         <div className="text-center py-12">
-          <div className="text-gray-500 text-lg mb-2">No figures found</div>
+          <div className="text-gray-500 text-lg mb-2">No materials found</div>
           <div className="text-gray-400 text-sm">
             Try adjusting your search or filters
           </div>
         </div>
       ) : (
         <div className="grid gap-4">
-          {figures.map((figure) => (
-            <Card key={figure.id} className="hover:shadow-md transition-all duration-200 group">
+          {materials.map((material) => (
+            <Card
+              key={material.id}
+              className="hover:shadow-md transition-all duration-200 group"
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <CardTitle className="text-lg mb-2 truncate">{figure.name}</CardTitle>
+                    <CardTitle className="text-lg mb-2 truncate">
+                      {material.name}
+                    </CardTitle>
                     <div className="flex items-center gap-2 mb-2">
                       <Badge className="bg-green-100 text-green-800 text-xs">
                         Public
                       </Badge>
-                      {figure.metadata?.difficulty && (
+                      {material.metadata?.difficulty && (
                         <div className="flex items-center gap-1">
-                          {getDifficultyStars(figure.metadata.difficulty)}
+                          {getDifficultyStars(material.metadata.difficulty)}
                         </div>
                       )}
-                      {figure.metadata?.estimatedLearningTime && (
+                      {material.metadata?.estimatedLearningTime && (
                         <div className="flex items-center gap-1 text-xs text-gray-500">
                           <Clock className="h-3 w-3" />
-                          {figure.metadata.estimatedLearningTime}min
+                          {material.metadata.estimatedLearningTime}min
                         </div>
                       )}
                     </div>
@@ -141,7 +164,7 @@ export function MarketplaceFigures({ onView }: MarketplaceFiguresProps) {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => onView?.(figure)}
+                      onClick={() => onView?.(material)}
                     >
                       <Eye className="h-4 w-4 mr-2" />
                       View
@@ -149,7 +172,7 @@ export function MarketplaceFigures({ onView }: MarketplaceFiguresProps) {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleCopyFigure(figure)}
+                      onClick={() => handleCopyMaterial(material)}
                       disabled={isCopying}
                     >
                       <Copy className="h-4 w-4 mr-2" />
@@ -160,24 +183,29 @@ export function MarketplaceFigures({ onView }: MarketplaceFiguresProps) {
               </CardHeader>
               <CardContent className="pt-0">
                 <CardDescription className="line-clamp-2 mb-3">
-                  {figure.description}
+                  {material.description}
                 </CardDescription>
-                {figure.metadata?.tags && figure.metadata.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {figure.metadata.tags.slice(0, 4).map((tag, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                    {figure.metadata.tags.length > 4 && (
-                      <Badge variant="secondary" className="text-xs">
-                        +{figure.metadata.tags.length - 4} more
-                      </Badge>
-                    )}
-                  </div>
-                )}
+                {material.metadata?.tags &&
+                  material.metadata.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {material.metadata.tags.slice(0, 4).map((tag, index) => (
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="text-xs"
+                        >
+                          {tag}
+                        </Badge>
+                      ))}
+                      {material.metadata.tags.length > 4 && (
+                        <Badge variant="secondary" className="text-xs">
+                          +{material.metadata.tags.length - 4} more
+                        </Badge>
+                      )}
+                    </div>
+                  )}
                 <div className="mt-3 text-xs text-gray-500">
-                  Added {new Date(figure.createdAt).toLocaleDateString()}
+                  Added {new Date(material.createdAt).toLocaleDateString()}
                 </div>
               </CardContent>
             </Card>
@@ -187,12 +215,17 @@ export function MarketplaceFigures({ onView }: MarketplaceFiguresProps) {
 
       {hasMore && (
         <div className="text-center">
-          <Button variant="outline" onClick={() => {/* Load more logic */}}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              /* Load more logic */
+            }}
+          >
             <Download className="h-4 w-4 mr-2" />
             Load More
           </Button>
         </div>
       )}
     </div>
-  )
+  );
 }

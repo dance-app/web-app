@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Pencil } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react';
+import { Pencil } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,37 +13,46 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { type Member } from "@/types"
+} from '@/components/ui/alert-dialog';
+import { type Member } from '@/types';
 
 interface MembersTableProps {
-  members: Member[]
-  onEdit: (member: Member) => void
-  onDelete: (id: string) => void
-  onMemberClick: (member: Member) => void
-  isLoading?: boolean
+  members: Member[];
+  onEdit: (member: Member) => void;
+  onDelete: (id: string) => void;
+  onMemberClick: (member: Member) => void;
+  isLoading?: boolean;
 }
 
-export function MembersTable({ members, onEdit, onDelete, onMemberClick, isLoading }: MembersTableProps) {
-  const [deleteId, setDeleteId] = useState<string | null>(null)
+export function MembersTable({
+  members,
+  onEdit,
+  onDelete,
+  onMemberClick,
+  isLoading,
+}: MembersTableProps) {
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const handleDelete = () => {
     if (deleteId) {
-      onDelete(deleteId)
-      setDeleteId(null)
+      onDelete(deleteId);
+      setDeleteId(null);
     }
-  }
+  };
 
   const handleEdit = (e: React.MouseEvent, member: Member) => {
-    e.stopPropagation()
-    onEdit(member)
-  }
+    e.stopPropagation();
+    onEdit(member);
+  };
 
   if (isLoading) {
     return (
       <div className="space-y-1">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
+          <div
+            key={i}
+            className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm"
+          >
             <div className="flex items-center space-x-4">
               <div className="h-12 w-12 rounded-full bg-gray-200 animate-pulse" />
               <div className="space-y-2">
@@ -59,16 +68,18 @@ export function MembersTable({ members, onEdit, onDelete, onMemberClick, isLoadi
           </div>
         ))}
       </div>
-    )
+    );
   }
 
   if (members.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <div className="text-gray-500 text-lg mb-2">No members found</div>
-        <div className="text-gray-400 text-sm">Try adjusting your search or add new members</div>
+        <div className="text-gray-400 text-sm">
+          Try adjusting your search or add new members
+        </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -86,9 +97,9 @@ export function MembersTable({ members, onEdit, onDelete, onMemberClick, isLoadi
                 <AvatarImage src={undefined} alt={member.name} />
                 <AvatarFallback className="bg-gray-100 text-gray-500 text-xs">
                   {member.name
-                    .split(" ")
+                    .split(' ')
                     .map((n) => n[0])
-                    .join("")
+                    .join('')
                     .toUpperCase()}
                 </AvatarFallback>
               </Avatar>
@@ -117,17 +128,21 @@ export function MembersTable({ members, onEdit, onDelete, onMemberClick, isLoadi
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the student from your records.
+              This action cannot be undone. This will permanently delete the
+              student from your records.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-red-600 hover:bg-red-700"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
+  );
 }

@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCurrentWorkspace } from './use-current-workspace';
 
-export function useFigures() {
+export function useMaterials() {
   const { workspace } = useCurrentWorkspace();
-  
+
   const { data, ...query } = useQuery({
-    queryKey: ['figures', workspace?.id],
+    queryKey: ['materials', workspace?.id],
     queryFn: () =>
-      fetch(`/api/workspace/${workspace?.id}/figures`, {
+      fetch(`/api/workspace/${workspace?.id}/materials`, {
         method: 'GET',
         credentials: 'include',
       }).then((r) => r.json()),
@@ -15,7 +15,7 @@ export function useFigures() {
   });
 
   return {
-    figures: data?.figures || [],
+    materials: data?.materials || [],
     ...query,
   };
 }

@@ -1,5 +1,5 @@
-export const Spinner = ({ className = "" }) => {
-  const defaultClasses = "flex items-center justify-center min-h-screen";
+export const Spinner = ({ className = '' }) => {
+  const defaultClasses = 'flex items-center justify-center min-h-screen';
 
   return (
     <div className={`${defaultClasses} ${className}`}>

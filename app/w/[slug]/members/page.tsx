@@ -1,35 +1,60 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Plus, Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { MembersTable } from "@/components/members/members-table"
-import { useMembers } from "@/hooks/use-members"
-import { useSelectedMember } from "@/hooks/use-selected-member"
-import type { Member } from "@/types"
-import { Breadcrumbs } from "@/components/breadcrumbs"
-import { MemberDetailDrawer } from "@/components/members/member-details-drawer"
-import { PageLayout } from "@/components/page-layout"
+import { useState } from 'react';
+import { Plus, Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { MembersTable } from '@/components/members/members-table';
+import { useMembers } from '@/hooks/use-members';
+import { useSelectedMember } from '@/hooks/use-selected-member';
+import type { Member } from '@/types';
+import { Breadcrumbs } from '@/components/breadcrumbs';
+import { MemberDetailDrawer } from '@/components/members/member-details-drawer';
+import { PageLayout } from '@/components/page-layout';
 
 export const mockDanceTypes = [
-  { id: "1", name: "Salsa", description: "Cuban-style salsa", workspaceId: "1" },
-  { id: "2", name: "Bachata", description: "Dominican bachata", workspaceId: "1" },
-  { id: "3", name: "Merengue", description: "Traditional merengue", workspaceId: "1" },
-  { id: "4", name: "Kizomba", description: "Angolan kizomba", workspaceId: "1" },
-  { id: "5", name: "Cha Cha", description: "Cuban cha cha cha", workspaceId: "1" },
-]
+  {
+    id: '1',
+    name: 'Salsa',
+    description: 'Cuban-style salsa',
+    workspaceId: '1',
+  },
+  {
+    id: '2',
+    name: 'Bachata',
+    description: 'Dominican bachata',
+    workspaceId: '1',
+  },
+  {
+    id: '3',
+    name: 'Merengue',
+    description: 'Traditional merengue',
+    workspaceId: '1',
+  },
+  {
+    id: '4',
+    name: 'Kizomba',
+    description: 'Angolan kizomba',
+    workspaceId: '1',
+  },
+  {
+    id: '5',
+    name: 'Cha Cha',
+    description: 'Cuban cha cha cha',
+    workspaceId: '1',
+  },
+];
 
 export default function MembersPage() {
-  const [createFormOpen, setCreateFormOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [createFormOpen, setCreateFormOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const { members, isLoading } = useMembers()
-  const { selectedMember, setSelectedMember } = useSelectedMember(members)
+  const { members, isLoading } = useMembers();
+  const { selectedMember, setSelectedMember } = useSelectedMember(members);
 
-  const createStudent = () => { }//useCreateStudent()
-  const updateStudent = () => { }//useUpdateStudent()
-  const deleteStudent = () => { }//useDeleteStudent()
+  const createStudent = () => {}; //useCreateStudent()
+  const updateStudent = () => {}; //useUpdateStudent()
+  const deleteStudent = () => {}; //useDeleteStudent()
 
   // const handleCreateStudent = async (data: Omit<Student, "id" | "createdAt" | "updatedAt">) => {
   //   try {
@@ -87,7 +112,6 @@ export default function MembersPage() {
     //     return result
     //   } else {
     //     // const result = await createStudent(data)
-
     //     if (result.success) {
     //       toast.success("Student created successfully")
     //     } else {
@@ -95,33 +119,35 @@ export default function MembersPage() {
     //     }
     //     return result
     //   }
-  }
+  };
 
   return (
-    <PageLayout header={(
-      <>
-        <Breadcrumbs title="Members" />
-        <div className="flex gap-2" >
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search students..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+    <PageLayout
+      header={
+        <>
+          <Breadcrumbs title="Members" />
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search students..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Button onClick={() => setCreateFormOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Member
+            </Button>
           </div>
-          <Button onClick={() => setCreateFormOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Member
-          </Button>
-        </div>
-      </>
-    )}>
+        </>
+      }
+    >
       <MembersTable
         members={members}
         onEdit={setSelectedMember}
-        onDelete={() => { }}
+        onDelete={() => {}}
         onMemberClick={setSelectedMember}
         isLoading={isLoading}
       />
@@ -131,12 +157,14 @@ export default function MembersPage() {
         open={!!selectedMember}
         onOpenChange={(open) => {
           if (!open) {
-            setSelectedMember(null)
+            setSelectedMember(null);
           }
         }}
         // danceTypes={mockDanceTypes}
-        onSubmit={() => new Promise((resolve) => resolve({ success: true, error: undefined }))}
+        onSubmit={() =>
+          new Promise((resolve) => resolve({ success: true, error: undefined }))
+        }
       />
     </PageLayout>
-  )
+  );
 }

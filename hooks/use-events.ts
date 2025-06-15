@@ -4,7 +4,7 @@ import { useCurrentWorkspace } from './use-current-workspace';
 
 export function useEvents() {
   const { workspace } = useCurrentWorkspace();
-  
+
   const { data, ...query } = useQuery({
     queryKey: ['events', workspace?.id],
     queryFn: () =>
