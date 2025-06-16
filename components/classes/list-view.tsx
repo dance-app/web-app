@@ -14,7 +14,8 @@ import { EventUpdateModal } from '@/components/events/event-update-modal';
 import { EventDetailsModal } from '@/components/events/event-details-modal';
 import { EventParticipantsModal } from '@/components/events/event-participants-modal';
 import { Calendar, Clock, Users } from 'lucide-react';
-import type { Event, DanceType } from '@/types';
+import type { Event } from '@/types';
+import { DanceType } from '@/types/dance';
 
 interface ListViewProps {
   events: Event[];

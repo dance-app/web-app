@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCurrentWorkspace } from './use-current-workspace';
+import { MaterialsResponse } from '@/types/material';
 
 export function useMaterials() {
   const { workspace } = useCurrentWorkspace();
 
-  const { data, ...query } = useQuery({
-    queryKey: ['materials', workspace?.id],
+  const { data, ...query } = useQuery<MaterialsResponse>({
+    queryKey: ['materials', workspace?.slug],
     queryFn: () =>
-      fetch(`/api/workspace/${workspace?.id}/materials`, {
+      fetch(`/api/workspace/${workspace?.slug}/materials`, {
         method: 'GET',
         credentials: 'include',
       }).then((r) => r.json()),
@@ -15,7 +16,8 @@ export function useMaterials() {
   });
 
   return {
-    materials: data?.materials || [],
+    materials: data?.materials.data || [],
+    meta: data?.materials.meta || {},
     ...query,
   };
 }

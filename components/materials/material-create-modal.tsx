@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { useMaterialCreate } from '@/hooks/use-material-create';
-import { MaterialVisibility } from '@/types';
+import { MaterialVisibility } from '@/types/material';
 import { toast } from 'sonner';
 
 const formSchema = z.object({
@@ -79,21 +79,21 @@ export function MaterialCreateModal({
       difficulty: data.difficulty,
       tags: data.tags
         ? data.tags
-            .split(',')
-            .map((tag) => tag.trim())
-            .filter(Boolean)
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter(Boolean)
         : [],
       videoUrls: data.videoUrls
         ? data.videoUrls
-            .split(',')
-            .map((url) => url.trim())
-            .filter(Boolean)
+          .split(',')
+          .map((url) => url.trim())
+          .filter(Boolean)
         : [],
       photoUrls: data.photoUrls
         ? data.photoUrls
-            .split(',')
-            .map((url) => url.trim())
-            .filter(Boolean)
+          .split(',')
+          .map((url) => url.trim())
+          .filter(Boolean)
         : [],
       estimatedLearningTime: data.estimatedLearningTime,
     };
@@ -103,7 +103,6 @@ export function MaterialCreateModal({
         name: data.name,
         description: data.description,
         visibility: data.visibility,
-        metadata,
       },
       {
         onSuccess: () => {
@@ -179,7 +178,7 @@ export function MaterialCreateModal({
                         <SelectItem value={MaterialVisibility.PRIVATE}>
                           Private
                         </SelectItem>
-                        <SelectItem value={MaterialVisibility.WORKSPACE_SHARED}>
+                        <SelectItem value={MaterialVisibility.WORKSPACE}>
                           Workspace Shared
                         </SelectItem>
                         <SelectItem value={MaterialVisibility.PUBLIC}>

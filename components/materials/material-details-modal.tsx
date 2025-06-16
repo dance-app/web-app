@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Material, MaterialVisibility } from '@/types';
+import { Material, MaterialVisibility } from '@/types/material';
 import {
   Clock,
   Star,
@@ -44,7 +44,7 @@ export function MaterialDetailsModal({
     switch (visibility) {
       case MaterialVisibility.PUBLIC:
         return 'bg-green-100 text-green-800 hover:bg-green-200';
-      case MaterialVisibility.WORKSPACE_SHARED:
+      case MaterialVisibility.WORKSPACE:
         return 'bg-blue-100 text-blue-800 hover:bg-blue-200';
       case MaterialVisibility.PRIVATE:
         return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
@@ -58,9 +58,8 @@ export function MaterialDetailsModal({
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${
-          i < difficulty ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-        }`}
+        className={`h-4 w-4 ${i < difficulty ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+          }`}
       />
     ));
   };
@@ -78,11 +77,11 @@ export function MaterialDetailsModal({
                 <Badge className={getVisibilityColor(material.visibility)}>
                   {material.visibility.replace('_', ' ').toLowerCase()}
                 </Badge>
-                {material.metadata?.difficulty && (
+                {/* {material.metadata?.difficulty && (
                   <div className="flex items-center gap-1">
                     {getDifficultyStars(material.metadata.difficulty)}
                   </div>
-                )}
+                )} */}
               </div>
             </div>
             {canEdit && (
@@ -98,7 +97,7 @@ export function MaterialDetailsModal({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => onDelete?.(material.id)}
+                  onClick={() => onDelete?.(material.id.toString())}
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete
@@ -117,11 +116,11 @@ export function MaterialDetailsModal({
               </p>
             </div>
 
-            {material.metadata && (
+            {material && (
               <>
                 <Separator />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {material.metadata.estimatedLearningTime && (
+                  {/* {material.metadata.estimatedLearningTime && (
                     <div className="flex items-center gap-3">
                       <Clock className="h-5 w-5 text-gray-500" />
                       <div>
@@ -131,9 +130,9 @@ export function MaterialDetailsModal({
                         </p>
                       </div>
                     </div>
-                  )}
+                  )} */}
 
-                  {material.metadata.tags &&
+                  {/* {material.metadata.tags &&
                     material.metadata.tags.length > 0 && (
                       <div className="flex items-start gap-3">
                         <Tag className="h-5 w-5 text-gray-500 mt-1" />
@@ -152,68 +151,68 @@ export function MaterialDetailsModal({
                           </div>
                         </div>
                       </div>
-                    )}
+                    )} */}
                 </div>
 
-                {(material.metadata.videoUrls?.length ||
+                {/* {(material.metadata.videoUrls?.length ||
                   material.metadata.photoUrls?.length) && (
-                  <>
-                    <Separator />
-                    <div className="space-y-4">
-                      {material.metadata.videoUrls &&
-                        material.metadata.videoUrls.length > 0 && (
-                          <div>
-                            <div className="flex items-center gap-2 mb-3">
-                              <Video className="h-5 w-5 text-gray-500" />
-                              <h3 className="font-semibold">Videos</h3>
+                    <>
+                      <Separator />
+                      <div className="space-y-4">
+                        {material.metadata.videoUrls &&
+                          material.metadata.videoUrls.length > 0 && (
+                            <div>
+                              <div className="flex items-center gap-2 mb-3">
+                                <Video className="h-5 w-5 text-gray-500" />
+                                <h3 className="font-semibold">Videos</h3>
+                              </div>
+                              <div className="space-y-2">
+                                {material.metadata.videoUrls.map((url, index) => (
+                                  <div
+                                    key={index}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => window.open(url, '_blank')}
+                                      className="justify-start"
+                                    >
+                                      <Video className="h-4 w-4 mr-2" />
+                                      Video {index + 1}
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                            <div className="space-y-2">
-                              {material.metadata.videoUrls.map((url, index) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center gap-2"
-                                >
+                          )}
+
+                        {material.metadata.photoUrls &&
+                          material.metadata.photoUrls.length > 0 && (
+                            <div>
+                              <div className="flex items-center gap-2 mb-3">
+                                <ImageIcon className="h-5 w-5 text-gray-500" />
+                                <h3 className="font-semibold">Photos</h3>
+                              </div>
+                              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                {material.metadata.photoUrls.map((url, index) => (
                                   <Button
+                                    key={index}
                                     variant="outline"
                                     size="sm"
                                     onClick={() => window.open(url, '_blank')}
                                     className="justify-start"
                                   >
-                                    <Video className="h-4 w-4 mr-2" />
-                                    Video {index + 1}
+                                    <ImageIcon className="h-4 w-4 mr-2" />
+                                    Photo {index + 1}
                                   </Button>
-                                </div>
-                              ))}
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        )}
-
-                      {material.metadata.photoUrls &&
-                        material.metadata.photoUrls.length > 0 && (
-                          <div>
-                            <div className="flex items-center gap-2 mb-3">
-                              <ImageIcon className="h-5 w-5 text-gray-500" />
-                              <h3 className="font-semibold">Photos</h3>
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                              {material.metadata.photoUrls.map((url, index) => (
-                                <Button
-                                  key={index}
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => window.open(url, '_blank')}
-                                  className="justify-start"
-                                >
-                                  <ImageIcon className="h-4 w-4 mr-2" />
-                                  Photo {index + 1}
-                                </Button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                    </div>
-                  </>
-                )}
+                          )}
+                      </div>
+                    </>
+                  )} */}
               </>
             )}
 

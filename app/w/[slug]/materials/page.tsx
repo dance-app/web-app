@@ -12,9 +12,9 @@ import { MaterialDetailsModal } from '@/components/materials/material-details-mo
 import { useMaterials } from '@/hooks/use-materials';
 import { useMaterialDelete } from '@/hooks/use-material-delete';
 import { useCurrentWorkspace } from '@/hooks/use-current-workspace';
-import { Material } from '@/types';
 import { toast } from 'sonner';
 import { PageLayout } from '@/components/page-layout';
+import { Material } from '@/types/material';
 
 export default function MaterialsPage() {
   const { workspace } = useCurrentWorkspace();
@@ -52,17 +52,12 @@ export default function MaterialsPage() {
       });
     }
   };
-
-  const breadcrumbItems = [
-    { label: workspace?.name || 'Workspace', href: `/w/${workspace?.slug}` },
-    { label: 'Materials', href: `/w/${workspace?.slug}/materials` },
-  ];
-
+  console.log(materials)
   return (
     <PageLayout
       header={
         <>
-          <Breadcrumbs items={breadcrumbItems} />
+          <Breadcrumbs items={[{ label: 'Materials' }]} />
           <Button onClick={() => setCreateModalOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Create Material
@@ -83,17 +78,6 @@ export default function MaterialsPage() {
         </TabsList>
 
         <TabsContent value="workspace" className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-semibold">
-                Your Workspace Materials
-              </h2>
-              <p className="text-gray-600 text-sm">
-                Materials created in or copied to this workspace
-              </p>
-            </div>
-          </div>
-
           <MaterialsList
             materials={materials}
             isLoading={isLoading}

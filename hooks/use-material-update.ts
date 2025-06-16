@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCurrentWorkspace } from './use-current-workspace';
-import type { MaterialVisibility, MaterialMetadata } from '@/types';
+import type { MaterialVisibility } from '@/types/material';
 
 interface UpdateMaterialData {
   materialId: string;
   name?: string;
   description?: string;
-  metadata?: MaterialMetadata;
+  // metadata?: MaterialMetadata;
   visibility?: MaterialVisibility;
   sharedWithWorkspaces?: string[];
   sharedWithUsers?: string[];

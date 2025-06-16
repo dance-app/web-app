@@ -22,7 +22,7 @@ import {
   useMarketplaceMaterials,
   useMaterialCopy,
 } from '@/hooks/use-marketplace-materials';
-import { Material } from '@/types';
+import { Material } from '@/types/material';
 import { Search, Star, Clock, Eye, Copy, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -48,7 +48,7 @@ export function MarketplaceMaterials({ onView }: MarketplaceMaterialsProps) {
   const { mutate: copyMaterial, isPending: isCopying } = useMaterialCopy();
 
   const handleCopyMaterial = (material: Material) => {
-    copyMaterial(material.id, {
+    copyMaterial(material.id.toString(), {
       onSuccess: () => {
         toast.success(`"${material.name}" copied to your workspace`);
       },
@@ -63,9 +63,8 @@ export function MarketplaceMaterials({ onView }: MarketplaceMaterialsProps) {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-3 w-3 ${
-          i < difficulty ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-        }`}
+        className={`h-3 w-3 ${i < difficulty ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+          }`}
       />
     ));
   };
@@ -132,7 +131,7 @@ export function MarketplaceMaterials({ onView }: MarketplaceMaterialsProps) {
         </div>
       ) : (
         <div className="grid gap-4">
-          {materials.map((material) => (
+          {materials.map((material: any) => (
             <Card
               key={material.id}
               className="hover:shadow-md transition-all duration-200 group"
@@ -188,7 +187,7 @@ export function MarketplaceMaterials({ onView }: MarketplaceMaterialsProps) {
                 {material.metadata?.tags &&
                   material.metadata.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1">
-                      {material.metadata.tags.slice(0, 4).map((tag, index) => (
+                      {material.metadata.tags.slice(0, 4).map((tag: any, index: any) => (
                         <Badge
                           key={index}
                           variant="secondary"

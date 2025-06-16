@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Material, MaterialVisibility } from '@/types';
+import { Material, MaterialVisibility } from '@/types/material';
 import { Search, Star, Clock, Eye, Edit, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -46,17 +46,19 @@ export function MaterialsList({
   const filteredMaterials = materials.filter((material) => {
     const matchesSearch =
       material.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      material.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      material.metadata?.tags?.some((tag) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      material.description.toLowerCase().includes(searchTerm.toLowerCase())
+    // ||
+    // material.metadata?.tags?.some((tag) =>
+    //   tag.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
 
     const matchesVisibility =
       visibilityFilter === 'all' || material.visibility === visibilityFilter;
 
     const matchesDifficulty =
-      difficultyFilter === 'all' ||
-      material.metadata?.difficulty?.toString() === difficultyFilter;
+      difficultyFilter === 'all'
+    //  ||
+    // material.metadata?.difficulty?.toString() === difficultyFilter;
 
     return matchesSearch && matchesVisibility && matchesDifficulty;
   });
@@ -65,7 +67,7 @@ export function MaterialsList({
     switch (visibility) {
       case MaterialVisibility.PUBLIC:
         return 'bg-green-100 text-green-800 hover:bg-green-200';
-      case MaterialVisibility.WORKSPACE_SHARED:
+      case MaterialVisibility.WORKSPACE:
         return 'bg-blue-100 text-blue-800 hover:bg-blue-200';
       case MaterialVisibility.PRIVATE:
         return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
@@ -79,9 +81,8 @@ export function MaterialsList({
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-3 w-3 ${
-          i < difficulty ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-        }`}
+        className={`h-3 w-3 ${i < difficulty ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+          }`}
       />
     ));
   };
@@ -123,7 +124,7 @@ export function MaterialsList({
           <SelectContent>
             <SelectItem value="all">All Visibility</SelectItem>
             <SelectItem value={MaterialVisibility.PUBLIC}>Public</SelectItem>
-            <SelectItem value={MaterialVisibility.WORKSPACE_SHARED}>
+            <SelectItem value={MaterialVisibility.WORKSPACE}>
               Workspace
             </SelectItem>
             <SelectItem value={MaterialVisibility.PRIVATE}>Private</SelectItem>
@@ -150,8 +151,8 @@ export function MaterialsList({
           <div className="text-gray-500 text-lg mb-2">No materials found</div>
           <div className="text-gray-400 text-sm">
             {searchTerm ||
-            visibilityFilter !== 'all' ||
-            difficultyFilter !== 'all'
+              visibilityFilter !== 'all' ||
+              difficultyFilter !== 'all'
               ? 'Try adjusting your filters'
               : 'Create your first material to get started'}
           </div>
@@ -177,17 +178,17 @@ export function MaterialsList({
                       >
                         {material.visibility.replace('_', ' ').toLowerCase()}
                       </Badge>
-                      {material.metadata?.difficulty && (
+                      {/* {material.metadata?.difficulty && (
                         <div className="flex items-center gap-1">
                           {getDifficultyStars(material.metadata.difficulty)}
                         </div>
-                      )}
-                      {material.metadata?.estimatedLearningTime && (
+                      )} */}
+                      {/* {material.metadata?.estimatedLearningTime && (
                         <div className="flex items-center gap-1 text-xs text-gray-500">
                           <Clock className="h-3 w-3" />
                           {material.metadata.estimatedLearningTime}min
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -218,7 +219,7 @@ export function MaterialsList({
                           size="sm"
                           onClick={(e) => {
                             e.stopPropagation();
-                            onDelete?.(material.id);
+                            onDelete?.(material.id.toString());
                           }}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -232,7 +233,7 @@ export function MaterialsList({
                 <CardDescription className="line-clamp-2 mb-3">
                   {material.description}
                 </CardDescription>
-                {material.metadata?.tags &&
+                {/* {material.metadata?.tags &&
                   material.metadata.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {material.metadata.tags.slice(0, 3).map((tag, index) => (
@@ -250,7 +251,7 @@ export function MaterialsList({
                         </Badge>
                       )}
                     </div>
-                  )}
+                  )} */}
               </CardContent>
             </Card>
           ))}

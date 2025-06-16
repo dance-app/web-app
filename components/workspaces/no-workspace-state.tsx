@@ -102,6 +102,7 @@ export default function NoWorkspaceState() {
                       updatedAt: new Date().toISOString(),
                       id: 'fake-configuration-id',
                       weekStart: WeekStart.MONDAY,
+                      danceTypes: []
                     },
                   }}
                 />

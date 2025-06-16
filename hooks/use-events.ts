@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import type { Event, DanceType } from '@/types';
 import { useCurrentWorkspace } from './use-current-workspace';
 
 export function useEvents() {

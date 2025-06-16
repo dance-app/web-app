@@ -1,3 +1,5 @@
+import { DanceType } from './dance';
+
 export type LocalApiResponse<SuccessType, ErrorMessageType> =
   | {
       success: true;
@@ -99,13 +101,6 @@ export type Workspace = {
   // invitations Invitation[]
 };
 
-export interface DanceType {
-  id: string;
-  name: string;
-  description?: string;
-  workspaceId: string;
-}
-
 export interface Event {
   id: string;
   title: string;
@@ -140,36 +135,6 @@ export interface Subscription {
   totalClasses: number;
   expiresAt?: string;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export enum MaterialVisibility {
-  PRIVATE = 'PRIVATE',
-  WORKSPACE_SHARED = 'WORKSPACE_SHARED',
-  PUBLIC = 'PUBLIC',
-}
-
-export interface MaterialMetadata {
-  videoUrls?: string[];
-  photoUrls?: string[];
-  difficulty?: number;
-  tags?: string[];
-  estimatedLearningTime?: number;
-}
-
-export interface Material {
-  id: string;
-  name: string;
-  description: string;
-  metadata?: MaterialMetadata;
-  visibility: MaterialVisibility;
-  createdById: string;
-  createdBy?: User;
-  workspaceId: string;
-  workspace?: Workspace;
-  sharedWithWorkspaces?: string[];
-  sharedWithUsers?: string[];
   createdAt: string;
   updatedAt: string;
 }
