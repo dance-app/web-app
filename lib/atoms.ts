@@ -1,19 +1,25 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import type { AuthState, User, Workspace } from '@/types';
+import type { Session } from 'next-auth';
 
+// NextAuth session atom
+export const sessionAtom = atom<Session | null>(null);
+
+// Derived user atom from session
+export const authUserAtom = atom<{ user: User | null }>((get) => {
+  const session = get(sessionAtom);
+  return {
+    user: session?.user || null,
+  };
+});
+
+// Legacy auth atom for compatibility (can be removed later)
 export const authAtom = atomWithStorage<AuthState>('auth-state', {
   status: 'loading',
   token: null,
   refreshToken: null,
 });
-
-export const authUserAtom = atomWithStorage<{ user: User | null }>(
-  'auth-user',
-  {
-    user: null,
-  }
-);
 
 // Workspace state atoms
 export const currentWorkspaceSlugAtom = atom<string | null>(null);
@@ -30,16 +36,16 @@ export const workspacesAtom = atom<{
 });
 
 // Derived atom for current workspace from workspaces list
-export const currentWorkspaceAtom = atom<Workspace | null>((get) => {
-  const slug = get(currentWorkspaceSlugAtom);
-  const workspacesData = get(workspacesAtom);
+// export const currentWorkspaceAtom = atom<Workspace | null>((get) => {
+//   const slug = get(currentWorkspaceSlugAtom);
+//   const workspacesData = get(workspacesAtom);
 
-  if (!slug || !workspacesData?.workspaces) return null;
+//   if (!slug || !workspacesData?.workspaces) return null;
 
-  return (
-    workspacesData.workspaces.find((w: Workspace) => w.slug === slug) || null
-  );
-});
+//   return (
+//     workspacesData.workspaces.find((w: Workspace) => w.slug === slug) || null
+//   );
+// });
 
 // Workspace preference atom with user-specific storage
 export const workspacePreferenceAtom = atomWithStorage<{

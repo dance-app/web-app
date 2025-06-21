@@ -46,7 +46,7 @@ export function AuthAvatar() {
           {user.firstName}
         </DropdownMenuLabel>
         <div className="text-xs text-muted-foreground px-2 pb-2 truncate">
-          {user.accounts?.[0].email}
+          {user.accounts?.[0]?.email}
         </div>
         <DropdownMenuSeparator />
 

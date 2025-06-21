@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 export function useSignOut() {
   const queryClient = useQueryClient();
@@ -9,29 +10,20 @@ export function useSignOut() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch('/api/auth/sign-out', {
-        method: 'POST',
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data?.error || 'Failed to sign out');
-      }
-
-      return res.json();
+      await signOut({ redirect: false });
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['authUser'] });
+      // Clear all queries
       queryClient.clear();
       router.push('/auth/sign-in');
-    },
-    onError: (err) => {
-      console.error('Sign-out error:', err);
     },
   });
 
   return {
     signOut: mutation.mutate,
-    ...mutation,
+    isPending: mutation.isPending,
+    error: mutation.error,
+    isError: mutation.isError,
+    isSuccess: mutation.isSuccess,
   };
 }

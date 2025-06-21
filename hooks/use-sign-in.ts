@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 export function useSignIn() {
   const queryClient = useQueryClient();
@@ -13,24 +14,30 @@ export function useSignIn() {
       email: string;
       password: string;
     }) => {
-      const res = await fetch('/api/auth/sign-in', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include',
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      return data;
+
+      if (result?.error) {
+        throw new Error(result.error);
+      }
+
+      return result;
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['authUser'] });
+      // Invalidate any existing queries
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] });
       router.push('/');
     },
   });
 
   return {
     signIn: mutation.mutate,
-    ...mutation,
+    isPending: mutation.isPending,
+    error: mutation.error,
+    isError: mutation.isError,
+    isSuccess: mutation.isSuccess,
   };
 }

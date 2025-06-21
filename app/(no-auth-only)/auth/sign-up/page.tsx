@@ -13,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { AppShell } from '@/components/app-shell';
 import { useSignUp } from '@/hooks/use-sign-up';
 
 interface SignUpForm {
@@ -57,8 +56,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <AppShell mode="noAuthOnly">
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-center">
@@ -180,6 +178,5 @@ export default function SignUpPage() {
           </CardContent>
         </Card>
       </div>
-    </AppShell>
   );
 }

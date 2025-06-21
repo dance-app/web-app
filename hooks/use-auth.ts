@@ -1,21 +1,22 @@
-import { useQuery } from '@tanstack/react-query';
-import { User } from '@/types';
+'use client';
 
-let initialLoading = true;
+import { useSession, signOut } from 'next-auth/react';
+import { useEffect } from 'react';
 
 export function useAuth() {
-  const { data } = useQuery<{ user: User | null }>({
-    queryKey: ['authUser'],
-    queryFn: () =>
-      fetch('/api/auth/me', { credentials: 'include' })
-        .then((r) => r.json())
-        .finally(() => {
-          initialLoading = false;
-        }),
-  });
+  const { data: session, status } = useSession();
+
+  // Handle token refresh errors by signing out
+  useEffect(() => {
+    if (session?.error === 'RefreshAccessTokenError') {
+      signOut({ callbackUrl: '/auth/sign-in' });
+    }
+  }, [session?.error]);
 
   return {
-    isLoading: initialLoading,
-    user: data?.user || null,
+    user: session?.user || null,
+    isLoading: status === 'loading',
+    accessToken: session?.accessToken,
+    error: session?.error,
   };
 }

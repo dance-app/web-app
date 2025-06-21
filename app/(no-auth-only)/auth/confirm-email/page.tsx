@@ -74,8 +74,8 @@ function ConfirmEmailPageContent() {
             {isPending
               ? 'Verifying your token...'
               : successMsg
-              ? 'Confirmed!'
-              : 'We’re confirming your email address now.'}
+                ? 'Confirmed!'
+                : 'We’re confirming your email address now.'}
           </CardDescription>
         </CardHeader>
 

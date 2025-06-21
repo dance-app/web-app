@@ -1,34 +1,41 @@
-import { useEffect } from 'react';
-import { useAtom } from 'jotai';
 import { useQuery } from '@tanstack/react-query';
-import { workspacesAtom } from '@/lib/atoms';
+import { useAuth } from './use-auth';
 import { Workspace } from '@/types';
+import { BASE_URL } from '@/lib/api/shared.api';
 
-export function useWorkspaces() {
-  const [workspacesState, setWorkspacesState] = useAtom(workspacesAtom);
+export function useWorkspaces({ enabled }: { enabled?: boolean } = {}) {
+  const { accessToken, user } = useAuth();
 
-  const { data, isLoading, isError, error, ...query } = useQuery({
+  const { data, isLoading, isError, error, ...query } = useQuery<{
+    meta: {
+      count: number;
+      limit: number;
+      offset: number;
+      totalCount: number;
+    };
+    data: Workspace[];
+  }>({
     queryKey: ['workspaces'],
-    queryFn: () =>
-      fetch('/api/workspace', { method: 'GET', credentials: 'include' }).then(
-        (r) => r.json()
-      ),
+    queryFn: async () => {
+      if (!accessToken) throw new Error('No access token');
+
+      const res = await fetch(`${BASE_URL}/workspaces`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!res.ok) throw new Error('Failed to fetch workspaces');
+      return res.json();
+    },
+    enabled: enabled !== false && !!user && !!accessToken,
   });
 
-  // Sync query data with atom
-  useEffect(() => {
-    const workspaces =
-      (data?.workspaces?.data as Workspace[]) || ([] as Workspace[]);
-    setWorkspacesState({
-      workspaces,
-      isLoading,
-      error: isError ? error : null,
-    });
-  }, [data, isLoading, isError, error, setWorkspacesState]);
-
   return {
-    workspaces: workspacesState.workspaces,
-    meta: data?.workspaces?.meta || {},
+    workspaces: data?.data || [],
+    meta: data?.meta || {},
     isLoading,
     isError,
     error,
