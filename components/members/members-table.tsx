@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil } from 'lucide-react';
+import { Pen } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -51,19 +51,16 @@ export function MembersTable({
         {Array.from({ length: 5 }).map((_, i) => (
           <div
             key={i}
-            className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm"
+            className="flex items-center justify-between p-2 group rounded-md"
           >
             <div className="flex items-center space-x-4">
-              <div className="h-12 w-12 rounded-full bg-gray-200 animate-pulse" />
+              <div className="h-6 w-6 rounded-full bg-gray-200 animate-pulse" />
               <div className="space-y-2">
-                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
-                <div className="h-3 w-24 bg-gray-200 rounded animate-pulse" />
+                <div className="h-3 w-48 bg-gray-200 rounded animate-pulse" />
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
-              <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
-              <div className="h-8 w-16 bg-gray-200 rounded animate-pulse" />
+              <div className="h-4 w-10 bg-gray-200 rounded animate-pulse" />
             </div>
           </div>
         ))}
@@ -89,18 +86,12 @@ export function MembersTable({
           <div
             key={member.id}
             onClick={() => onMemberClick(member)}
-            className="flex items-center justify-between p-2 hover:bg-gray-100 transition-all duration-200 cursor-pointer group"
+            className="flex items-center justify-between p-2 hover:bg-gray-100 transition-all duration-200 cursor-pointer group rounded-md"
           >
-            {/* Member Info - First Column */}
-            <div className="flex items-center space-x-4 flex-1">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={undefined} alt={member.name} />
-                <AvatarFallback className="bg-gray-100 text-gray-500 text-xs">
-                  {member.name
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')
-                    .toUpperCase()}
+            <div className="flex items-center flex-1 gap-4">
+              <Avatar>
+                <AvatarFallback>
+                  {member.name[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="font-small text-sm text-gray-600 group-hover:text-gray-700 transition-colors">
@@ -111,12 +102,11 @@ export function MembersTable({
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
-                size="sm"
                 onClick={(e) => handleEdit(e, member)}
-                className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-500 hover:text-gray-700 hover:bg-gray-200"
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-500 hover:text-gray-700 hover:bg-gray-200 p-2 h-6"
               >
-                <Pencil className="h-2 w-2" />
-                <span className="ml-1 text-xs">Edit</span>
+                <Pen />
+                <span className="text-xs">Edit</span>
               </Button>
             </div>
           </div>

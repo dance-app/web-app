@@ -88,6 +88,88 @@ export class MockApi {
     >;
   }
 
+  static async updateMember(
+    workspaceSlug: string,
+    memberId: string,
+    memberData: {
+      name?: string;
+      email?: string;
+      level?: number;
+      preferedDanceRole?: 'LEADER' | 'FOLLOWER';
+      roles?: string[];
+    }
+  ) {
+    if (!USE_MOCK_DATA) return null;
+
+    await mockApiDelay(400);
+    const mockData = getMockDataByWorkspace(workspaceSlug);
+    if (!mockData) {
+      return {
+        success: false,
+        error: { message: 'Workspace not found' },
+        statusCode: 404,
+      } as LocalApiResponse<any, string>;
+    }
+
+    const memberIndex = mockMembers.findIndex(
+      (m) => m.id === memberId && m.workspaceId === mockData.workspace.id
+    );
+    if (memberIndex === -1) {
+      return {
+        success: false,
+        error: { message: 'Member not found' },
+        statusCode: 404,
+      } as LocalApiResponse<any, string>;
+    }
+
+    // Update the member
+    const updatedMember = {
+      ...mockMembers[memberIndex],
+      ...memberData,
+      updatedAt: new Date(),
+    };
+
+    mockMembers[memberIndex] = updatedMember;
+
+    return { success: true, data: updatedMember } as LocalApiResponse<
+      typeof updatedMember,
+      string
+    >;
+  }
+
+  static async deleteMember(workspaceSlug: string, memberId: string) {
+    if (!USE_MOCK_DATA) return null;
+
+    await mockApiDelay(300);
+    const mockData = getMockDataByWorkspace(workspaceSlug);
+    if (!mockData) {
+      return {
+        success: false,
+        error: { message: 'Workspace not found' },
+        statusCode: 404,
+      } as LocalApiResponse<any, string>;
+    }
+
+    const memberIndex = mockMembers.findIndex(
+      (m) => m.id === memberId && m.workspaceId === mockData.workspace.id
+    );
+    if (memberIndex === -1) {
+      return {
+        success: false,
+        error: { message: 'Member not found' },
+        statusCode: 404,
+      } as LocalApiResponse<any, string>;
+    }
+
+    // Remove the member from the array
+    const deletedMember = mockMembers.splice(memberIndex, 1)[0];
+
+    return { success: true, data: deletedMember } as LocalApiResponse<
+      typeof deletedMember,
+      string
+    >;
+  }
+
   // Events
   static async getEvents(
     workspaceSlug: string,
