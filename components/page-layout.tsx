@@ -9,7 +9,7 @@ export const PageLayout = ({
 }) => {
   return (
     <div className="flex flex-col">
-      <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
+      <header className="flex h-12 shrink-0 items-center justify-between gap-2 px-4">
         {header}
       </header>
       <div className="flex-1 space-y-4 p-4 md:p-8">{children}</div>

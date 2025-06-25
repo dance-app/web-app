@@ -25,7 +25,7 @@ export function Sidebar({ fakeWorkspace }: { fakeWorkspace?: Workspace }) {
 
   return (
     <div className="flex h-full w-64 flex-col bg-gray-50 border-r">
-      <div className="flex h-16 w-full items-center justify-between px-3 border-b gap-2">
+      <div className="flex h-12 w-full items-center justify-between px-3 gap-2">
         <div className="flex-1 min-w-0">
           {workspace ? (
             <WorkspaceSwitcher />
@@ -38,11 +38,10 @@ export function Sidebar({ fakeWorkspace }: { fakeWorkspace?: Workspace }) {
         <AuthAvatar />
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 px-3 py-4">
         {navigation.map((item) => {
           const fullHref = `/w/${workspace?.slug}/${item.path}`;
           const isActive = pathname === fullHref;
-          // const isActive = pathname.startsWith(fullHref)
 
           return (
             <Link
@@ -51,8 +50,8 @@ export function Sidebar({ fakeWorkspace }: { fakeWorkspace?: Workspace }) {
               className={cn(
                 'flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors',
                 isActive
-                  ? 'bg-gray-200 text-gray-900'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  ? 'bg-gray-200 text-gray-800'
+                  : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
               )}
             >
               <item.icon className="mr-3 h-5 w-5" />

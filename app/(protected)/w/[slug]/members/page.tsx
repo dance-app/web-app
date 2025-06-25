@@ -11,6 +11,7 @@ import type { Member } from '@/types';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { MemberDetailDrawer } from '@/components/members/member-details-drawer';
 import { PageLayout } from '@/components/page-layout';
+import { Users } from 'lucide-react';
 
 export default function MembersPage() {
   const [createFormOpen, setCreateFormOpen] = useState(false);
@@ -92,9 +93,16 @@ export default function MembersPage() {
     <PageLayout
       header={
         <>
-          <Breadcrumbs title="Members" />
+          <Breadcrumbs
+            title={
+              <div className='flex items-center gap-2'>
+                <Users size={16} />
+                Members
+              </div>
+            }
+          />
           <div className="flex gap-2">
-            <div className="relative flex-1">
+            <div className="relative flex-1 ">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Search students..."
@@ -103,9 +111,8 @@ export default function MembersPage() {
                 className="pl-10"
               />
             </div>
-            <Button onClick={() => setCreateFormOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Member
+            <Button onClick={() => setCreateFormOpen(true)} variant='ghost' className='h-8 w-8'>
+              <Plus className="h-6 w-6" />
             </Button>
           </div>
         </>
@@ -131,6 +138,6 @@ export default function MembersPage() {
           new Promise((resolve) => resolve({ success: true, error: undefined }))
         }
       />
-    </PageLayout>
+    </PageLayout >
   );
 }

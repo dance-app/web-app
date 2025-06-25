@@ -32,18 +32,18 @@ export function AuthAvatar() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="relative h-6 w-6 rounded-full p-0">
+          <Avatar>
             <AvatarImage src={'/placeholder-user.jpg'} alt={user.firstName} />
             <AvatarFallback>
-              {`${user.firstName[0]}${user.lastName[0]}`.toLocaleUpperCase()}
+              {`${user.firstName[0]}`.toLocaleUpperCase()}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" className="w-56">
         <DropdownMenuLabel className="text-sm font-medium">
-          {user.firstName}
+          {user.firstName}  {user.lastName}
         </DropdownMenuLabel>
         <div className="text-xs text-muted-foreground px-2 pb-2 truncate">
           {user.accounts?.[0]?.email}

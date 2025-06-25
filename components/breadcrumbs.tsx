@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import Link from 'next/link';
 import {
   Breadcrumb,
@@ -14,7 +15,7 @@ export interface BreadcrumbItem {
 }
 
 interface BreadcrumbsProps {
-  title?: string;
+  title?: ReactNode;
   items?: BreadcrumbItem[];
 }
 
@@ -22,7 +23,6 @@ export const Breadcrumbs = ({
   title = 'Dashboard',
   items = [],
 }: BreadcrumbsProps) => {
-  // If only title is provided (backward compatibility)
   if (items.length === 0) {
     return (
       <Breadcrumb>
