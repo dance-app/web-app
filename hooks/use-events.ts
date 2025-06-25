@@ -5,9 +5,9 @@ export function useEvents() {
   const { workspace } = useCurrentWorkspace();
 
   const { data, ...query } = useQuery({
-    queryKey: ['events', workspace?.id],
+    queryKey: ['events', workspace?.slug],
     queryFn: () =>
-      fetch(`/api/workspace/${workspace?.id}/events`, {
+      fetch(`/api/workspace/${workspace?.slug}/events`, {
         method: 'GET',
         credentials: 'include',
       }).then((r) => r.json()),

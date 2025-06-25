@@ -5,15 +5,15 @@ import { useCurrentWorkspace } from './use-current-workspace';
 export function useMembers() {
   const { workspace } = useCurrentWorkspace();
   const { data, ...query } = useQuery({
-    queryKey: ['members', workspace?.id],
+    queryKey: ['members', workspace?.slug],
     queryFn: () =>
-      fetch(`/api/workspace/${workspace?.id}/members`, {
+      fetch(`/api/workspace/${workspace?.slug}/members`, {
         method: 'GET',
         credentials: 'include',
       }).then((r) => r.json()),
     enabled: !!workspace,
   });
-  // console.log('Members data:', data);
+  console.log('Members data:', data);
   return {
     members: data?.members || [],
     // meta: data?.members?.meta || {},

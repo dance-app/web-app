@@ -12,39 +12,6 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { MemberDetailDrawer } from '@/components/members/member-details-drawer';
 import { PageLayout } from '@/components/page-layout';
 
-export const mockDanceTypes = [
-  {
-    id: '1',
-    name: 'Salsa',
-    description: 'Cuban-style salsa',
-    workspaceId: '1',
-  },
-  {
-    id: '2',
-    name: 'Bachata',
-    description: 'Dominican bachata',
-    workspaceId: '1',
-  },
-  {
-    id: '3',
-    name: 'Merengue',
-    description: 'Traditional merengue',
-    workspaceId: '1',
-  },
-  {
-    id: '4',
-    name: 'Kizomba',
-    description: 'Angolan kizomba',
-    workspaceId: '1',
-  },
-  {
-    id: '5',
-    name: 'Cha Cha',
-    description: 'Cuban cha cha cha',
-    workspaceId: '1',
-  },
-];
-
 export default function MembersPage() {
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -52,9 +19,9 @@ export default function MembersPage() {
   const { members, isLoading } = useMembers();
   const { selectedMember, setSelectedMember } = useSelectedMember(members);
 
-  const createStudent = () => {}; //useCreateStudent()
-  const updateStudent = () => {}; //useUpdateStudent()
-  const deleteStudent = () => {}; //useDeleteStudent()
+  const createStudent = () => { }; //useCreateStudent()
+  const updateStudent = () => { }; //useUpdateStudent()
+  const deleteStudent = () => { }; //useDeleteStudent()
 
   // const handleCreateStudent = async (data: Omit<Student, "id" | "createdAt" | "updatedAt">) => {
   //   try {
@@ -147,7 +114,7 @@ export default function MembersPage() {
       <MembersTable
         members={members}
         onEdit={setSelectedMember}
-        onDelete={() => {}}
+        onDelete={() => { }}
         onMemberClick={setSelectedMember}
         isLoading={isLoading}
       />
@@ -160,7 +127,6 @@ export default function MembersPage() {
             setSelectedMember(null);
           }
         }}
-        // danceTypes={mockDanceTypes}
         onSubmit={() =>
           new Promise((resolve) => resolve({ success: true, error: undefined }))
         }

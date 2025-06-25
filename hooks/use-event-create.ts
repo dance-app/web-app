@@ -8,7 +8,7 @@ export function useEventCreate() {
 
   return useMutation({
     mutationFn: (data: Partial<Event>) =>
-      fetch(`/api/workspace/${workspace?.id}/events`, {
+      fetch(`/api/workspace/${workspace?.slug}/events`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ export function useEventCreate() {
         body: JSON.stringify(data),
       }).then((r) => r.json()),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['events', workspace?.id] });
+      queryClient.invalidateQueries({ queryKey: ['events', workspace?.slug] });
     },
   });
 }

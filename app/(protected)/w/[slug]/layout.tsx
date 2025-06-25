@@ -12,10 +12,9 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  console.log('DashboardLayout rendered');
   const { workspaces, isLoading } = useWorkspaces();
   const params = useParams<{ slug: string }>();
-  const router = useRouter();
+  // const router = useRouter();
   const currentSlug = params?.slug;
 
   // Validate workspace slug
@@ -38,12 +37,10 @@ export default function DashboardLayout({
     );
   }
 
-  console.log('workspaces', workspaces);
-
   // Show nothing while validating workspace
   if (currentSlug && workspaces.length > 0) {
     const isValidSlug = workspaces.some((ws) => ws.slug === currentSlug);
-    console.log('isValidSlug', isValidSlug);
+
     if (!isValidSlug) {
       return null; // Will redirect via useEffect
     }
@@ -52,8 +49,7 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
-      <main className="flex-1 overflow-auto">ok</main>
-      {/* <main className="flex-1 overflow-auto">{children}</main> */}
+      <main className="flex-1 overflow-auto">{children}</main>
     </div>
   );
 }

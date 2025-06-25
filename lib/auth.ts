@@ -2,9 +2,22 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { BASE_URL } from '@/lib/api/shared.api';
 import type { User } from '@/types';
+import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 
 async function refreshAccessToken(token: any) {
   try {
+    // Check if we should use mock data
+    const mockResponse = await MockApi.refreshTokens();
+    if (mockResponse) {
+      logMockDataUsage('POST /auth/refresh-token (NextAuth)');
+      return {
+        ...token,
+        accessToken: mockResponse.accessToken,
+        accessTokenExpires: Date.now() + 15 * 60 * 1000, // 15 minutes from now
+        refreshToken: mockResponse.refreshToken ?? token.refreshToken, // Fall back to old refresh token
+      };
+    }
+
     const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
       method: 'POST',
       headers: {
@@ -46,6 +59,22 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
+          // Check if we should use mock data
+          const mockResponse = await MockApi.signIn({
+            email: credentials?.email || '',
+            password: credentials?.password || '',
+          });
+          
+          if (mockResponse) {
+            logMockDataUsage('POST /auth/sign-in (NextAuth)');
+            // Return user object with tokens, using your existing User type structure
+            return {
+              ...mockResponse.user,
+              accessToken: mockResponse.accessToken,
+              refreshToken: mockResponse.refreshToken,
+            };
+          }
+
           const res = await fetch(`${BASE_URL}/auth/sign-in`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

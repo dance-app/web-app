@@ -15,11 +15,9 @@ export default function RedirectPage() {
 
   useEffect(() => {
     if (isLoading) return;
-    console.log('workspaces', workspaces);
 
     if (workspaces.length > 0) {
       const firstWorkspace = workspaces[0];
-      console.log('pushing to workspace', firstWorkspace.slug);
       router.push(`/w/${firstWorkspace.slug}`);
     } else {
       // router.push('/get-started');

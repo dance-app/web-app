@@ -8,7 +8,7 @@ export function useEventUpdate() {
 
   return useMutation({
     mutationFn: ({ id, ...data }: { id: string } & Partial<Event>) =>
-      fetch(`/api/workspace/${workspace?.id}/events/${id}`, {
+      fetch(`/api/workspace/${workspace?.slug}/events/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ export function useEventUpdate() {
         body: JSON.stringify(data),
       }).then((r) => r.json()),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['events', workspace?.id] });
+      queryClient.invalidateQueries({ queryKey: ['events', workspace?.slug] });
     },
   });
 }

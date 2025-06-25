@@ -2,19 +2,30 @@ import { NextRequest, NextResponse } from 'next/server';
 import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
 import { Material, MaterialVisibility } from '@/types/material';
 import { BASE_URL } from '@/lib/api/shared.api';
+import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
   try {
-    const { accessToken, response } = await validateOrRefreshToken();
+    // const { accessToken, response } = await validateOrRefreshToken();
 
-    if (response) return response;
-    if (!accessToken)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // if (response) return response;
+    // if (!accessToken)
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { slug } = await params;
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const limit = parseInt(url.searchParams.get('limit') || '10');
+
+    // Check if we should use mock data
+    const mockResponse = await MockApi.getMaterials(slug, page, limit);
+    if (mockResponse) {
+      logMockDataUsage(`GET /api/workspace/${slug}/materials`);
+      return NextResponse.json(mockResponse);
+    }
 
     const apiResponse = await fetch(
       `${BASE_URL}/workspaces/${slug}/materials`,
@@ -22,7 +33,7 @@ export async function GET(
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          // Authorization: `Bearer ${accessToken}`,
         },
       }
     );
@@ -30,7 +41,7 @@ export async function GET(
     console.log('Request URL:', `${BASE_URL}/workspaces/${slug}/materials`);
     console.log('Request Headers:', {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
+      // Authorization: `Bearer ${accessToken}`,
     });
     if (!apiResponse.ok) {
       const errorResponse = await apiResponse.json();
@@ -63,15 +74,15 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { accessToken, response } = await validateOrRefreshToken();
+    // const { accessToken, response } = await validateOrRefreshToken();
 
-    if (response) {
-      return response;
-    }
+    // if (response) {
+    //   return response;
+    // }
 
-    if (!accessToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // if (!accessToken) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // }
 
     const workspaceId = params.id;
     const body = await request.json();
@@ -109,15 +120,15 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { accessToken, response } = await validateOrRefreshToken();
+    // const { accessToken, response } = await validateOrRefreshToken();
 
-    if (response) {
-      return response;
-    }
+    // if (response) {
+    //   return response;
+    // }
 
-    if (!accessToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // if (!accessToken) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // }
 
     const workspaceId = params.id;
     const body = await request.json();
@@ -160,15 +171,15 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { accessToken, response } = await validateOrRefreshToken();
+    // const { accessToken, response } = await validateOrRefreshToken();
 
-    if (response) {
-      return response;
-    }
+    // if (response) {
+    //   return response;
+    // }
 
-    if (!accessToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // if (!accessToken) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // }
 
     const workspaceId = params.id;
     const url = new URL(request.url);

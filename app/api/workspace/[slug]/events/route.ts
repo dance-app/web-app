@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
+import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 
 const mockDanceTypes = [
   {
@@ -121,20 +122,40 @@ const mockEvents = [
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
-    const { accessToken, response } = await validateOrRefreshToken();
+    // const { accessToken, response } = await validateOrRefreshToken();
 
-    if (response) {
-      return response;
+    // if (response) {
+    //   return response;
+    // }
+
+    // if (!accessToken) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // }
+
+    const { slug: workspaceSlug } = params;
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const limit = parseInt(url.searchParams.get('limit') || '10');
+
+    // Check if we should use mock data
+    const mockResponse = await MockApi.getEvents(workspaceSlug, page, limit);
+    if (mockResponse) {
+      logMockDataUsage(`GET /api/workspace/${workspaceSlug}/events`);
+      if (mockResponse.success) {
+        return NextResponse.json(mockResponse.data);
+      } else {
+        return NextResponse.json(
+          { error: mockResponse.error.message },
+          { status: mockResponse.statusCode }
+        );
+      }
     }
 
-    if (!accessToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const workspaceId = params.id;
+    // Fallback to existing mock data if mock API is not enabled
+    const workspaceId = '1'; // Default workspace for existing mock data
 
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 800));
@@ -149,7 +170,7 @@ export async function GET(
       danceTypes: mockDanceTypes.filter((dt) => dt.workspaceId === workspaceId),
     });
   } catch (error) {
-    console.error('GET /api/workspace/[id]/events error:', error);
+    console.error('GET /api/workspace/[slug]/events error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -159,21 +180,38 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
-    const { accessToken, response } = await validateOrRefreshToken();
+    // const { accessToken, response } = await validateOrRefreshToken();
 
-    if (response) {
-      return response;
-    }
+    // if (response) {
+    //   return response;
+    // }
 
-    if (!accessToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // if (!accessToken) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // }
 
-    const workspaceId = params.id;
+    const { slug: workspaceSlug } = params;
     const body = await request.json();
+
+    // Check if we should use mock data
+    const mockResponse = await MockApi.createEvent(workspaceSlug, body);
+    if (mockResponse) {
+      logMockDataUsage(`POST /api/workspace/${workspaceSlug}/events`);
+      if (mockResponse.success) {
+        return NextResponse.json(mockResponse.data, { status: 201 });
+      } else {
+        return NextResponse.json(
+          { error: mockResponse.error.message },
+          { status: mockResponse.statusCode }
+        );
+      }
+    }
+
+    // Fallback to existing mock data logic if mock API is not enabled
+    const workspaceId = '1'; // Default workspace for existing mock data
 
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 1000));

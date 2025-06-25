@@ -3,8 +3,16 @@ import { NextResponse } from 'next/server';
 import { ApiResponse, BASE_URL } from '@/lib/api/shared.api';
 import { setAuthCookies } from '@/lib/auth/set-tokens';
 import { User } from '@/types';
+import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 
 async function fetchCurrentUser(accessToken: string) {
+  // Check if we should use mock data
+  const mockResponse = await MockApi.getCurrentUser();
+  if (mockResponse) {
+    logMockDataUsage('GET /auth/me');
+    return mockResponse;
+  }
+
   const res = await fetch(`${BASE_URL}/auth/me`, {
     method: 'GET',
     headers: {
@@ -22,6 +30,13 @@ async function fetchCurrentUser(accessToken: string) {
 }
 
 async function refreshTokens(refreshToken: string) {
+  // Check if we should use mock data
+  const mockResponse = await MockApi.refreshTokens();
+  if (mockResponse) {
+    logMockDataUsage('POST /auth/refresh-token');
+    return mockResponse;
+  }
+
   const res = await fetch(`${BASE_URL}/auth/refresh-token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

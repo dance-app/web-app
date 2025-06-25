@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { BASE_URL, ApiResponse } from '@/lib/api/shared.api';
 import { User } from '@/types';
 import { setAuthCookies } from '@/lib/auth/set-tokens';
+import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 
 function validateSignupPayload(payload: any): payload is {
   email: string;
@@ -27,6 +28,25 @@ export async function POST(request: NextRequest) {
           error:
             'All fields (email, password, first name, last name) are required',
         },
+        { status: 400 }
+      );
+    }
+
+    // Check if we should use mock data
+    try {
+      const mockResponse = await MockApi.signUp(body);
+      if (mockResponse) {
+        logMockDataUsage('POST /api/auth/sign-up');
+        const response = NextResponse.json({ user: mockResponse.user });
+        setAuthCookies(response, {
+          accessToken: mockResponse.accessToken,
+          refreshToken: mockResponse.refreshToken,
+        });
+        return response;
+      }
+    } catch (mockError: any) {
+      return NextResponse.json(
+        { error: mockError.message },
         { status: 400 }
       );
     }
