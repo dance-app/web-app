@@ -93,13 +93,13 @@ export default function ClassesPage() {
             </Tabs> */}
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
-                  <EventCreateModal>
+                <EventCreateModal>
+                  <TooltipTrigger asChild>
                     <Button variant='ghost' className='h-8 w-8'>
                       <Plus className="h-6 w-6" />
                     </Button>
-                  </EventCreateModal>
-                </TooltipTrigger>
+                  </TooltipTrigger>
+                </EventCreateModal>
                 <TooltipContent>
                   <p>Schedule new class</p>
                 </TooltipContent>
