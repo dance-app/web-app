@@ -10,6 +10,7 @@ import { useSelectedMember } from '@/hooks/use-selected-member';
 import type { Member } from '@/types';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { MemberDetailDrawer } from '@/components/members/member-details-drawer';
+import { MemberCreateModal } from '@/components/members/member-create-modal';
 import { PageLayout } from '@/components/page-layout';
 import { Users } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -114,11 +115,13 @@ export default function MembersPage() {
             </div>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button onClick={() => setCreateFormOpen(true)} variant='ghost' className='h-8 w-8'>
-                    <Plus className="h-6 w-6" />
-                  </Button>
-                </TooltipTrigger>
+                <MemberCreateModal>
+                  <TooltipTrigger asChild>
+                    <Button variant='ghost' className='h-8 w-8'>
+                      <Plus className="h-6 w-6" />
+                    </Button>
+                  </TooltipTrigger>
+                </MemberCreateModal>
                 <TooltipContent>
                   <p>Add new member</p>
                 </TooltipContent>
