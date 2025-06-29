@@ -12,6 +12,7 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { MemberDetailDrawer } from '@/components/members/member-details-drawer';
 import { PageLayout } from '@/components/page-layout';
 import { Users } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function MembersPage() {
   const [createFormOpen, setCreateFormOpen] = useState(false);
@@ -111,9 +112,18 @@ export default function MembersPage() {
                 className="pl-10"
               />
             </div>
-            <Button onClick={() => setCreateFormOpen(true)} variant='ghost' className='h-8 w-8'>
-              <Plus className="h-6 w-6" />
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button onClick={() => setCreateFormOpen(true)} variant='ghost' className='h-8 w-8'>
+                    <Plus className="h-6 w-6" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Add new member</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </>
       }

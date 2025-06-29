@@ -9,21 +9,50 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CreditCard, Plus, DollarSign } from 'lucide-react';
+import { CreditCard, Plus, DollarSign, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { PageLayout } from '@/components/page-layout';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function SubscriptionsPage() {
+  const [searchTerm, setSearchTerm] = useState('');
+
   return (
     <PageLayout
       header={
         <>
-          <Breadcrumbs title="Subscriptions" />
+          <Breadcrumbs
+            title={
+              <div className='flex items-center gap-2'>
+                <CreditCard size={16} />
+                Subscriptions
+              </div>
+            }
+          />
           <div className="flex gap-2">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Create Package
-            </Button>
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search subscriptions..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant='ghost' className='h-8 w-8'>
+                    <Plus className="h-6 w-6" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Create new package</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </>
       }

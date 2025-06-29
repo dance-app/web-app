@@ -16,6 +16,7 @@ import type { Event } from '@/types';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Spinner } from '@/components/ui/spinner';
 import { PageLayout } from '@/components/page-layout';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 type ViewMode = 'list' | 'calendar';
 
@@ -54,15 +55,22 @@ export default function ClassesPage() {
     <PageLayout
       header={
         <>
-          <Breadcrumbs title="Classes" />
+          <Breadcrumbs
+            title={
+              <div className='flex items-center gap-2'>
+                <Calendar size={16} />
+                Classes
+              </div>
+            }
+          />
           <div className="flex gap-2">
-            <div className="relative">
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Search classes..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-full"
+                className="pl-10"
               />
             </div>
             {/* <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as ViewMode)}>
@@ -82,13 +90,21 @@ export default function ClassesPage() {
                 </TabsTrigger>
               </div>
             </TabsList>
-          </Tabs> */}
-            <EventCreateModal>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Schedule Class
-              </Button>
-            </EventCreateModal>
+            </Tabs> */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <EventCreateModal>
+                    <Button variant='ghost' className='h-8 w-8'>
+                      <Plus className="h-6 w-6" />
+                    </Button>
+                  </EventCreateModal>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Schedule new class</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </>
       }

@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, BookOpen } from 'lucide-react';
+import { Plus, BookOpen, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { MaterialsList } from '@/components/materials/materials-list';
@@ -15,12 +16,14 @@ import { useCurrentWorkspace } from '@/hooks/use-current-workspace';
 import { toast } from 'sonner';
 import { PageLayout } from '@/components/page-layout';
 import { Material } from '@/types/material';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function MaterialsPage() {
   const { workspace } = useCurrentWorkspace();
   const { materials, isLoading } = useMaterials();
   const { mutate: deleteMaterial } = useMaterialDelete();
 
+  const [searchTerm, setSearchTerm] = useState('');
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(
@@ -57,11 +60,37 @@ export default function MaterialsPage() {
     <PageLayout
       header={
         <>
-          <Breadcrumbs items={[{ label: 'Materials' }]} />
-          <Button onClick={() => setCreateModalOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Create Material
-          </Button>
+          <Breadcrumbs
+            title={
+              <div className='flex items-center gap-2'>
+                <BookOpen size={16} />
+                Materials
+              </div>
+            }
+          />
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search materials..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button onClick={() => setCreateModalOpen(true)} variant='ghost' className='h-8 w-8'>
+                    <Plus className="h-6 w-6" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Create new material</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </>
       }
     >
