@@ -14,7 +14,7 @@ import { Plus, List, Calendar, Search } from 'lucide-react';
 import type { Event } from '@/types';
 // import { DateRange } from "react-day-picker"
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { Spinner } from '@/components/ui/spinner';
+import { Skeleton } from '@/components/ui/skeleton';
 import { PageLayout } from '@/components/page-layout';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -31,25 +31,40 @@ export default function ClassesPage() {
     // TODO: Open event details modal or navigate to event page
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col">
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
-          <Breadcrumbs title="Classes" />
-          <div className="flex gap-2">
-            <Button disabled>
-              <Plus className="mr-2 h-4 w-4" />
-              Schedule Class
-            </Button>
+  const ClassesSkeleton = () => (
+    <div className="space-y-4">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="rounded-lg border bg-card text-card-foreground shadow-sm">
+          <div className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2 flex-1">
+                <Skeleton className="h-5 w-48" />
+                <Skeleton className="h-4 w-32" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-6 w-16" />
+                <Skeleton className="h-9 w-20" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
+              <div className="flex items-center space-x-1">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+              <div className="flex items-center space-x-1">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-16" />
+              </div>
+              <div className="flex items-center space-x-1">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-12" />
+              </div>
+            </div>
           </div>
-        </header>
-
-        <div className="flex-1 flex items-center justify-center">
-          <Spinner />
         </div>
-      </div>
-    );
-  }
+      ))}
+    </div>
+  );
 
   return (
     <PageLayout
@@ -109,7 +124,9 @@ export default function ClassesPage() {
         </>
       }
     >
-      {viewMode === 'list' ? (
+      {isLoading ? (
+        <ClassesSkeleton />
+      ) : viewMode === 'list' ? (
         <ListView
           events={events}
           danceTypes={danceTypes}
@@ -119,7 +136,7 @@ export default function ClassesPage() {
         <CalendarView events={events} onEventClick={handleEventClick} />
       )}
 
-      {events.length === 0 && (
+      {!isLoading && events.length === 0 && (
         <div className="text-center py-12">
           <Calendar className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-semibold">No classes scheduled</h3>
