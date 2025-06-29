@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { MembersTable } from '@/components/members/members-table';
 import { useMembers } from '@/hooks/use-members';
 import { useSelectedMember } from '@/hooks/use-selected-member';
+import { useMemberDelete } from '@/hooks/use-member-delete';
 import type { Member } from '@/types';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { MemberDetailDrawer } from '@/components/members/member-details-drawer';
@@ -21,6 +22,7 @@ export default function MembersPage() {
 
   const { members, isLoading } = useMembers();
   const { selectedMember, setSelectedMember } = useSelectedMember(members);
+  const { mutate: deleteMember } = useMemberDelete();
 
   const createStudent = () => { }; //useCreateStudent()
   const updateStudent = () => { }; //useUpdateStudent()
@@ -66,6 +68,10 @@ export default function MembersPage() {
   //   setIsFormOpen(false)
   //   setEditingStudent(null)
   // }
+
+  const handleDeleteMember = (memberId: string) => {
+    deleteMember(memberId);
+  };
 
   const handleFormSubmit = async (data: Partial<Member>) => {
     //   const result = {
@@ -150,6 +156,7 @@ export default function MembersPage() {
         onSubmit={() =>
           new Promise((resolve) => resolve({ success: true, error: undefined }))
         }
+        onDelete={handleDeleteMember}
       />
     </PageLayout >
   );

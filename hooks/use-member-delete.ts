@@ -3,21 +3,18 @@ import { useCurrentWorkspace } from './use-current-workspace';
 import type { Member } from '@/types';
 import { DeleteMemberResponse } from '@/app/api/workspace/[slug]/members/[id]/route';
 
-interface DeleteMemberData extends Pick<Member, 'id'> {}
-
 export function useMemberDelete() {
   const { workspace } = useCurrentWorkspace();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: DeleteMemberData) => {
+    mutationFn: async (memberId: Member['id']) => {
       if (!workspace) {
         throw new Error('No workspace selected');
       }
 
-      const { id } = data;
       const response = await fetch(
-        `/api/workspace/${workspace.slug}/members/${id}`,
+        `/api/workspace/${workspace.slug}/members/${memberId}`,
         {
           method: 'DELETE',
           credentials: 'include',

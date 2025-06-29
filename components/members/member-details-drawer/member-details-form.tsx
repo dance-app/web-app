@@ -1,4 +1,4 @@
-import { Calendar } from 'lucide-react'
+import { Calendar, Trash2 } from 'lucide-react'
 import { format } from 'date-fns';
 import React, { useState } from 'react'
 import { Member } from '@/types';
@@ -7,6 +7,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SheetFooter } from '@/components/ui/sheet';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { useMemberUpdate } from '@/hooks/use-member-update';
 import { useToast } from '@/hooks/use-toast';
 // import {
@@ -17,8 +28,9 @@ import { useToast } from '@/hooks/use-toast';
 //   SelectValue,
 // } from '@/components/ui/select';
 
-export const MemberDetailsForm = ({ member }: {
+export const MemberDetailsForm = ({ member, onDelete }: {
   member: Pick<Member, 'id' | 'createdAt' | 'name' | 'email'>
+  onDelete?: (memberId: string) => void
 }) => {
   const [formData, setFormData] = useState({
     name: member.name || '',
@@ -136,8 +148,34 @@ export const MemberDetailsForm = ({ member }: {
       </div>
 
       <SheetFooter className="mt-6">
+        {onDelete && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost" className="text-destructive hover:text-destructive">
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete {member.name}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete <strong>{member.name}</strong>? This action cannot be undone and will permanently remove the member from your workspace.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => onDelete(member.id)}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
         <Button type="submit" disabled={updateMember.isPending}>
-          {updateMember.isPending ? 'Saving...' : 'Save Changes'}
+          {updateMember.isPending ? 'Saving...' : 'Save'}
         </Button>
       </SheetFooter>
     </form>

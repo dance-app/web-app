@@ -13,6 +13,17 @@ import {
   SheetTitle,
   SheetFooter,
 } from '@/components/ui/sheet';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -55,6 +66,7 @@ interface MemberDetailDrawerProps {
   onSubmit: (
     data: Partial<Member>
   ) => Promise<{ success: boolean; error?: string }>;
+  onDelete?: (memberId: string) => void;
 }
 
 export function MemberDetailDrawer({
@@ -63,6 +75,7 @@ export function MemberDetailDrawer({
   onOpenChange,
   // danceTypes,
   onSubmit,
+  onDelete,
 }: MemberDetailDrawerProps) {
   const [activeTab, setActiveTab] = useState('details');
 
@@ -123,7 +136,7 @@ export function MemberDetailDrawer({
             </TabsList>
 
             <TabsContent value="details" className="flex flex-1 mt-0">
-              <MemberDetailsForm member={member} />
+              <MemberDetailsForm member={member} onDelete={onDelete} />
             </TabsContent>
 
             {/* <TabsContent value="levels" className="mt-6 space-y-4">
