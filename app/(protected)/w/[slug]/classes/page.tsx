@@ -20,6 +20,41 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 type ViewMode = 'list' | 'calendar';
 
+const ClassesSkeleton = () => (
+  <div className="space-y-4">
+    {[...Array(4)].map((_, i) => (
+      <div key={i} className="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-5 w-48" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-9 w-20" />
+            </div>
+          </div>
+          <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
+            <div className="flex items-center space-x-1">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-4 w-24" />
+            </div>
+            <div className="flex items-center space-x-1">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+            <div className="flex items-center space-x-1">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-4 w-12" />
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 export default function ClassesPage() {
   const { events, danceTypes, isLoading } = useEvents();
   const [viewMode, setViewMode] = useState<ViewMode>('list');
@@ -30,41 +65,6 @@ export default function ClassesPage() {
     console.log('Event clicked:', event.title);
     // TODO: Open event details modal or navigate to event page
   };
-
-  const ClassesSkeleton = () => (
-    <div className="space-y-4">
-      {[...Array(4)].map((_, i) => (
-        <div key={i} className="rounded-lg border bg-card text-card-foreground shadow-sm">
-          <div className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2 flex-1">
-                <Skeleton className="h-5 w-48" />
-                <Skeleton className="h-4 w-32" />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Skeleton className="h-6 w-16" />
-                <Skeleton className="h-9 w-20" />
-              </div>
-            </div>
-            <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
-              <div className="flex items-center space-x-1">
-                <Skeleton className="h-4 w-4" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-              <div className="flex items-center space-x-1">
-                <Skeleton className="h-4 w-4" />
-                <Skeleton className="h-4 w-16" />
-              </div>
-              <div className="flex items-center space-x-1">
-                <Skeleton className="h-4 w-4" />
-                <Skeleton className="h-4 w-12" />
-              </div>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
 
   return (
     <PageLayout
