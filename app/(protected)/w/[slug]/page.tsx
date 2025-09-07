@@ -25,7 +25,6 @@ import { PageLayout } from '@/components/page-layout';
 export default function DashboardPage() {
   const { stats, loading } = useDashboard();
   const { user } = useAuth();
-  console.log('DashboardPage session', user);
 
   // if (!user) return null;
   if (loading) return <Spinner />;
@@ -79,7 +78,7 @@ export default function DashboardPage() {
     <PageLayout header={<Breadcrumbs title="Home" />}>
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">
-          {getTimeGreeting()},  👋
+          {getTimeGreeting()}, {user?.firstName} 👋
         </h2>
       </div>
 

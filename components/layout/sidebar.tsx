@@ -24,7 +24,7 @@ export function Sidebar({ fakeWorkspace }: { fakeWorkspace?: Workspace }) {
   if (!workspace && !fakeWorkspace) return null;
 
   return (
-    <div className="flex h-full w-64 flex-col bg-gray-50 border-r">
+    <div className="hidden md:flex h-full w-64 flex-col bg-gray-50 border-r">
       <div className="flex h-12 w-full items-center justify-between px-3 gap-2">
         <div className="flex-1 min-w-0">
           {workspace ? (
