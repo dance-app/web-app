@@ -10,7 +10,7 @@ export function useSignOut() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      await signOut({ redirect: false });
+      await signOut({ callbackUrl: '/auth/sign-in' });
     },
     onSuccess: async () => {
       // Clear all queries

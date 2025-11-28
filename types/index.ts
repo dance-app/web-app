@@ -36,7 +36,7 @@ export interface User {
   firstName: string;
   lastName: string;
   createdAt: string;
-  isSuperAdmin: boolean;
+  isSuperAdmin?: boolean;
   accounts: {
     id: string;
     provider: 'LOCAL' | 'GOOGLE' | 'GITHUB';

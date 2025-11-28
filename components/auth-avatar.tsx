@@ -1,6 +1,5 @@
 'use client';
 
-import { useAuth } from '@/hooks/use-auth';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,10 +18,15 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useSignOut } from '@/hooks/use-sign-out';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 export function AuthAvatar() {
-  const { user } = useAuth();
+  const { user, isLoading } = useCurrentUser();
   const { signOut } = useSignOut();
+
+  if (isLoading) {
+    return null;
+  }
 
   if (!user) {
     console.info(`Not user in AuthAvatar`);

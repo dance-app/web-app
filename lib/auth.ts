@@ -1,23 +1,10 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { BASE_URL } from '@/lib/api/shared.api';
+import { BASE_URL, ERROR_MESSAGES, type ApiResponse } from '@/lib/api/shared.api';
 import type { User } from '@/types';
-import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 
 async function refreshAccessToken(token: any) {
   try {
-    // Check if we should use mock data
-    const mockResponse = await MockApi.refreshTokens();
-    if (mockResponse) {
-      logMockDataUsage('POST /auth/refresh-token (NextAuth)');
-      return {
-        ...token,
-        accessToken: mockResponse.accessToken,
-        accessTokenExpires: Date.now() + 15 * 60 * 1000, // 15 minutes from now
-        refreshToken: mockResponse.refreshToken ?? token.refreshToken, // Fall back to old refresh token
-      };
-    }
-
     const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
       method: 'POST',
       headers: {
@@ -28,17 +15,21 @@ async function refreshAccessToken(token: any) {
       }),
     });
 
-    const refreshedTokens = await response.json();
+    const refreshedTokens = (await response.json()) as ApiResponse<{
+      accessToken: string;
+      refreshToken: string;
+    }>;
 
-    if (!response.ok) {
-      throw refreshedTokens;
+    if (!('data' in refreshedTokens) || !refreshedTokens.data.accessToken) {
+      throw new Error('Missing access token in refresh response');
     }
 
     return {
       ...token,
-      accessToken: refreshedTokens.accessToken,
+      accessToken: refreshedTokens.data.accessToken,
       accessTokenExpires: Date.now() + 15 * 60 * 1000, // 15 minutes from now
-      refreshToken: refreshedTokens.refreshToken ?? token.refreshToken, // Fall back to old refresh token
+      refreshToken:
+        refreshedTokens.data.refreshToken ?? token.refreshToken, // Fall back to old refresh token
     };
   } catch (error) {
     console.error('Error refreshing access token:', error);
@@ -59,22 +50,6 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          // Check if we should use mock data
-          const mockResponse = await MockApi.signIn({
-            email: credentials?.email || '',
-            password: credentials?.password || '',
-          });
-          
-          if (mockResponse) {
-            logMockDataUsage('POST /auth/sign-in (NextAuth)');
-            // Return user object with tokens, using your existing User type structure
-            return {
-              ...mockResponse.user,
-              accessToken: mockResponse.accessToken,
-              refreshToken: mockResponse.refreshToken,
-            };
-          }
-
           const res = await fetch(`${BASE_URL}/auth/sign-in`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -84,37 +59,52 @@ export const authOptions: NextAuthOptions = {
             }),
           });
 
-          const data = await res.json();
-          console.log('Sign-in response:', data);
+          const payload = (await res.json()) as ApiResponse<{
+            user: User;
+            accessToken: string;
+            refreshToken: string;
+          }>;
 
-          if (!res.ok || data.error) {
-            throw new Error(data.error || 'Authentication failed');
+          if (!('data' in payload)) {
+            const codeKey =
+              typeof payload.message === 'string'
+                ? payload.message
+                : payload.message?.[0];
+            const friendly =
+              (codeKey && ERROR_MESSAGES[codeKey]) ||
+              (typeof payload.message === 'string'
+                ? payload.message
+                : payload.message?.[0]) ||
+              'Authentication failed';
+            throw new Error(friendly);
+          }
+
+          if (!payload.data.user || !payload.data.accessToken) {
+            throw new Error('Invalid authentication response');
           }
 
           // Return user object with tokens, using your existing User type structure
           return {
-            ...data.user,
-            accessToken: data.accessToken,
-            refreshToken: data.refreshToken,
+            ...payload.data.user,
+            accessToken: payload.data.accessToken,
+            refreshToken: payload.data.refreshToken,
           };
         } catch (error) {
           console.error('Authentication error:', error);
-          return null;
+          throw error;
         }
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user, account }) {
-      console.log('JWT callback:', { token, user, account });
-      // Initial sign in
+      // Initial sign in: store tokens only
       if (account && user) {
         return {
           ...token,
           accessToken: user.accessToken,
           refreshToken: user.refreshToken,
           accessTokenExpires: Date.now() + 15 * 60 * 1000, // 15 minutes from now
-          user,
         };
       }
 
@@ -127,13 +117,8 @@ export const authOptions: NextAuthOptions = {
       return refreshAccessToken(token);
     },
     async session({ session, token }) {
-      console.log('Session callback:', { session, token });
-      // Send properties to the client using your existing User type
-      if (token.user) {
-        session.accessToken = token.accessToken as string;
-        session.user = token.user;
-        session.error = token.error;
-      }
+      session.accessToken = token.accessToken as string;
+      session.error = token.error;
       return session;
     },
   },
@@ -150,7 +135,6 @@ export default NextAuth(authOptions);
 declare module 'next-auth' {
   interface Session {
     accessToken?: string;
-    user: User;
     error?: string;
   }
 

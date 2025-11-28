@@ -4,12 +4,9 @@
 
 The dance app now supports complete mock authentication that works without a backend server. This includes sign-in, sign-up, and session management through NextAuth.
 
-## Environment Setup
+## Mock Mode
 
-Mock authentication is enabled by the environment variable:
-```env
-NEXT_PUBLIC_USE_MOCK_DATA=true
-```
+Mock authentication is currently hardcoded on. No environment variable is needed.
 
 ## Test Users
 
@@ -82,14 +79,10 @@ function SignOutButton() {
 
 ## Switching to Real API
 
-To disable mock authentication and use the real backend:
+To disable mock authentication and use the real backend (temporarily):
 
-1. Change environment variable:
-   ```env
-   NEXT_PUBLIC_USE_MOCK_DATA=false
-   ```
-
-2. Ensure your backend API is running and accessible at the configured `BASE_URL`
+1. Change `USE_MOCK_DATA` in `lib/mock-api.ts` to `false`.
+2. Ensure your backend API is running and accessible at the configured `BASE_URL`.
 
 ## Development Benefits
 

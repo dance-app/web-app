@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { Sidebar } from '../layout/sidebar';
 import { WeekStart } from '@/types';
-import { useAuth } from '@/hooks/use-auth';
 import { useWorkspaceCreate } from '@/hooks/use-workspace-create';
 
 interface CreateWorkspaceForm {
@@ -17,7 +16,6 @@ interface CreateWorkspaceForm {
 
 export default function NoWorkspaceState() {
   const router = useRouter();
-  const { user } = useAuth();
   const { create } = useWorkspaceCreate({
     onSuccess: (workspace) => {
       router.push(`/w/${workspace.slug}`);
@@ -37,10 +35,8 @@ export default function NoWorkspaceState() {
 
   const onSubmit = async (data: CreateWorkspaceForm) => {
     try {
-      if (!user || !user.id) throw new Error('User not authenticated.');
       await create({
         name: data.name.trim(),
-        ownerId: user.id,
       });
     } catch (err: any) {
       console.error(err);

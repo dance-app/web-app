@@ -6,13 +6,8 @@ import type { Session } from 'next-auth';
 // NextAuth session atom
 export const sessionAtom = atom<Session | null>(null);
 
-// Derived user atom from session
-export const authUserAtom = atom<{ user: User | null }>((get) => {
-  const session = get(sessionAtom);
-  return {
-    user: session?.user || null,
-  };
-});
+// Placeholder user atom (session no longer carries user data)
+export const authUserAtom = atom<{ user: User | null }>({ user: null });
 
 // Legacy auth atom for compatibility (can be removed later)
 export const authAtom = atomWithStorage<AuthState>('auth-state', {

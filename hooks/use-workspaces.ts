@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from './use-auth';
 import { Workspace } from '@/types';
 import { BASE_URL } from '@/lib/api/shared.api';
 import { MockApi, logMockDataUsage, shouldUseMockData } from '@/lib/mock-api';
+import { useSession } from 'next-auth/react';
 
 export function useWorkspaces({ enabled }: { enabled?: boolean } = {}) {
-  const { accessToken, user } = useAuth();
+  const { data: session, status } = useSession();
+  const accessToken = session?.accessToken as string | undefined;
 
   const { data, isLoading, isError, error, ...query } = useQuery<{
     meta: {
@@ -38,7 +39,9 @@ export function useWorkspaces({ enabled }: { enabled?: boolean } = {}) {
       if (!res.ok) throw new Error('Failed to fetch workspaces');
       return res.json();
     },
-    enabled: enabled !== false && (shouldUseMockData() || (!!user && !!accessToken)),
+    enabled:
+      enabled !== false &&
+      (shouldUseMockData() || (status === 'authenticated' && !!accessToken)),
   });
 
   return {

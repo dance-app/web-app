@@ -2,11 +2,17 @@
 
 import { User } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { apiCall } from '@/lib/api/client';
+import { ERROR_MESSAGES } from '@/lib/api/shared.api';
 
-export function useSignUp() {
+export function useSignUp({
+  onError,
+  onSuccess,
+}: {
+  onError: (error: Error) => void;
+  onSuccess: (data: { user: User }) => void;
+}) {
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   const mutation = useMutation({
     mutationFn: async ({
@@ -20,20 +26,22 @@ export function useSignUp() {
       email: string;
       password: string;
     }) => {
-      const response = await fetch('/api/auth/sign-up', {
+      const data = await apiCall<{ user: User }>('/auth/sign-up', {
         method: 'POST',
-        body: JSON.stringify({ firstName, lastName, email, password }),
+        body: { firstName, lastName, email, password },
+        credentials: 'omit', // avoid CORS preflight issues while backend cookies are not consumed here
       });
-      const responseJSON = await response.json();
-      if (responseJSON.error) throw new Error(responseJSON.error);
-      return responseJSON;
+      return data;
     },
-    onSuccess: async (data: { user: User }) => {
+    onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: ['authUser'] });
-      router.push('/');
+      onSuccess(data);
     },
     onError: (error: Error) => {
-      console.error('Sign-up error:', error);
+      const code = (error as any)?.code as string | undefined;
+      const friendly =
+        (code && ERROR_MESSAGES[code]) || error.message || 'Sign-up failed';
+      onError(new Error(friendly));
     },
   });
 

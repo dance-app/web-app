@@ -105,12 +105,16 @@ export async function POST(request: NextRequest) {
     });
     const data: ApiResponse<Workspace> = await result.json();
 
-    if ('message' in data)
-      throw new Error(data.message || 'Failed to create workspace');
+    if (!('data' in data)) {
+      const message =
+        (Array.isArray(data.message) ? data.message[0] : data.message) ||
+        'Failed to create workspace';
+      throw new Error(message);
+    }
 
     const responseData: CreateWorkspaceResponse = {
       success: true,
-      data: { workspace: data },
+      data: { workspace: data.data },
     };
     const response = NextResponse.json(responseData, { status: 201 });
 

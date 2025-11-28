@@ -21,7 +21,7 @@ export async function getCurrentUser(): Promise<User | null> {
 
       if (res.ok) {
         const userResponse: ApiResponse<User> = await res.json();
-        return 'id' in userResponse ? userResponse : null;
+        return 'data' in userResponse ? userResponse.data : null;
       }
     }
 
@@ -38,19 +38,19 @@ export async function getCurrentUser(): Promise<User | null> {
           refreshToken: string;
         }> = await refreshRes.json();
 
-        if (!('accessToken' in newTokens)) return null;
+        if (!('data' in newTokens)) return null;
 
         const userRes = await fetch(`${BASE_URL}/auth/me`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${newTokens.accessToken}`,
+            Authorization: `Bearer ${newTokens.data.accessToken}`,
           },
         });
 
         if (userRes.ok) {
           const data: ApiResponse<{ user: User }> = await userRes.json();
-          return 'user' in data ? data.user : null;
+          return 'data' in data ? data.data.user : null;
         }
       }
     }
@@ -65,7 +65,6 @@ export async function getCurrentUser(): Promise<User | null> {
 export async function getWorkspaces(): Promise<Workspace[]> {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get('accessToken')?.value;
-  console.log('Access Token:', accessToken);
   if (!accessToken) {
     return [];
   }
@@ -78,11 +77,9 @@ export async function getWorkspaces(): Promise<Workspace[]> {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log('Response Status:', res.status);
     if (res.ok) {
-      const data = await res.json();
-      console.log('Workspaces Data:', data);
-      return data.workspaces || [];
+      const data = (await res.json()) as ApiResponse<Workspace[]>;
+      return 'data' in data ? data.data : [];
     }
 
     return [];

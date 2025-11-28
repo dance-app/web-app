@@ -18,16 +18,15 @@ import {
 import { useDashboard } from '@/hooks/use-dashboard';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Spinner } from '@/components/ui/spinner';
-import { useAuth } from '@/hooks/use-auth';
 import { getTimeGreeting } from '@/lib/utils';
 import { PageLayout } from '@/components/page-layout';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 export default function DashboardPage() {
   const { stats, loading } = useDashboard();
-  const { user } = useAuth();
+  const { user, isLoading: userLoading } = useCurrentUser();
 
-  // if (!user) return null;
-  if (loading) return <Spinner />;
+  if (loading || userLoading) return <Spinner />;
 
   const statCards = [
     {

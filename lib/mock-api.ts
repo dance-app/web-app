@@ -9,11 +9,10 @@ import {
   mockApiDelay,
   generatePaginatedResponse,
 } from './mock-data';
-import { LocalApiResponse, WeekStart } from '@/types';
+import { LocalApiResponse, WeekStart, WorkspaceRole, DanceRole } from '@/types';
 
-// Environment flag to enable/disable mock data
+// Mock data is hardcoded on; env toggling was removed to keep consistency during refactors.
 export const USE_MOCK_DATA = true;
-// export const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
 // Mock API response wrapper
 export class MockApi {
@@ -95,8 +94,8 @@ export class MockApi {
       name?: string;
       email?: string;
       level?: number;
-      preferedDanceRole?: 'LEADER' | 'FOLLOWER';
-      roles?: string[];
+      preferedDanceRole?: DanceRole;
+      roles?: WorkspaceRole[];
     }
   ) {
     if (!USE_MOCK_DATA) return null;

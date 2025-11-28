@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -10,8 +11,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { VerifyEmailResponse } from '@/app/api/auth/verify-email/route';
 import { Spinner } from '@/components/ui/spinner';
+import { useVerifyEmail } from '@/hooks/use-verify-email';
 
 export default function ConfirmEmailPage() {
   return (
@@ -25,10 +26,18 @@ function ConfirmEmailPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get('token') || '';
+  const hasTriggered = useRef(false);
 
   const [isPending, setIsPending] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const verifyEmail = useVerifyEmail({
+    onSuccess: () =>
+      setSuccessMsg(
+        'Your email has been successfully confirmed! You can now sign in.'
+      ),
+    onError: (err) => setErrorMsg(err.message),
+  });
 
   useEffect(() => {
     if (!token) {
@@ -36,34 +45,23 @@ function ConfirmEmailPageContent() {
       return;
     }
 
+    if (hasTriggered.current) return;
+    hasTriggered.current = true;
+
     const confirmEmail = async () => {
       setIsPending(true);
       setErrorMsg(null);
       setSuccessMsg(null);
 
       try {
-        const res = await fetch('/api/auth/verify-email', {
-          method: 'POST',
-          body: JSON.stringify({ token }),
-          credentials: 'include',
-        });
-        const body = (await res.json()) as VerifyEmailResponse;
-        if ('error' in body) {
-          throw new Error(body.error.message);
-        }
-
-        setSuccessMsg(
-          'Your email has been successfully confirmed! You can now sign in.'
-        );
-      } catch (err: any) {
-        setErrorMsg(err.message || 'Something went wrong.');
+        await verifyEmail.mutateAsync(token);
       } finally {
         setIsPending(false);
       }
     };
 
     confirmEmail();
-  }, [token]);
+  }, [token, verifyEmail]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
