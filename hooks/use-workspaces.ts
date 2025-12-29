@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Workspace } from '@/types';
 import { BASE_URL } from '@/lib/api/shared.api';
-import { MockApi, logMockDataUsage, shouldUseMockData } from '@/lib/mock-api';
 import { useSession } from 'next-auth/react';
 
 export function useWorkspaces({ enabled }: { enabled?: boolean } = {}) {
@@ -19,13 +18,6 @@ export function useWorkspaces({ enabled }: { enabled?: boolean } = {}) {
   }>({
     queryKey: ['workspaces'],
     queryFn: async () => {
-      // Check if we should use mock data
-      const mockResponse = await MockApi.getWorkspaces();
-      if (mockResponse) {
-        logMockDataUsage('GET /workspaces (useWorkspaces)');
-        return mockResponse;
-      }
-
       if (!accessToken) throw new Error('No access token');
 
       const res = await fetch(`${BASE_URL}/workspaces`, {
@@ -40,8 +32,7 @@ export function useWorkspaces({ enabled }: { enabled?: boolean } = {}) {
       return res.json();
     },
     enabled:
-      enabled !== false &&
-      (shouldUseMockData() || (status === 'authenticated' && !!accessToken)),
+      enabled !== false && status === 'authenticated' && !!accessToken,
   });
 
   return {

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
-import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 import { LocalApiResponse, Member } from '@/types';
 
 export type UpdateMemberResponse = LocalApiResponse<
@@ -31,24 +30,6 @@ export async function PUT(
     const { slug: workspaceSlug, id: memberId } = await params;
     const body = await request.json();
 
-    // Check if we should use mock data
-    const mockResponse = await MockApi.updateMember(workspaceSlug, memberId, body);
-    if (mockResponse) {
-      logMockDataUsage(`PUT /api/workspace/${workspaceSlug}/members/${memberId}`);
-      if (mockResponse.success) {
-        const responseData: UpdateMemberResponse = {
-          success: true,
-          data: { member: mockResponse.data },
-        };
-        return NextResponse.json(responseData, { status: 200 });
-      } else {
-        return NextResponse.json(
-          { message: mockResponse.error.message },
-          { status: mockResponse.statusCode }
-        );
-      }
-    }
-
     // TODO: Implement real API call when backend is available
     return NextResponse.json(
       { message: 'Member update not implemented for real API yet' },
@@ -75,24 +56,6 @@ export async function DELETE(
     }
 
     const { slug: workspaceSlug, id: memberId } = await params;
-
-    // Check if we should use mock data
-    const mockResponse = await MockApi.deleteMember(workspaceSlug, memberId);
-    if (mockResponse) {
-      logMockDataUsage(`DELETE /api/workspace/${workspaceSlug}/members/${memberId}`);
-      if (mockResponse.success) {
-        const responseData: DeleteMemberResponse = {
-          success: true,
-          data: { member: mockResponse.data },
-        };
-        return NextResponse.json(responseData, { status: 200 });
-      } else {
-        return NextResponse.json(
-          { message: mockResponse.error.message },
-          { status: mockResponse.statusCode }
-        );
-      }
-    }
 
     // TODO: Implement real API call when backend is available
     return NextResponse.json(

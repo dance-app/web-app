@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ApiResponse, BASE_URL } from '@/lib/api/shared.api';
 import { LocalApiResponse, Member, Workspace, WorkspaceRole } from '@/types';
 import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
-import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 
 export type GetWorkspaceMembersResponse = LocalApiResponse<
   {
@@ -81,24 +80,7 @@ export async function GET(
     const page = parseInt(url.searchParams.get('page') || '1');
     const limit = parseInt(url.searchParams.get('limit') || '10');
 
-    // Check if we should use mock data
-    const mockResponse = await MockApi.getMembers(workspaceSlug, page, limit);
-    if (mockResponse) {
-      logMockDataUsage(`GET /api/workspace/${workspaceSlug}/members`);
-      if (mockResponse.success) {
-        return NextResponse.json(
-          { members: mockResponse.data.data },
-          { status: 200 }
-        );
-      } else {
-        return NextResponse.json(
-          { message: mockResponse.error.message },
-          { status: mockResponse.statusCode }
-        );
-      }
-    }
-
-    // Fallback to existing fake data if mock API is not enabled
+    // TODO: Replace with actual API call
     const result = NextResponse.json({ members: fakeMembers }, { status: 200 });
 
     // If we refreshed tokens, update cookies

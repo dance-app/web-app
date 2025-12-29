@@ -58,7 +58,6 @@ hooks/               # Custom React hooks for data fetching
 lib/                 # Utilities and shared logic
   api/               # API utilities and constants
   auth/              # Auth utilities
-  mock-api.ts        # Mock data for development
 
 types/               # TypeScript type definitions
   index.ts           # Main types file
@@ -342,7 +341,6 @@ export async function GET(
 - Always handle errors with try/catch
 - Return appropriate HTTP status codes
 - Use `BASE_URL` from `lib/api/shared.api.ts` for external API calls
-- Support mock data with `MockApi` for development
 
 ## Styling Guidelines
 

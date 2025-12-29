@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
 import { Material, MaterialVisibility } from '@/types/material';
 import { BASE_URL } from '@/lib/api/shared.api';
-import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 
 export async function GET(
   request: NextRequest,
@@ -19,13 +18,6 @@ export async function GET(
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get('page') || '1');
     const limit = parseInt(url.searchParams.get('limit') || '10');
-
-    // Check if we should use mock data
-    const mockResponse = await MockApi.getMaterials(slug, page, limit);
-    if (mockResponse) {
-      logMockDataUsage(`GET /api/workspace/${slug}/materials`);
-      return NextResponse.json(mockResponse);
-    }
 
     const apiResponse = await fetch(
       `${BASE_URL}/workspaces/${slug}/materials`,

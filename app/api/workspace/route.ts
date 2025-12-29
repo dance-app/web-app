@@ -3,7 +3,6 @@ import { ApiResponse, BASE_URL } from '@/lib/api/shared.api';
 import { slugify } from '@/lib/utils';
 import { LocalApiResponse, Workspace } from '@/types';
 import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
-import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 
 export async function GET() {
   try {
@@ -11,13 +10,6 @@ export async function GET() {
 
     if (!authResult.accessToken) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Check if we should use mock data
-    const mockResponse = await MockApi.getWorkspaces();
-    if (mockResponse) {
-      logMockDataUsage('GET /api/workspace');
-      return NextResponse.json({ workspaces: mockResponse }, { status: 200 });
     }
 
     const response = await fetch(`${BASE_URL}/workspaces`, {
@@ -76,20 +68,6 @@ export async function POST(request: NextRequest) {
     if (payload.name.length < 3 || payload.name.length > 50)
       throw new Error('INVALID_NAME_LENGTH');
     if (!payload.ownerId) throw new Error('OWNER_ID_REQUIRED');
-
-    // Check if we should use mock data
-    const mockResponse = await MockApi.createWorkspace({
-      name: payload.name.trim(),
-      slug: slugify(payload.name.trim()),
-    });
-    if (mockResponse) {
-      logMockDataUsage('POST /api/workspace');
-      const responseData: CreateWorkspaceResponse = {
-        success: true,
-        data: { workspace: mockResponse },
-      };
-      return NextResponse.json(responseData, { status: 201 });
-    }
 
     const result = await fetch(`${BASE_URL}/workspaces`, {
       method: 'POST',

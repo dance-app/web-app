@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateOrRefreshToken } from '@/lib/auth/validate-or-refresh';
-import { MockApi, logMockDataUsage } from '@/lib/mock-api';
 
 const mockDanceTypes = [
   {
@@ -140,21 +139,7 @@ export async function GET(
     const page = parseInt(url.searchParams.get('page') || '1');
     const limit = parseInt(url.searchParams.get('limit') || '10');
 
-    // Check if we should use mock data
-    const mockResponse = await MockApi.getEvents(workspaceSlug, page, limit);
-    if (mockResponse) {
-      logMockDataUsage(`GET /api/workspace/${workspaceSlug}/events`);
-      if (mockResponse.success) {
-        return NextResponse.json(mockResponse.data);
-      } else {
-        return NextResponse.json(
-          { error: mockResponse.error.message },
-          { status: mockResponse.statusCode }
-        );
-      }
-    }
-
-    // Fallback to existing mock data if mock API is not enabled
+    // TODO: Replace with actual API call
     const workspaceId = '1'; // Default workspace for existing mock data
 
     // Simulate API delay
@@ -196,21 +181,7 @@ export async function POST(
     const { slug: workspaceSlug } = params;
     const body = await request.json();
 
-    // Check if we should use mock data
-    const mockResponse = await MockApi.createEvent(workspaceSlug, body);
-    if (mockResponse) {
-      logMockDataUsage(`POST /api/workspace/${workspaceSlug}/events`);
-      if (mockResponse.success) {
-        return NextResponse.json(mockResponse.data, { status: 201 });
-      } else {
-        return NextResponse.json(
-          { error: mockResponse.error.message },
-          { status: mockResponse.statusCode }
-        );
-      }
-    }
-
-    // Fallback to existing mock data logic if mock API is not enabled
+    // TODO: Replace with actual API call
     const workspaceId = '1'; // Default workspace for existing mock data
 
     // Simulate API delay
