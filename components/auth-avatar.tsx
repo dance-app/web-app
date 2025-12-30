@@ -9,14 +9,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LogOut, Settings } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { useSignOut } from '@/hooks/use-sign-out';
 import { useCurrentUser } from '@/hooks/use-current-user';
 
@@ -53,18 +47,6 @@ export function AuthAvatar() {
           {user.accounts?.[0]?.email}
         </div>
         <DropdownMenuSeparator />
-
-        <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <DropdownMenuItem disabled>
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-              </DropdownMenuItem>
-            </TooltipTrigger>
-            <TooltipContent side="right">Coming soon</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
 
         <DropdownMenuItem onClick={() => signOut()}>
           <LogOut className="mr-2 h-4 w-4" />
