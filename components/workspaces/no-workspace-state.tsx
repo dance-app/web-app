@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { Label } from '@/components/ui/label';
@@ -9,6 +10,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { Sidebar } from '../layout/sidebar';
 import { WeekStart } from '@/types';
 import { useWorkspaceCreate } from '@/hooks/use-workspace-create';
+import { toast } from 'sonner';
 
 interface CreateWorkspaceForm {
   name: string;
@@ -16,16 +18,20 @@ interface CreateWorkspaceForm {
 
 export default function NoWorkspaceState() {
   const router = useRouter();
-  const { create } = useWorkspaceCreate({
+  const [error, setError] = useState<string | null>(null);
+
+  const { create, isPending } = useWorkspaceCreate({
     onSuccess: (workspace) => {
+      toast.success('Workspace created successfully!');
       router.push(`/w/${workspace.slug}`);
     },
   });
+
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<CreateWorkspaceForm>({
     defaultValues: { name: '' },
     mode: 'onChange',
@@ -35,10 +41,14 @@ export default function NoWorkspaceState() {
 
   const onSubmit = async (data: CreateWorkspaceForm) => {
     try {
+      setError(null);
       await create({
         name: data.name.trim(),
       });
     } catch (err: any) {
+      const errorMessage = err?.message || 'Failed to create workspace';
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error(err);
     }
   };
@@ -65,15 +75,22 @@ export default function NoWorkspaceState() {
                     message: 'At least 3 characters',
                   },
                 })}
-                placeholder="e.g. Marketing Team"
+                placeholder="e.g. Dance Studio Pro"
+                disabled={isPending}
               />
               {errors.name && (
                 <p className="text-sm text-red-500">{errors.name.message}</p>
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? <Spinner /> : 'Create Workspace'}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                <p className="text-sm">{error}</p>
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? <Spinner /> : 'Create Workspace'}
             </Button>
           </form>
         </div>

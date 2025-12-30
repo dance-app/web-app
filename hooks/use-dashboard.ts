@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useCurrentWorkspace } from './use-current-workspace';
 
 export interface DashboardStats {
@@ -26,11 +26,14 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export function useDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const { workspace } = useCurrentWorkspace();
+  const { workspace, isLoading: workspaceLoading } = useCurrentWorkspace();
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
-      if (!workspace) return;
+      if (!workspace) {
+        setLoading(false);
+        return;
+      }
 
       setLoading(true);
       // Simulate API delay
@@ -44,15 +47,17 @@ export function useDashboard() {
       console.error('Fetch dashboard stats error:', error);
       setLoading(false);
     }
-  };
+  }, [workspace]);
 
   useEffect(() => {
-    fetchStats();
-  }, [workspace]);
+    if (!workspaceLoading) {
+      fetchStats();
+    }
+  }, [workspace, workspaceLoading, fetchStats]);
 
   return {
     stats,
-    loading,
+    loading: loading || workspaceLoading,
     refetch: fetchStats,
   };
 }
