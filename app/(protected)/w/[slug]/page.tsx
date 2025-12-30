@@ -23,10 +23,10 @@ import { PageLayout } from '@/components/page-layout';
 import { useCurrentUser } from '@/hooks/use-current-user';
 
 export default function DashboardPage() {
-  const { stats, loading } = useDashboard();
+  const { stats } = useDashboard();
   const { user, isLoading: userLoading } = useCurrentUser();
 
-  if (loading || userLoading) return <Spinner />;
+  if (userLoading) return <Spinner />;
 
   const statCards = [
     {
