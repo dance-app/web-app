@@ -1,4 +1,9 @@
-import { BASE_URL, ERROR_MESSAGES, type ApiResponse } from './shared.api';
+import {
+  BASE_URL,
+  ERROR_MESSAGES,
+  type ApiResponse,
+  type ApiSuccess,
+} from './shared.api';
 
 interface ApiConfig {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -7,10 +12,10 @@ interface ApiConfig {
   credentials?: RequestCredentials;
 }
 
-export async function apiCall<T>(
+export async function apiCall<T, M = unknown>(
   endpoint: string,
   config: ApiConfig = {}
-): Promise<T> {
+): Promise<ApiSuccess<T, M>> {
   const {
     method = 'GET',
     body,
@@ -41,17 +46,19 @@ export async function apiCall<T>(
   }
 
   const response = await fetch(url, requestConfig);
-  const payload = (await response.json()) as ApiResponse<T>;
+  const payload: ApiResponse<T, M> = await response.json();
 
-  if ('data' in payload) {
-    return payload.data;
-  }
+  if ('data' in payload) return payload;
 
   const codeKey =
-    typeof payload.message === 'string' ? payload.message : payload.message?.[0];
+    typeof payload.message === 'string'
+      ? payload.message
+      : payload.message?.[0];
   const friendly =
     (codeKey && ERROR_MESSAGES[codeKey]) ||
-    (typeof payload.message === 'string' ? payload.message : payload.message?.[0]) ||
+    (typeof payload.message === 'string'
+      ? payload.message
+      : payload.message?.[0]) ||
     `API call failed with status ${response.status}`;
   const err = new Error(friendly);
   if (codeKey) {

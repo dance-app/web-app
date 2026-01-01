@@ -6,9 +6,9 @@ export const BASE_URL =
     ? 'http://localhost:3333'
     : 'https://api-792f.onrender.com';
 
-export interface ApiSuccess<T> {
+export interface ApiSuccess<T, M = any> {
   data: T;
-  meta?: any;
+  meta?: M;
   error: null;
 }
 
@@ -17,7 +17,7 @@ export interface ApiError {
   message: string[] | string;
 }
 
-export type ApiResponse<T = any> = ApiSuccess<T> | ApiError;
+export type ApiResponse<T = any, M = any> = ApiSuccess<T, M> | ApiError;
 
 export const ERROR_MESSAGES: Record<string, string> = {
   'min-8-characters': 'Password must be at least 8 characters long',

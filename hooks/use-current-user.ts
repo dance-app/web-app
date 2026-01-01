@@ -8,25 +8,22 @@ import { ERROR_MESSAGES } from '@/lib/api/shared.api';
 
 export function useCurrentUser() {
   const { data: session, status } = useSession();
-  const accessToken = session?.accessToken as string | undefined;
+  const accessToken =
+    typeof session?.accessToken === 'string' ? session.accessToken : undefined;
 
   const query = useQuery<User | null>({
     queryKey: ['currentUser', accessToken],
     enabled: status === 'authenticated' && !!accessToken,
     queryFn: async () => {
-      if (!accessToken) return null;
+      if (!accessToken) throw new Error('No access token');
       try {
-        const data = await apiCall<any>('/auth/me', {
+        const response = await apiCall<User | null>('/auth/me', {
           credentials: 'omit',
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        const user =
-          (data as any)?.user ??
-          (data as any)?.data?.user ??
-          (data as User | null);
-        return user ?? null;
+        return response.data ?? null;
       } catch (error) {
         const code = (error as any)?.code as string | undefined;
         const friendly =
@@ -44,7 +41,7 @@ export function useCurrentUser() {
   });
 
   return {
-    user: query.data ?? null,
+    user: query.data || null,
     isLoading: status === 'loading' || query.isLoading,
     error: query.error as Error | null,
     refetch: query.refetch,

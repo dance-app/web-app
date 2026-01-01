@@ -26,12 +26,12 @@ export function useSignUp({
       email: string;
       password: string;
     }) => {
-      const data = await apiCall<{ user: User }>('/auth/sign-up', {
+      const response = await apiCall<{ user: User }>('/auth/sign-up', {
         method: 'POST',
         body: { firstName, lastName, email, password },
         credentials: 'omit', // avoid CORS preflight issues while backend cookies are not consumed here
       });
-      return data;
+      return response.data;
     },
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: ['authUser'] });

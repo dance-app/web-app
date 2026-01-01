@@ -17,6 +17,8 @@ export function useMemberCreate() {
   const { workspace } = useCurrentWorkspace();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
+  const accessToken =
+    typeof session?.accessToken === 'string' ? session.accessToken : undefined;
 
   const mutation = useMutation({
     mutationFn: async (payload: CreateMemberPayload) => {
@@ -24,18 +26,18 @@ export function useMemberCreate() {
         throw new Error('No workspace selected');
       }
 
-      const accessToken = session?.accessToken as string | undefined;
       if (!accessToken) {
         throw new Error('Missing access token');
       }
 
-      return apiCall<Member>(`/workspaces/${workspace.slug}/members`, {
+      const response = await apiCall<Member>(`/workspaces/${workspace.slug}/members`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       });
+      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members', workspace?.slug] });

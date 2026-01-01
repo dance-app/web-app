@@ -13,12 +13,15 @@ export function useVerifyEmail({
 } = {}) {
   return useMutation({
     mutationFn: async (token: string) => {
-      const res = await apiCall<{ message: string }>('/auth/verify-email', {
-        method: 'POST',
-        body: { token },
-        credentials: 'omit',
-      });
-      return res;
+      const response = await apiCall<{ message: string }>(
+        '/auth/verify-email',
+        {
+          method: 'POST',
+          body: { token },
+          credentials: 'omit',
+        }
+      );
+      return response.data;
     },
     onSuccess: () => {
       onSuccess?.();
