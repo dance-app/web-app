@@ -121,7 +121,7 @@ const mockEvents = [
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     // const { accessToken, response } = await validateOrRefreshToken();
@@ -134,7 +134,7 @@ export async function GET(
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     // }
 
-    const { slug: workspaceSlug } = params;
+    const { slug: workspaceSlug } = await params;
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get('page') || '1');
     const limit = parseInt(url.searchParams.get('limit') || '10');
@@ -165,7 +165,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     // const { accessToken, response } = await validateOrRefreshToken();
@@ -178,7 +178,7 @@ export async function POST(
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     // }
 
-    const { slug: workspaceSlug } = params;
+    const { slug: workspaceSlug } = await params;
     const body = await request.json();
 
     // TODO: Replace with actual API call

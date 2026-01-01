@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCurrentWorkspace } from './use-current-workspace';
-import type { Member } from '@/types';
-import { DeleteMemberResponse } from '@/app/api/workspace/[slug]/members/[id]/route';
+import type { Member, LocalApiResponse } from '@/types';
+
+type DeleteMemberResponse = LocalApiResponse<
+  { member: Member },
+  'MEMBER_NOT_FOUND' | 'UNAUTHORIZED'
+>;
 
 export function useMemberDelete() {
   const { workspace } = useCurrentWorkspace();

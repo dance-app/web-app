@@ -5,7 +5,7 @@ import { BASE_URL } from '@/lib/api/shared.api';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     // const { accessToken, response } = await validateOrRefreshToken();
@@ -63,7 +63,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     // const { accessToken, response } = await validateOrRefreshToken();
@@ -76,7 +76,7 @@ export async function POST(
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     // }
 
-    const workspaceId = params.id;
+    const { slug: workspaceId } = await params;
     const body = await request.json();
 
     await new Promise((resolve) => setTimeout(resolve, 800));
@@ -109,7 +109,7 @@ export async function POST(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     // const { accessToken, response } = await validateOrRefreshToken();
@@ -122,7 +122,7 @@ export async function PUT(
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     // }
 
-    const workspaceId = params.id;
+    const { slug: workspaceId } = await params;
     const body = await request.json();
     const { materialId, ...updateData } = body;
 
@@ -160,7 +160,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     // const { accessToken, response } = await validateOrRefreshToken();
@@ -173,7 +173,7 @@ export async function DELETE(
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     // }
 
-    const workspaceId = params.id;
+    const { slug: workspaceId } = await params;
     const url = new URL(request.url);
     const materialId = url.searchParams.get('materialId');
 

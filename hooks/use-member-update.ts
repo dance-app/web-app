@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCurrentWorkspace } from './use-current-workspace';
-import type { Member } from '@/types';
-import { UpdateMemberResponse } from '@/app/api/workspace/[slug]/members/[id]/route';
+import type { Member, LocalApiResponse } from '@/types';
+
+type UpdateMemberResponse = LocalApiResponse<
+  { member: Member },
+  'MEMBER_NOT_FOUND' | 'UNAUTHORIZED'
+>;
 
 interface UpdateMemberData extends Pick<Member, 'id' | 'name' | 'email'> {}
 

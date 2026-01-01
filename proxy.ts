@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 const PUBLIC_PATHS = ['/auth/sign-in', '/auth/sign-up', '/auth/confirm-email'];
 const PROTECTED_PATHS = ['/', '/w']; // extend with other protected prefixes as needed
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
   const isAuthRoute = PUBLIC_PATHS.some((path) =>
     pathname.startsWith(path)

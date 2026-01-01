@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -15,19 +16,19 @@ import {
 import { isProd } from '@/lib/utils';
 import { useSignIn } from '@/hooks/use-sign-in';
 
-interface SignInForm {
+interface SignInFormData {
   email: string;
   password: string;
 }
 
-export default function SignInPage() {
+function SignInContent() {
   const { signIn, isPending, error } = useSignIn();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignInForm>({
+  } = useForm<SignInFormData>({
     defaultValues: {
       email: isProd() ? '' : 'john.doe@email.com',
       password: isProd() ? '' : 'adminadmin',
@@ -35,7 +36,7 @@ export default function SignInPage() {
     mode: 'onBlur',
   });
 
-  const onSubmit = async (data: SignInForm) =>
+  const onSubmit = async (data: SignInFormData) =>
     signIn({
       email: data.email,
       password: data.password,
@@ -128,5 +129,13 @@ export default function SignInPage() {
           </CardContent>
         </Card>
       </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignInContent />
+    </Suspense>
   );
 }

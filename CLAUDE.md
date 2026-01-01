@@ -499,3 +499,15 @@ When working on this codebase:
 - `types/index.ts` - Core type definitions
 - `lib/api/shared.api.ts` - API utilities and constants
 - `components/ui/` - Available UI primitives
+
+## Git Commit Guidelines
+
+### Commit Messages
+- **NEVER include Claude Code attribution or co-author tags** in commit messages
+- **NEVER include AI-generated footers** like "🤖 Generated with Claude Code" or similar
+- Keep commit messages clean and professional
+- Focus on what changed and why, not on the tools used to make the change
+- Use conventional commit format when appropriate: `type: description`
+  - Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`
+  - Example: `feat: add email verification flow`
+  - Example: `fix: resolve race condition in workspace creation`
