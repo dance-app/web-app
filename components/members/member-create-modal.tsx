@@ -37,7 +37,7 @@ interface MemberCreateModalProps {
 
 export function MemberCreateModal({ children }: MemberCreateModalProps) {
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<'submit' | 'createAnother' | null>(null);
 
   const form = useForm<MemberFormData>({
     resolver: zodResolver(memberSchema),
@@ -63,7 +63,7 @@ export function MemberCreateModal({ children }: MemberCreateModalProps) {
 
   const onSubmit = async (data: MemberFormData, createAnother = false) => {
     try {
-      setIsLoading(true);
+      setLoadingAction(createAnother ? 'createAnother' : 'submit');
 
       // TODO: Implement member creation API call
       console.log('Creating member:', data);
@@ -79,7 +79,7 @@ export function MemberCreateModal({ children }: MemberCreateModalProps) {
     } catch (error) {
       console.error('Failed to create member:', error);
     } finally {
-      setIsLoading(false);
+      setLoadingAction(null);
     }
   };
 
@@ -146,15 +146,15 @@ export function MemberCreateModal({ children }: MemberCreateModalProps) {
                 type="button"
                 variant="secondary"
                 onClick={form.handleSubmit((data) => onSubmit(data, true))}
-                disabled={isLoading}
+                disabled={loadingAction !== null}
               >
-                {isLoading && (
+                {loadingAction === 'createAnother' && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Add & Create another
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading && (
+              <Button type="submit" disabled={loadingAction !== null}>
+                {loadingAction === 'submit' && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Add Member
