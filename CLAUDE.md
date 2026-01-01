@@ -502,6 +502,12 @@ When working on this codebase:
 
 ## Git Commit Guidelines
 
+### Commit Policy
+- **NEVER commit changes without explicit user approval**
+- **ALWAYS ask the user before creating a commit**
+- After making changes, inform the user and wait for them to request a commit
+- Only create commits when the user explicitly asks you to commit
+
 ### Commit Messages
 - **NEVER include Claude Code attribution or co-author tags** in commit messages
 - **NEVER include AI-generated footers** like "🤖 Generated with Claude Code" or similar

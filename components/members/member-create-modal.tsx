@@ -25,7 +25,7 @@ import { Loader2 } from 'lucide-react';
 
 const memberSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email address').optional().or(z.literal('')),
+  email: z.union([z.string().email('Invalid email address'), z.literal('')]).optional(),
   phone: z.string().optional(),
 });
 
@@ -48,6 +48,19 @@ export function MemberCreateModal({ children }: MemberCreateModalProps) {
     },
   });
 
+  const closeModal = () => {
+    setOpen(false);
+    form.reset();
+  };
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      closeModal();
+    } else {
+      setOpen(true);
+    }
+  };
+
   const onSubmit = async (data: MemberFormData, createAnother = false) => {
     try {
       setIsLoading(true);
@@ -61,7 +74,7 @@ export function MemberCreateModal({ children }: MemberCreateModalProps) {
       form.reset();
 
       if (!createAnother) {
-        setOpen(false);
+        closeModal();
       }
     } catch (error) {
       console.error('Failed to create member:', error);
@@ -71,7 +84,7 @@ export function MemberCreateModal({ children }: MemberCreateModalProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
@@ -125,7 +138,7 @@ export function MemberCreateModal({ children }: MemberCreateModalProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setOpen(false)}
+                onClick={closeModal}
               >
                 Cancel
               </Button>
