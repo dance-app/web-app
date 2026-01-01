@@ -142,7 +142,7 @@ export const MemberDetailsForm = ({ member, onDelete }: {
           </p>
           <p className="flex items-center gap-2 text-sm">
             <Calendar className="h-4 w-4" />
-            {format(new Date(member.createdAt), 'PPP')}
+            {member.createdAt ? format(new Date(member.createdAt), 'PPP') : 'N/A'}
           </p>
         </div>
       </div>

@@ -91,11 +91,11 @@ export function MembersTable({
             <div className="flex items-center flex-1 gap-4">
               <Avatar>
                 <AvatarFallback>
-                  {member.name[0].toUpperCase()}
+                  {(member.name || member.user?.firstName || 'U')[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="font-small text-sm text-gray-600 group-hover:text-gray-700 transition-colors">
-                {member.name}
+                {member.name || (member.user ? `${member.user.firstName} ${member.user.lastName}` : 'Unnamed Member')}
               </div>
             </div>
 

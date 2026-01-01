@@ -68,10 +68,11 @@ export function EventParticipantsModal({
   };
 
   const filteredParticipations = participations.filter(
-    (participation) =>
-      participation.member?.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
+    (participation) => {
+      const memberName = participation.member?.name ||
+        (participation.member?.user ? `${participation.member.user.firstName} ${participation.member.user.lastName}` : '');
+      return memberName.toLowerCase().includes(searchTerm.toLowerCase());
+    }
   );
 
   return (
@@ -154,20 +155,16 @@ export function EventParticipantsModal({
                 <div className="flex items-center gap-3">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback>
-                      {participation.member?.name
-                        .split(' ')
-                        .map((n) => n[0])
-                        .join('')
-                        .toUpperCase()}
+                      {(participation.member?.name || participation.member?.user?.firstName || 'U')[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <div className="font-medium">
-                      {participation.member?.name}
+                      {participation.member?.name || (participation.member?.user ? `${participation.member.user.firstName} ${participation.member.user.lastName}` : 'Unnamed Member')}
                     </div>
                     <div className="text-sm text-muted-foreground">
                       <DanceRoleTag
-                        role={participation.member?.preferedDanceRole}
+                        role={participation.member?.preferredDanceRole}
                         size="sm"
                       />
                     </div>

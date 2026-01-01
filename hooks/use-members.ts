@@ -4,14 +4,25 @@ import { useSession } from 'next-auth/react';
 import { BASE_URL } from '@/lib/api/shared.api';
 import { Member } from '@/types';
 
+interface MembersApiResponse {
+  data: Member[];
+  error: null | any;
+  meta: {
+    totalCount: number;
+    count: number;
+    page: number;
+    pages: number;
+    limit: number;
+    offset: number;
+  };
+}
+
 export function useMembers() {
   const { workspace } = useCurrentWorkspace();
   const { data: session, status } = useSession();
   const accessToken = session?.accessToken as string | undefined;
 
-  const { data, isLoading, isError, error, ...query } = useQuery<{
-    data: Member[];
-  }>({
+  const { data, isLoading, isError, error, ...query } = useQuery<MembersApiResponse>({
     queryKey: ['members', workspace?.slug],
     queryFn: async () => {
       if (!accessToken || !workspace) throw new Error('No access token or workspace');
@@ -32,6 +43,7 @@ export function useMembers() {
 
   return {
     members: data?.data || [],
+    meta: data?.meta,
     isLoading,
     isError,
     error,

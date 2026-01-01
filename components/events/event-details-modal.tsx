@@ -58,13 +58,13 @@ export function EventDetailsModal({ children, event }: EventDetailsModalProps) {
 
   // Calculate leader/follower balance
   const leaderCount = participations.filter(
-    (p) => p.member?.preferedDanceRole === 'LEADER'
+    (p) => p.member?.preferredDanceRole === 'LEADER'
   ).length;
   const followerCount = participations.filter(
-    (p) => p.member?.preferedDanceRole === 'FOLLOWER'
+    (p) => p.member?.preferredDanceRole === 'FOLLOWER'
   ).length;
   const noRoleCount = participations.filter(
-    (p) => !p.member?.preferedDanceRole || p.member?.preferedDanceRole === null
+    (p) => !p.member?.preferredDanceRole || p.member?.preferredDanceRole === null
   ).length;
 
   // Participation status data for pie chart

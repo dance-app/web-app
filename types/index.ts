@@ -16,19 +16,25 @@ export type LocalApiResponse<SuccessType, ErrorMessageType> =
 
 export interface Member {
   id: string;
-  name: string;
-  email: string;
-  createdAt: Date;
-  updatedAt: Date;
-  createdById: string;
+  name: string | null;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+  roles: WorkspaceRole[];
+  level: number | null;
+  levelName: string | null;
+  preferredDanceRole: DanceRole | null;
+  workspaceId: string;
+  // Legacy fields (may be needed for backwards compatibility)
+  email?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  createdById?: string;
   createdBy?: User;
-  user: User | null;
   userId?: string;
   workspace?: Workspace;
-  workspaceId?: string;
-  roles: WorkspaceRole[];
-  level?: number;
-  preferedDanceRole?: DanceRole;
 }
 
 export interface User {

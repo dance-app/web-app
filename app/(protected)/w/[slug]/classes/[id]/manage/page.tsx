@@ -59,7 +59,7 @@ const mockEvent = {
         id: '1',
         name: 'John Doe',
         email: 'john@example.com',
-        preferedDanceRole: 'LEADER' as const,
+        preferredDanceRole: 'LEADER' as const,
         createdAt: new Date(),
         updatedAt: new Date(),
         createdById: '1',
@@ -76,7 +76,7 @@ const mockEvent = {
         id: '2',
         name: 'Jane Smith',
         email: 'jane@example.com',
-        preferedDanceRole: 'FOLLOWER' as const,
+        preferredDanceRole: 'FOLLOWER' as const,
         createdAt: new Date(),
         updatedAt: new Date(),
         createdById: '1',
@@ -93,7 +93,7 @@ const mockEvent = {
         id: '3',
         name: 'Mike Johnson',
         email: 'mike@example.com',
-        preferedDanceRole: 'LEADER' as const,
+        preferredDanceRole: 'LEADER' as const,
         createdAt: new Date(),
         updatedAt: new Date(),
         createdById: '1',
@@ -160,7 +160,7 @@ export default function EventParticipationsPage() {
       statusFilter === 'all' || participation.status === statusFilter;
     const matchesRole =
       roleFilter === 'all' ||
-      participation.student?.preferedDanceRole === roleFilter;
+      participation.student?.preferredDanceRole === roleFilter;
     return matchesSearch && matchesStatus && matchesRole;
   });
 
@@ -324,7 +324,7 @@ export default function EventParticipationsPage() {
                         </div>
                         <div className="flex items-center gap-2">
                           <DanceRoleTag
-                            role={participation.student?.preferedDanceRole}
+                            role={participation.student?.preferredDanceRole}
                           />
                         </div>
                       </div>

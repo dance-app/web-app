@@ -115,11 +115,11 @@ export function MemberDetailDrawer({
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16 bg-gray-100">
                 <AvatarFallback className='text-2xl'>
-                  {member.name[0].toUpperCase()}
+                  {(member.name || member.user?.firstName || 'U')[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <SheetTitle className="text-2xl">{member.name}</SheetTitle>
+                <SheetTitle className="text-2xl">{member.name || (member.user ? `${member.user.firstName} ${member.user.lastName}` : 'Unnamed Member')}</SheetTitle>
                 <SheetDescription className="flex items-center gap-2">
                   <Mail className="h-4 w-4" />
                   {member.email}

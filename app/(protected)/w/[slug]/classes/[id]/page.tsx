@@ -60,13 +60,14 @@ const mockEvent: Event = {
         updatedAt: new Date(),
         createdById: '1',
         roles: [],
+        level: null,
+        levelName: null,
+        preferredDanceRole: null,
+        workspaceId: '1',
         user: {
           id: '1',
           firstName: 'John',
           lastName: 'Doe',
-          accounts: [],
-          isSuperAdmin: false,
-          createdAt: new Date().toISOString(),
         },
       },
     },
@@ -84,13 +85,14 @@ const mockEvent: Event = {
         updatedAt: new Date(),
         createdById: '1',
         roles: [],
+        level: null,
+        levelName: null,
+        preferredDanceRole: null,
+        workspaceId: '1',
         user: {
           id: '2',
           firstName: 'Jane',
           lastName: 'Smith',
-          accounts: [],
-          isSuperAdmin: false,
-          createdAt: new Date().toISOString(),
         },
       },
     },
@@ -143,13 +145,13 @@ export default function EventDetailsPage() {
 
   // Calculate leader/follower balance
   const leaderCount = participations.filter(
-    (p) => p.member?.preferedDanceRole === 'LEADER'
+    (p) => p.member?.preferredDanceRole === 'LEADER'
   ).length;
   const followerCount = participations.filter(
-    (p) => p.member?.preferedDanceRole === 'FOLLOWER'
+    (p) => p.member?.preferredDanceRole === 'FOLLOWER'
   ).length;
   const noRoleCount = participations.filter(
-    (p) => !p.member?.preferedDanceRole || p.member?.preferedDanceRole === null
+    (p) => !p.member?.preferredDanceRole || p.member?.preferredDanceRole === null
   ).length;
 
   // Participation status data for pie chart
