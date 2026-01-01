@@ -22,6 +22,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
+import { useMemberCreate } from '@/hooks/use-member-create';
+import { WorkspaceRole } from '@/types';
+import { useToast } from '@/hooks/use-toast';
 
 const memberSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -38,6 +41,8 @@ interface MemberCreateModalProps {
 export function MemberCreateModal({ children }: MemberCreateModalProps) {
   const [open, setOpen] = useState(false);
   const [loadingAction, setLoadingAction] = useState<'submit' | 'createAnother' | null>(null);
+  const { create, isPending } = useMemberCreate();
+  const { toast } = useToast();
 
   const form = useForm<MemberFormData>({
     resolver: zodResolver(memberSchema),
@@ -65,19 +70,27 @@ export function MemberCreateModal({ children }: MemberCreateModalProps) {
     try {
       setLoadingAction(createAnother ? 'createAnother' : 'submit');
 
-      // TODO: Implement member creation API call
-      console.log('Creating member:', data);
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await create({
+        memberName: data.name.trim(),
+        email: data.email?.trim() || undefined,
+        roles: [WorkspaceRole.STUDENT],
+      });
 
       form.reset();
+      toast({
+        title: 'Member added',
+        description: `${data.name} has been added to this workspace.`,
+      });
 
       if (!createAnother) {
         closeModal();
       }
     } catch (error) {
-      console.error('Failed to create member:', error);
+      toast({
+        title: 'Failed to add member',
+        description: error instanceof Error ? error.message : 'Something went wrong',
+        variant: 'destructive',
+      });
     } finally {
       setLoadingAction(null);
     }
@@ -139,6 +152,7 @@ export function MemberCreateModal({ children }: MemberCreateModalProps) {
                 type="button"
                 variant="outline"
                 onClick={closeModal}
+                disabled={isPending}
               >
                 Cancel
               </Button>
@@ -146,15 +160,15 @@ export function MemberCreateModal({ children }: MemberCreateModalProps) {
                 type="button"
                 variant="secondary"
                 onClick={form.handleSubmit((data) => onSubmit(data, true))}
-                disabled={loadingAction !== null}
+                disabled={loadingAction !== null || isPending}
               >
-                {loadingAction === 'createAnother' && (
+                {(loadingAction === 'createAnother' || isPending) && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Add & Create another
               </Button>
-              <Button type="submit" disabled={loadingAction !== null}>
-                {loadingAction === 'submit' && (
+              <Button type="submit" disabled={loadingAction !== null || isPending}>
+                {(loadingAction === 'submit' || isPending) && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Add Member
