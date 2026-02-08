@@ -7,7 +7,8 @@ type UpdateMemberResponse = LocalApiResponse<
   'MEMBER_NOT_FOUND' | 'UNAUTHORIZED'
 >;
 
-interface UpdateMemberData extends Pick<Member, 'id' | 'name' | 'email'> {}
+interface UpdateMemberData
+  extends Pick<Member, 'id' | 'name' | 'email' | 'phone'> {}
 
 export function useMemberUpdate() {
   const { workspace } = useCurrentWorkspace();

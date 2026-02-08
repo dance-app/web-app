@@ -15,41 +15,27 @@ export type LocalApiResponse<SuccessType, ErrorMessageType> =
     };
 
 export interface Member {
+  createdAt: string;
+  updatedAt: string;
   id: string;
   name: string | null;
-  user: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  } | null;
+  phone?: string | null;
+  email?: string | null;
   roles: WorkspaceRole[];
-  level: number | null;
-  levelName: string | null;
   preferredDanceRole: DanceRole | null;
-  workspaceId: string;
-  // Legacy fields (may be needed for backwards compatibility)
-  email?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  createdById?: string;
-  createdBy?: User;
-  userId?: string;
-  workspace?: Workspace;
+  user: User | null;
 }
 
 export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  createdAt: string;
-  isSuperAdmin?: boolean;
-  accounts: {
-    id: string;
-    provider: 'LOCAL' | 'GOOGLE' | 'GITHUB';
-    email: string;
-    isEmailVerified: boolean;
     createdAt: string;
-  }[];
+    updatedAt: string;
+    id: string;
+    firstName: string;
+    lastName: string;
+    accounts?: {
+      email: string;
+      isEmailVerified: boolean;
+    }[]
 }
 
 export type AuthState =

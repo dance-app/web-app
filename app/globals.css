@@ -92,3 +92,26 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* react-phone-number-input overrides to match shadcn styling */
+.PhoneInput {
+  gap: 0 !important;
+}
+
+.PhoneInputCountry {
+  height: 2rem; /* h-8 */
+  margin-right: -1px !important;
+  padding-inline: 0.5rem;
+  border: 1px solid hsl(var(--input));
+  border-radius: calc(var(--radius) - 2px) 0 0 calc(var(--radius) - 2px);
+  background-color: hsl(var(--background));
+}
+
+.PhoneInputCountryIcon {
+  width: 1.25rem;
+  height: 0.875rem;
+}
+
+.PhoneInputCountrySelectArrow {
+  opacity: 0.5;
+}

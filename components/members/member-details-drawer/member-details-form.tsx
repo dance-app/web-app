@@ -6,6 +6,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PhoneInput, isValidPhoneNumber } from '@/components/ui/phone-input';
 import { SheetFooter } from '@/components/ui/sheet';
 import {
   AlertDialog,
@@ -29,25 +30,34 @@ import { useToast } from '@/hooks/use-toast';
 // } from '@/components/ui/select';
 
 export const MemberDetailsForm = ({ member, onDelete }: {
-  member: Pick<Member, 'id' | 'createdAt' | 'name' | 'email'>
+  member: Pick<Member, 'id' | 'createdAt' | 'name' | 'email' | 'phone'>
   onDelete?: (memberId: string) => void
 }) => {
   const [formData, setFormData] = useState({
     name: member.name || '',
     email: member.email || '',
+    phone: member.phone || '',
   });
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   const updateMember = useMemberUpdate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setPhoneError(null);
+
+    if (formData.phone && !isValidPhoneNumber(formData.phone)) {
+      setPhoneError('Please enter a valid phone number');
+      return;
+    }
 
     try {
       await updateMember.mutateAsync({
         id: member.id,
         name: formData.name,
         email: formData.email,
+        phone: formData.phone || null,
       });
 
       toast({
@@ -115,6 +125,21 @@ export const MemberDetailsForm = ({ member, onDelete }: {
             placeholder="Email Address"
             required
           />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="phone">Phone</Label>
+          <PhoneInput
+            value={formData.phone}
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, phone: value || '' }))
+            }
+            defaultCountry="US"
+            placeholder="Phone number"
+          />
+          {phoneError && (
+            <p className="text-sm text-destructive">{phoneError}</p>
+          )}
         </div>
         {/* <div className="grid gap-2">
           <Label htmlFor="danceRole">Dance Role</Label>
