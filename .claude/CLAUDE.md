@@ -70,6 +70,11 @@ types/               # TypeScript type definitions
 
 ## Critical Performance Rules
 
+### Reuse Existing Code
+- **Before implementing a fix or feature, always search for existing hooks, utilities, and patterns** that already solve the same or a similar problem
+- When fixing a bug in one file, check how sibling files or similar hooks already handle the same concern (e.g., check other hooks in `hooks/` before adding new logic)
+- Reuse existing abstractions instead of introducing new imports or duplicating logic
+
 ### File Navigation & Search
 - **ALWAYS read files before modifying them** - Never suggest changes to code you haven't read
 - Use `Glob` tool for finding files by pattern (e.g., `**/*.tsx`, `hooks/use-*.ts`)
