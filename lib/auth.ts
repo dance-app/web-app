@@ -108,6 +108,11 @@ export const authOptions: NextAuthOptions = {
         };
       }
 
+      // If a previous refresh already failed, don't retry — surface the error
+      if (token.error === 'RefreshAccessTokenError') {
+        return token;
+      }
+
       // Return previous token if the access token has not expired yet
       if (Date.now() < (token.accessTokenExpires as number)) {
         return token;
