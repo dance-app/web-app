@@ -38,7 +38,7 @@ export function useWorkspaces({ enabled }: { enabled?: boolean } = {}) {
   return {
     workspaces: data?.data || [],
     meta: data?.meta || {},
-    isLoading,
+    isLoading: status === 'loading' || isLoading,
     isError,
     error,
     ...query,
