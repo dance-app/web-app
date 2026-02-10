@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { Plus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger';
 import { MembersTable } from '@/components/members/members-table';
 import { useMembers } from '@/hooks/use-members';
 import { useSelectedMember } from '@/hooks/use-selected-member';
@@ -17,57 +17,18 @@ import { Users } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function MembersPage() {
-  const [createFormOpen, setCreateFormOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const { members, isLoading } = useMembers();
+  const {
+    members,
+    isLoading,
+    searchValue,
+    onSearchChange,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useMembers();
   const { selectedMember, setSelectedMember } = useSelectedMember(members);
   const { mutate: deleteMember } = useMemberDelete();
 
-  const createStudent = () => { }; //useCreateStudent()
-  const updateStudent = () => { }; //useUpdateStudent()
-  const deleteStudent = () => { }; //useDeleteStudent()
-
-  // const handleCreateStudent = async (data: Omit<Student, "id" | "createdAt" | "updatedAt">) => {
-  //   try {
-  //     await createStudent.mutateAsync(data)
-  //     setIsFormOpen(false)
-  //   } catch (error) {
-  //     console.error("Failed to create student:", error)
-  //   }
-  // }
-
-  // const handleUpdateStudent = async (data: Omit<Student, "id" | "createdAt" | "updatedAt">) => {
-  //   if (!editingStudent) return
-
-  //   try {
-  //     await updateStudent.mutateAsync({
-  //       id: editingStudent.id,
-  //       ...data,
-  //     })
-  //     setEditingStudent(null)
-  //   } catch (error) {
-  //     console.error("Failed to update student:", error)
-  //   }
-  // }
-
-  // const handleDeleteStudent = async (id: string) => {
-  //   try {
-  //     await deleteStudent.mutateAsync(id)
-  //   } catch (error) {
-  //     console.error("Failed to delete student:", error)
-  //   }
-  // }
-
-  // const handleEdit = (student: Student) => {
-  //   setEditingStudent(student)
-  //   setShowDrawer(true)
-  // }
-
-  // const handleCloseForm = () => {
-  //   setIsFormOpen(false)
-  //   setEditingStudent(null)
-  // }
 
   const handleDeleteMember = (memberId: string) => {
     deleteMember(memberId);
@@ -113,9 +74,9 @@ export default function MembersPage() {
             <div className="relative flex-1 ">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Search students..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search members..."
+                value={searchValue}
+                onChange={(e) => onSearchChange(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -143,6 +104,12 @@ export default function MembersPage() {
         onDelete={() => { }}
         onMemberClick={setSelectedMember}
         isLoading={isLoading}
+      />
+
+      <InfiniteScrollTrigger
+        onLoadMore={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
       />
 
       <MemberDetailDrawer
