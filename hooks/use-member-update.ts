@@ -1,48 +1,51 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import { useCurrentWorkspace } from './use-current-workspace';
-import type { Member, LocalApiResponse } from '@/types';
+import { apiCall } from '@/lib/api/client';
+import type { Member, WorkspaceRole, DanceRole } from '@/types';
 
-type UpdateMemberResponse = LocalApiResponse<
-  { member: Member },
-  'MEMBER_NOT_FOUND' | 'UNAUTHORIZED'
->;
-
-interface UpdateMemberData
-  extends Pick<Member, 'id' | 'name' | 'email' | 'phone'> {}
+interface UpdateMemberData {
+  id: string;
+  memberName?: string;
+  email?: string;
+  phone?: string | null;
+  roles?: WorkspaceRole[];
+  preferredDanceRole?: DanceRole;
+  level?: number;
+}
 
 export function useMemberUpdate() {
   const { workspace } = useCurrentWorkspace();
+  const { data: session } = useSession();
   const queryClient = useQueryClient();
+  const accessToken =
+    typeof session?.accessToken === 'string' ? session.accessToken : undefined;
 
   return useMutation({
     mutationFn: async (data: UpdateMemberData) => {
       if (!workspace) {
         throw new Error('No workspace selected');
       }
+      if (!accessToken) {
+        throw new Error('Missing access token');
+      }
 
       const { id, ...updateData } = data;
-      const response = await fetch(
-        `/api/workspace/${workspace.slug}/members/${id}`,
+
+      const response = await apiCall<Member>(
+        `/workspaces/${workspace.slug}/members/${id}`,
         {
-          method: 'PUT',
+          method: 'PATCH',
           headers: {
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
           },
-          credentials: 'include',
-          body: JSON.stringify(updateData),
+          body: updateData,
         }
       );
 
-      const result: UpdateMemberResponse = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.error.message || 'Failed to update member');
-      }
-
-      return result.data.member;
+      return response.data;
     },
     onSuccess: () => {
-      // Invalidate the members query to refresh the list
       queryClient.invalidateQueries({ queryKey: ['members', workspace?.slug] });
     },
   });

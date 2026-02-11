@@ -6,7 +6,7 @@ import {
 } from './shared.api';
 
 interface ApiConfig {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: any;
   headers?: Record<string, string>;
   credentials?: RequestCredentials;

@@ -8,7 +8,6 @@ import { MembersTable } from '@/components/members/members-table';
 import { useMembers } from '@/hooks/use-members';
 import { useSelectedMember } from '@/hooks/use-selected-member';
 import { useMemberDelete } from '@/hooks/use-member-delete';
-import type { Member } from '@/types';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { MemberDetailDrawer } from '@/components/members/member-details-drawer';
 import { MemberCreateModal } from '@/components/members/member-create-modal';
@@ -32,30 +31,6 @@ export default function MembersPage() {
 
   const handleDeleteMember = (memberId: string) => {
     deleteMember(memberId);
-  };
-
-  const handleFormSubmit = async (data: Partial<Member>) => {
-    //   const result = {
-    //     success: true,
-    //     error: undefined,
-    //   }
-    //   if (editingStudent) {
-    //     // const result = await updateStudent(selectedStudent.id, data)
-    //     if (result.success) {
-    //       toast.success("Student updated successfully")
-    //     } else {
-    //       toast.error(result.error || "Failed to update student")
-    //     }
-    //     return result
-    //   } else {
-    //     // const result = await createStudent(data)
-    //     if (result.success) {
-    //       toast.success("Student created successfully")
-    //     } else {
-    //       toast.error(result.error || "Failed to create student")
-    //     }
-    //     return result
-    //   }
   };
 
   return (
@@ -120,9 +95,6 @@ export default function MembersPage() {
             setSelectedMember(null);
           }
         }}
-        onSubmit={() =>
-          new Promise((resolve) => resolve({ success: true, error: undefined }))
-        }
         onDelete={handleDeleteMember}
       />
     </PageLayout >

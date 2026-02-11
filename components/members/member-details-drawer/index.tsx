@@ -1,9 +1,6 @@
 'use client';
 
-import type React from 'react';
-
-import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
+import { useState } from 'react';
 import type { Member } from '@/types';
 import {
   Sheet,
@@ -11,61 +8,16 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetFooter,
 } from '@/components/ui/sheet';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
-import {
-  Calendar,
-  Mail,
-  User,
-  CreditCard,
-  Clock,
-  Plus,
-  Trash2,
-} from 'lucide-react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Mail } from 'lucide-react';
 import { MemberDetailsForm } from './member-details-form';
 
 interface MemberDetailDrawerProps {
   member: Member | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  // danceTypes: DanceType[];
-  onSubmit: (
-    data: Partial<Member>
-  ) => Promise<{ success: boolean; error?: string }>;
   onDelete?: (memberId: string) => void;
 }
 
@@ -73,8 +25,6 @@ export function MemberDetailDrawer({
   member,
   open,
   onOpenChange,
-  // danceTypes,
-  onSubmit,
   onDelete,
 }: MemberDetailDrawerProps) {
   const [activeTab, setActiveTab] = useState('details');
